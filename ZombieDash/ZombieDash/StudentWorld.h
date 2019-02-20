@@ -23,7 +23,7 @@ public:
     bool isBlocked( int, int ,int, int );
 private:
     //2D list for stroing all the actors
-    list<Actors*> m_level[VIEW_WIDTH][VIEW_HEIGHT];
+    list<Actors*> m_level[LEVEL_WIDTH][LEVEL_HEIGHT];
     Penelope *penelopePtr;
 };
 

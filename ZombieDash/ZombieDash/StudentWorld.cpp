@@ -10,7 +10,10 @@
 #include <string>
 #include "Level.h"
 #include <vector>
+#include <iostream> // defines the overloads of the << operator
+#include <sstream>  // defines the type std::ostringstream
 using namespace std;
+
 
 /*------------------------------ GameWorld.h --------------------------------
 //int getLevel() const;
@@ -68,9 +71,9 @@ int StudentWorld::init()
     else if (result == Level::load_success)
     {
         //put the actors and walls in on the field using 2D list STL
-        for(int i=0 ; i< 16; i++)//row
+        for(int i=0 ; i< LEVEL_WIDTH; i++)//row
         {
-            for(int j=0; j<16 ; j++)//col
+            for(int j=0; j<LEVEL_HEIGHT ; j++)//col
             {
                 //get the current char from the level0*.txt and store in ge
                 Level::MazeEntry ge = lev.getContentsOf(i,j);
@@ -117,9 +120,9 @@ int StudentWorld::init()
 int StudentWorld::move()
 {
     //iterate through all Penelope object
-    for(int i=0; i<16;i++)
+    for(int i=0; i<LEVEL_WIDTH;i++)
     {
-        for (int j=0; j<16; j++)
+        for (int j=0; j<LEVEL_HEIGHT; j++)
         {
             for (list<Actors*>::iterator it = m_level[i][j].begin(); it != m_level[i][j].end(); it++)
             {
@@ -244,13 +247,14 @@ void StudentWorld::cleanUp()
     //    actors, and the level will then continue from scratch.
     //    You must not call the cleanUp() method yourself when Penelope dies. Instead, this
     //    method will be called by our code when init() returns an appropriate status
-    for(int i=0; i<16;i++)
+    for(int i=0; i<LEVEL_WIDTH;i++)
     {
-        for (int j=0; j<16; j++)
+        for (int j=0; j<LEVEL_HEIGHT; j++)
         {
             for (list<Actors*>::iterator it = m_level[i][j].begin(); it != m_level[i][j].end(); it++)
             {
                 delete *it;
+                it=m_level[i][j].erase(it);
             }
         }
         
@@ -294,8 +298,7 @@ bool StudentWorld:: isBlocked( int otherObjectX, int otherObjectY, int dest_x, i
 //void StudentWorld:: displayText()
 //{
 //
-//    string a[4] = {"", "", "", ""};
-//    a[leader] = "*";
+//
 //    ostringstream text;
 //    int ticks = 2000 - m_ticks;
 //    text << "Ticks:" << setw(5) << ticks << " - " << compilerForEntrant[0]->getColonyName() << a[0] << ": ";
