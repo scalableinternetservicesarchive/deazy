@@ -37,7 +37,7 @@ public:
     virtual void doSomething()=0;
     //bool is(double, double);
    // virtual base class destructor
-    virtual bool blockActors(int);
+    virtual bool blockActors(int, int);
 //    virtual int direction();
 //    virtual bool isAlive() const;
 //    virtual bool isInfected() const;
@@ -63,7 +63,7 @@ class Walls: public Actors
 public:
     Walls(int startX, int startY, StudentWorld *sWorld);
     virtual void doSomething();
-    virtual bool blockActors(int) ;
+    virtual bool blockActors(int, int) ;
      ~Walls();
     
 };
@@ -73,7 +73,7 @@ class Penelope : public Actors
 public:
     Penelope(int startX, int startY, StudentWorld *sWorld);
     virtual void doSomething();
-    virtual bool blockActors(int);
+    virtual bool blockActors(int, int);
      ~Penelope();
    // virtual bool blockActors() const;
 //    virtual int direction();

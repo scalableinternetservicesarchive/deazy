@@ -80,11 +80,11 @@ int StudentWorld::init()
                     case Level::player:
 //                        create a new Penelope and put her in penelope pointer STL
                         penelopePtr=new Penelope(SPRITE_WIDTH*i,SPRITE_HEIGHT*j,this);
-                        m_level.push_back(penelopePtr);
+                        m_level[i][j].push_back(penelopePtr);
                         break;
                     case Level::wall:
                         //create a new wall on the level
-                        m_level.push_back(new Walls(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        m_level[i][j].push_back(new Walls(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
                         break;
 //                    case Level::vaccine_goodie:
 //                        break;
@@ -95,7 +95,7 @@ int StudentWorld::init()
 //                    case Level::landmine_goodie:
 //                        break;
                     case Level::exit:
-                        m_level.push_back(new Exit(SPRITE_WIDTH * i,SPRITE_HEIGHT *j,this));
+                        m_level[i][j].push_back(new Exit(SPRITE_WIDTH * i,SPRITE_HEIGHT *j,this));
                         break;
 //                    case Level::citizen:
 //                        break;
@@ -104,7 +104,7 @@ int StudentWorld::init()
 //                    case Level:: pit:
 //                        break;
                     case Level::empty:
-                         m_level.push_back(nullptr);
+                         m_level[i][j].push_back(nullptr);
                         break;
                 }
             }
@@ -117,8 +117,11 @@ int StudentWorld::init()
 int StudentWorld::move()
 {
     //iterate through all Penelope object
-    
-            for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
+    for(int i=0; i<16;i++)
+    {
+        for (int j=0; j<16; j++)
+        {
+            for (list<Actors*>::iterator it = m_level[i][j].begin(); it != m_level[i][j].end(); it++)
             {
                //if the current object is nullptr, ignore and continue, aka do nothing
                 if(*it==nullptr) continue;
@@ -130,7 +133,8 @@ int StudentWorld::move()
 //                if(it->exit())
 //                    return GWSTATUS_FINISHED_LEVEL;
             }
-    
+        }
+    }
     
 //    for(int i=0 ; i< 16; i++)
 //    {
@@ -240,11 +244,17 @@ void StudentWorld::cleanUp()
     //    actors, and the level will then continue from scratch.
     //    You must not call the cleanUp() method yourself when Penelope dies. Instead, this
     //    method will be called by our code when init() returns an appropriate status
-            for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
+    for(int i=0; i<16;i++)
+    {
+        for (int j=0; j<16; j++)
+        {
+            for (list<Actors*>::iterator it = m_level[i][j].begin(); it != m_level[i][j].end(); it++)
             {
                 delete *it;
             }
-    
+        }
+        
+    }
     //    The StudentWorld destructor will be called by our game framework when the game is
     //    over. If the game ends prematurely because the player pressed the q key, cleanUp() will
     //    NOT have been called by our framework, so your destructor should call it to make sure
@@ -263,30 +273,20 @@ StudentWorld:: ~StudentWorld()
 }
 
 
-//Determining blocking movement
-bool StudentWorld:: isBlocked( int dest_p)
+//Determining blocking movement for wall, citizens, Penelope, and zombies
+bool StudentWorld:: isBlocked( int otherObjectX, int otherObjectY, int dest_x, int dest_y)
 {
-    
     //current object
-    for (vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++ )
-        if ((*iter) != nullptr && (*iter)->blockActors(dest_p))
-            return false;
+   
+            for (list<Actors*>::iterator iter = m_level[otherObjectX][otherObjectY].begin() ; iter !=m_level[otherObjectX][otherObjectY].end() ; iter++ )
+            {
+                if ((*iter) == nullptr )
+                    continue;
+                else if((*iter)->blockActors(dest_x, dest_y))
+                    return false;
+            }
+    
     return true;
-//    if(m_level[dest_x][dest_y].front()->blockActors() && m_level[dest_x][dest_y].front() !=nullptr)
-//        return false;
-   // return true;
-    //    double currentObjectLowerLeftX= getX();
-    //    double currentObjectLowerLeftY= getY();
-    //    double otherObjectX=otherObject.getX();
-    //    double otherObjectY=otherObject.getY();
-    //
-    //    //calculate (Δx)2 + (Δy)2
-    //    double result= pow( (currentObjectY-otherObjectY),2 ) + pow((currentObjectX-otherObjectX),2);
-    //    //if the result is <=100, return true
-    //    if(result<=100)
-    //        return true;
-    //otherwise false
-
 }
 
 

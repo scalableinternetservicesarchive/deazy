@@ -56,7 +56,7 @@ StudentWorld* Actors:: getWorld() const
 Actors::~Actors()
 {}
 
-bool Actors::blockActors(int x)
+bool Actors::blockActors(int x, int y)
 {
     return false;
 }
@@ -105,9 +105,9 @@ Penelope::Penelope(int startX, int startY, StudentWorld * sWorld)
 }
 Penelope::~Penelope()
 {}
-bool Penelope::blockActors(int x)
+bool Penelope::blockActors(int x, int y)
 {
-    return true;
+    return false;
 }
 //Penelope doSomething function
 void Penelope:: doSomething()
@@ -136,12 +136,10 @@ void Penelope:: doSomething()
     //if the user pressed any keys during the tick
     if (getWorld()->getKey(ch))
     {
-        cout << "Dir:" << getDirection()<< endl;
-        cout << "x:" << this->getX()<< endl;
-        cout << "y:" << this->getY()<< endl;
         //to determine the destination based on the user d
         switch (ch)
         {
+            //
             case KEY_PRESS_LEFT:
                 //Set Penelope’s direction to the specified movement direction.
                 setDirection(left);
@@ -152,7 +150,7 @@ void Penelope:: doSomething()
                  citizen or zombie objects, then update Penelope’s location to the
                  specified location with the GraphObject class’s moveTo() method.
                  */
-                if(getWorld()->isBlocked((this->getX()-16)))
+                if(getWorld()->isBlocked( (this->getX()-16)/16,this->getY()/16,this->getX()-4, this->getY()))
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX()-4, this->getY());
@@ -161,15 +159,14 @@ void Penelope:: doSomething()
                 break;
             case KEY_PRESS_RIGHT:
                 //... move Penelope to the right ...;
+                //set the direction to the right
                 setDirection(right);
-                
                 /*
                  If the movement to (dest_x, dest_y) would not cause Penelope’s
                  bounding box to intersect with the bounding box of any wall,
                  citizen or zombie objects
                  */
-                cout <<this->getX();
-                if(getWorld()->isBlocked((this->getX()+16)))
+                if(getWorld()->isBlocked(  (this->getX()+16)/16,  this->getY()/16 ,(this->getX()+SPRITE_WIDTH+3), this->getY()))
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX()+4, this->getY());
@@ -183,7 +180,7 @@ void Penelope:: doSomething()
                  bounding box to intersect with the bounding box of any wall,
                  citizen or zombie objects
                  */
-                if(getWorld()->isBlocked( (this->getY()+16) ))
+                if(getWorld()->isBlocked( this->getX()/16 ,(this->getY()+16) /16,this->getX(),(this->getY()+SPRITE_HEIGHT+3) ) )
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX(), this->getY()+4);
@@ -197,7 +194,7 @@ void Penelope:: doSomething()
                  bounding box to intersect with the bounding box3 of any wall,
                  citizen or zombie objects.
                  */
-                if(getWorld()->isBlocked( this->getY()))
+               if(getWorld()->isBlocked(this->getX()/16,(this->getY()-16)/16,this->getX(),this->getY()-4))
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX(), this->getY()-4);
@@ -252,12 +249,19 @@ void Penelope:: doSomething()
 Walls::Walls(int startX, int startY, StudentWorld *sWorld)
 :Actors(IID_WALL,  startX ,  startY, right,0,sWorld)
 {}
-bool Walls::blockActors(int point)
+bool Walls::blockActors(int point_x, int point_y)
 {
-    //compare the right and left sides of the two objects
-    if(this->getX()==point || this->getX()+SPRITE_WIDTH==point ||this->getY()==point || this->getY()+SPRITE_WIDTH==point)
+    
+    if(point_x>this->getX())
         return true;
-    return false;
+    else if(point_x<this->getX()+SPRITE_WIDTH-1)
+        return true;
+    else if(point_y>this->getY())
+        return true;
+    else if(point_y< this->getY()+SPRITE_HEIGHT-1)
+        return true;
+    else
+        return false;
 }
 //Walls doSomething() method
 void Walls:: doSomething()

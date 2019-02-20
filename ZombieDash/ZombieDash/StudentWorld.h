@@ -4,7 +4,7 @@
 #include "GameWorld.h"
 #include "Actor.h"
 #include "GameConstants.h"
-#include <vector>
+#include <list>
 #include <string>
 using namespace std;
 
@@ -20,10 +20,10 @@ public:
     virtual void cleanUp();
     virtual ~StudentWorld();
     void displayText();
-    bool isBlocked( int );
+    bool isBlocked( int, int ,int, int );
 private:
     //2D list for stroing all the actors
-    vector<Actors*> m_level;
+    list<Actors*> m_level[VIEW_WIDTH][VIEW_HEIGHT];
     Penelope *penelopePtr;
 };
 
