@@ -9,7 +9,7 @@
 #include "Actor.h"
 #include <string>
 #include "Level.h"
-#include <list>
+#include <vector>
 using namespace std;
 
 /*------------------------------ GameWorld.h --------------------------------
@@ -54,7 +54,7 @@ int StudentWorld::init()
     //    your StudentWorld class’s init() method. The assetPath() and getLevel() methods
     //    that your StudentWorld class inherits from GameWorld might also be useful, along with
     //    the Stringstreams writeup on the class web site!
-    Penelope *penelopePtr;
+    
     //get the level file to load
     Level lev(assetPath());
     //string levelFile = assetPath() + "/level0" + char(getLevel())+ ".txt";
@@ -80,11 +80,11 @@ int StudentWorld::init()
                     case Level::player:
 //                        create a new Penelope and put her in penelope pointer STL
                         penelopePtr=new Penelope(SPRITE_WIDTH*i,SPRITE_HEIGHT*j,this);
-                        m_level[i][j].push_back(penelopePtr);
+                        m_level.push_back(penelopePtr);
                         break;
                     case Level::wall:
                         //create a new wall on the level
-                        m_level[i][j].push_back(new Walls(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        m_level.push_back(new Walls(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
                         break;
 //                    case Level::vaccine_goodie:
 //                        break;
@@ -95,7 +95,7 @@ int StudentWorld::init()
 //                    case Level::landmine_goodie:
 //                        break;
                     case Level::exit:
-                        m_level[i][j].push_back(new Exit(SPRITE_WIDTH * i,SPRITE_HEIGHT *j,this));
+                        m_level.push_back(new Exit(SPRITE_WIDTH * i,SPRITE_HEIGHT *j,this));
                         break;
 //                    case Level::citizen:
 //                        break;
@@ -104,7 +104,7 @@ int StudentWorld::init()
 //                    case Level:: pit:
 //                        break;
                     case Level::empty:
-                         m_level[i][j].push_back(nullptr);
+                         m_level.push_back(nullptr);
                         break;
                 }
             }
@@ -117,11 +117,8 @@ int StudentWorld::init()
 int StudentWorld::move()
 {
     //iterate through all Penelope object
-    for(int i=0 ; i< 16; i++)
-    {
-        for(int j=0; j<16; j++)
-        {
-            for (list<Actors*>::iterator it = m_level[i][j].begin(); it != m_level[i][j].end(); it++)
+    
+            for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
             {
                //if the current object is nullptr, ignore and continue, aka do nothing
                 if(*it==nullptr) continue;
@@ -133,8 +130,7 @@ int StudentWorld::move()
 //                if(it->exit())
 //                    return GWSTATUS_FINISHED_LEVEL;
             }
-        }
-    }
+    
     
 //    for(int i=0 ; i< 16; i++)
 //    {
@@ -244,17 +240,11 @@ void StudentWorld::cleanUp()
     //    actors, and the level will then continue from scratch.
     //    You must not call the cleanUp() method yourself when Penelope dies. Instead, this
     //    method will be called by our code when init() returns an appropriate status
-    for (int i = 0; i < VIEW_WIDTH; i++)
-    {
-        
-        for (int j = 0; j < VIEW_HEIGHT; j++)
-        {
-            for (list<Actors*>::iterator it = m_level[i][j].begin(); it != m_level[i][j].end(); it++)
+            for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
             {
                 delete *it;
             }
-        }
-    }
+    
     //    The StudentWorld destructor will be called by our game framework when the game is
     //    over. If the game ends prematurely because the player pressed the q key, cleanUp() will
     //    NOT have been called by our framework, so your destructor should call it to make sure
@@ -274,12 +264,12 @@ StudentWorld:: ~StudentWorld()
 
 
 //Determining blocking movement
-bool StudentWorld:: isBlocked( int dest_x, int dest_y)
+bool StudentWorld:: isBlocked( int dest_p)
 {
     
     //current object
-    for (list<Actors*>::iterator iter = m_level[dest_x][dest_y].begin() ; iter !=m_level[dest_x][dest_y].end() ; iter++ )
-        if ((*iter) != nullptr && (*iter)->blockActors())
+    for (vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++ )
+        if ((*iter) != nullptr && (*iter)->blockActors(dest_p))
             return false;
     return true;
 //    if(m_level[dest_x][dest_y].front()->blockActors() && m_level[dest_x][dest_y].front() !=nullptr)

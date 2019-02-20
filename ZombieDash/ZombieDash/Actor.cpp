@@ -55,6 +55,11 @@ StudentWorld* Actors:: getWorld() const
 }
 Actors::~Actors()
 {}
+
+bool Actors::blockActors(int x)
+{
+    return false;
+}
 //bool Actors:: blockActors()const
 //{
 //    return false;
@@ -100,7 +105,7 @@ Penelope::Penelope(int startX, int startY, StudentWorld * sWorld)
 }
 Penelope::~Penelope()
 {}
-bool Penelope::blockActors()
+bool Penelope::blockActors(int x)
 {
     return true;
 }
@@ -147,7 +152,7 @@ void Penelope:: doSomething()
                  citizen or zombie objects, then update Penelope’s location to the
                  specified location with the GraphObject class’s moveTo() method.
                  */
-                if(getWorld()->isBlocked((this->getX()-16)/16, (this->getY())/16))
+                if(getWorld()->isBlocked((this->getX()-16)))
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX()-4, this->getY());
@@ -164,7 +169,7 @@ void Penelope:: doSomething()
                  citizen or zombie objects
                  */
                 cout <<this->getX();
-                if(getWorld()->isBlocked((this->getX()+16)/16, (this->getY())/16))
+                if(getWorld()->isBlocked((this->getX()+16)))
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX()+4, this->getY());
@@ -178,7 +183,7 @@ void Penelope:: doSomething()
                  bounding box to intersect with the bounding box of any wall,
                  citizen or zombie objects
                  */
-                if(getWorld()->isBlocked((this->getX())/16, (this->getY()+16)/16 ))
+                if(getWorld()->isBlocked( (this->getY()+16) ))
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX(), this->getY()+4);
@@ -192,7 +197,7 @@ void Penelope:: doSomething()
                  bounding box to intersect with the bounding box3 of any wall,
                  citizen or zombie objects.
                  */
-                if(getWorld()->isBlocked((this->getX())/16,( this->getY()-16)/16))
+                if(getWorld()->isBlocked( this->getY()))
                 {
                     //then update Penelope’s location to the specified location with the GraphObject class’s moveTo() method.
                     this->moveTo(this->getX(), this->getY()-4);
@@ -247,9 +252,12 @@ void Penelope:: doSomething()
 Walls::Walls(int startX, int startY, StudentWorld *sWorld)
 :Actors(IID_WALL,  startX ,  startY, right,0,sWorld)
 {}
-bool Walls::blockActors()
+bool Walls::blockActors(int point)
 {
-    return true;
+    //compare the right and left sides of the two objects
+    if(this->getX()==point || this->getX()+SPRITE_WIDTH==point ||this->getY()==point || this->getY()+SPRITE_WIDTH==point)
+        return true;
+    return false;
 }
 //Walls doSomething() method
 void Walls:: doSomething()
@@ -286,10 +294,7 @@ void Exit::doSomething()
 }
 Exit::~Exit()
 {}
-bool Exit::blockActors()
-{
-    return false;
-}
+
 
 //===================================End of the Exit Method ================================
 
