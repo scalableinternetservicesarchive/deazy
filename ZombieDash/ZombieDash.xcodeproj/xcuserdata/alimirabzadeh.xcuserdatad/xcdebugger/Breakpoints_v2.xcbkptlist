@@ -10,12 +10,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572397130.665411"
+            timestampString = "572497319.6836129"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
             landmarkName = "Penelope:: doSomething()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZombieDash/Actor.cpp"
+            timestampString = "572497319.683952"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "489"
+            endingLineNumber = "489"
+            landmarkName = "Vomit::Vomit(int startX, int startY, StudentWorld* sWorld)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

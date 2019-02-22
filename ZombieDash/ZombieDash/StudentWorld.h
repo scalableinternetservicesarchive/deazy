@@ -21,6 +21,7 @@ public:
     virtual ~StudentWorld();
     void displayText();
     bool isBlocked( int, int, Actors * );
+    Direction randmonDir();
 private:
     //2D list for stroing all the actors
     vector<Actors*> m_level;

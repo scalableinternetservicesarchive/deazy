@@ -40,48 +40,32 @@ GameWorld* createStudentWorld(string assetPath)
 StudentWorld::StudentWorld(string assetPath)
 : GameWorld(assetPath)
 {}
-
-
-
-Penelope* penelope();
+//init() method that would be called by the framework to initialize all the objects load the level(s)
 int StudentWorld::init()
 {
-    //    Initialize the data structures used to keep track of your game’s world.
-    //    2. Allocate and insert a Penelope object into the game world as specified in the
-    //    current level’s data file.
-    //    3. Allocate and insert various wall, pit, goodie, zombie, and exit objects into the
-    //    game world as specified in the current level’s data file.
-    
-    
-    //Hint: You will likely want to use our Level class to load the current level specification in
-    //    your StudentWorld class’s init() method. The assetPath() and getLevel() methods
-    //    that your StudentWorld class inherits from GameWorld might also be useful, along with
-    //    the Stringstreams writeup on the class web site!
-    
     //get the level file to load
     Level lev(assetPath());
-    //string levelFile = assetPath() + "/level0" + char(getLevel())+ ".txt";
-    string levelFile = "level01.txt";
-    
+    //get the level based what level penelope is on
+    string levelFile = "level0"+ to_string(getLevel()+1)+".txt";
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
         return GWSTATUS_LEVEL_ERROR;
     else if (result == Level::load_fail_bad_format)
         return GWSTATUS_LEVEL_ERROR;
+    //if succefully load the .txt file
     else if (result == Level::load_success)
     {
-        //put the actors and walls in on the field using 2D list STL
+        //put the actors and walls in on the field Vector STL
         for(int i=0 ; i< LEVEL_WIDTH; i++)//row
         {
             for(int j=0; j<LEVEL_HEIGHT ; j++)//col
             {
-                //get the current char from the level0*.txt and store in ge
+                //get the current char from the level0*.txt and store in ge, from Level.h
                 Level::MazeEntry ge = lev.getContentsOf(i,j);
                 switch (ge)
                 {
-                    //if ge is Penelope
+                    //based on the object on txt file, construct the object and push it into the vector
                     case Level::player:
-//                        create a new Penelope and put her in penelope pointer STL
                         penelopePtr=new Penelope(SPRITE_WIDTH*i,SPRITE_HEIGHT*j,this);
                         m_level.push_back(penelopePtr);
                         break;
@@ -89,26 +73,33 @@ int StudentWorld::init()
                         //create a new wall on the level
                         m_level.push_back(new Walls(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
                         break;
-//                    case Level::vaccine_goodie:
-//                        break;
-//                    case Level::dumb_zombie:
-//                        break;
-//                    case Level::smart_zombie:
-//                        break;
-//                    case Level::landmine_goodie:
-//                        break;
+                    case Level::vaccine_goodie:
+                        m_level.push_back(new VaccineGoodies (SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        break;
+                    case Level::dumb_zombie:
+                        m_level.push_back(new DumbZombies(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        break;
+                    case Level::smart_zombie:
+                        m_level.push_back(new SmartZombies(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        break;
+                    case Level::landmine_goodie:
+                        m_level.push_back(new LandminesGoodies(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        break;
                     case Level::exit:
                         m_level.push_back(new Exit(SPRITE_WIDTH * i,SPRITE_HEIGHT *j,this));
                         break;
-//                    case Level::citizen:
-//                        break;
-//                    case Level:: gas_can_goodie:
-//                        break;
-//                    case Level:: pit:
-//                        break;
-//                    case Level::empty:
-//                         m_level.push_back(nullptr);
-//                        break;
+                    case Level::citizen:
+                        m_level.push_back(new Citizen(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        break;
+                    case Level:: gas_can_goodie:
+                        m_level.push_back(new GasCanGoodies(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        break;
+                    case Level:: pit:
+                        m_level.push_back(new Pits(SPRITE_WIDTH*i,SPRITE_HEIGHT *j,this));
+                        break;
+                    case Level::empty:
+                         m_level.push_back(nullptr);
+                        break;
                 }
             }
         }
@@ -120,58 +111,30 @@ int StudentWorld::init()
 int StudentWorld::move()
 {
     //iterate through all Penelope object
-    
-            for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
-            {
-               //if the current object is nullptr, ignore and continue, aka do nothing
-                if(*it==nullptr) continue;
-                 // tell Penelope to do something (e.g. move)
-                (*it)->doSomething();
-                //if the Penelope is dead, return from move() with GWSTATUS_PLAYER_DIED
-//                if((*it)->isAlive()==false)
-//                    return GWSTATUS_PLAYER_DIED;
-//                if(it->exit())
-//                    return GWSTATUS_FINISHED_LEVEL;
-            }
-    
-//    for(int i=0 ; i< 16; i++)
-//    {
-//        for(int j=0; j<16 ; j++)
-//        {
-//            for (list<Actors*>::iterator it = m_level[i][j].begin(); it != m_level[i][j].end(); it++)
-//            {
-//                // tell Penelope to do something (e.g. move)
-//                (*it)->doSomething();
-//                //if the Penelope is dead, return from move() with GWSTATUS_PLAYER_DIED
-//                //                if((*it)->isAlive()==false)
-//                //                    return GWSTATUS_PLAYER_DIED;
-//                //                if(it->exit())
-//                //                    return GWSTATUS_FINISHED_LEVEL;
-//            }
-//        }
-//    }
-    // Remove newly-dead actors after each tick
-//    for(int i=0 ; i < VIEW_HEIGHT ; i++)
-//    {
-//        for(int j=0; j < VIEW_WIDTH ; j++)
-//        {
-//            for (list<Actors*>::iterator iter = m_level[i][j].begin(); iter != m_level[i][j].end();)
-//            {
-//                //if the current actor is dead, remove that actor from the level and
-//                if ((*iter)->isAlive() == false)
-//                {
-//                    iter=m_level[i][j].erase(iter);
-//                }
-//                else
-//                    iter++;
-//
-//            }
-//        }
-//    }
-    
     //displayText();
+    for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
+    {
+        //if the current object is nullptr, ignore and continue, aka do nothing
+        if(*it==nullptr) continue;
+        // tell all the objects to do Something during the tick to do something (e.g. move)
+        (*it)->doSomething();
+        //if the Penelope is dead, return from move() with GWSTATUS_PLAYER_DIED
+//      if((*it)->isAlive()==false)
+//          return GWSTATUS_PLAYER_DIED;
+        //if Penelope overlaps with Exit, return the level is finished
+        if((*it)->doesOverlap(penelopePtr))
+            return GWSTATUS_FINISHED_LEVEL;
+    }
     
-    
+//Remove newly-dead actors after each tick
+//   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
+//    {
+//        //if the current actor is dead, remove that actor from the level and
+//        if ((*iter)->isAlive() == false)
+//            iter=m_level.erase(iter);
+//        else
+//            iter++;
+//    }
     
     //    It must ask all of the actors that are currently alive in the game world to do
     //        something (e.g., ask a dumb zombie to move itself, ask a goodie to check if it
@@ -199,8 +162,6 @@ int StudentWorld::move()
     //    GWSTATUS_FINISHED_LEVEL
     
     
-    
-    
     //    Here’s pseudocode for how the move() method might be implemented:
     //        int StudentWorld::move()
     //    {
@@ -226,10 +187,8 @@ int StudentWorld::move()
     //    // the player hasn’t completed the current level and hasn’t died, so
     //    // continue playing the current level
       return GWSTATUS_CONTINUE_GAME;
-    
-    
 }
-
+//cleanUp() method that would be called by the framework to destroy all the objects
 void StudentWorld::cleanUp()
 {
     //    When your cleanUp() method is called by our game framework, it means that Penelope
@@ -242,42 +201,36 @@ void StudentWorld::cleanUp()
     //    actors, and the level will then continue from scratch.
     //    You must not call the cleanUp() method yourself when Penelope dies. Instead, this
     //    method will be called by our code when init() returns an appropriate status
-   
-            for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
-            {
-                delete *it;
-                it=m_level.erase(it);
-            }
-        //The StudentWorld destructor will be called by our game framework when the game is
-    //    over. If the game ends prematurely because the player pressed the q key, cleanUp() will
-    //    NOT have been called by our framework, so your destructor should call it to make sure
-    //    the game shuts down cleanly. In normal gameplay, Penelope may lose her last life or
-    //    finish the last level, resulting in cleanUp() being called as for any level ending; a little
-    //    later, the StudentWorld destructor is called, which would call cleanUp() again. Make
-    //    sure that two consecutive calls to cleanUp() won't do anything undefined. For
-    //    example, if cleanUp() deletes an object and leaves a dangling pointer, it could be
-    //        disastrous if the second call to cleanUp() tries use that pointer in a delete expression.
+    //iterate through all the objects
+    for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
+    {
+        //delete the current object
+        delete *it;
+        //then make the it pointer to points the next object while erasing the current one
+        it=m_level.erase(it);
+    }
 }
 //Destructor
 StudentWorld:: ~StudentWorld()
 {
-    //call cleanUp()
+    //call cleanUp() to destrot all the objects
     this->cleanUp();
 }
 
-
 //Determining blocking movement for wall, citizens, Penelope, and zombies
-bool StudentWorld:: isBlocked(  int dest_x, int dest_y, Actors *ptr)
+bool StudentWorld:: isBlocked(  int dest_x, int dest_y, Actors *actorPtr)
 {
-    //current object
-   
-            for (vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++ )
-            {
-                if((*iter)==ptr)
-                    continue;
-                else if((*iter)->blockActors(dest_x, dest_y))
-                    return false;
-            }
+    //iterate through all the objects
+    for (vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++ )
+    {
+        //if the current object is the same as the passed actor OR it is nullptr then  skip
+        if( (*iter)==actorPtr || (*iter) == nullptr)
+            continue;
+        //if it a an objet that has the blockActors methods( walls, zombies, citizens, Penelope), return false as they block the current object
+        else if((*iter)->blockActors(dest_x, dest_y))
+            return false;
+    }
+    //otherwise return true
     return true;
 }
 
@@ -285,18 +238,7 @@ bool StudentWorld:: isBlocked(  int dest_x, int dest_y, Actors *ptr)
 
 //void StudentWorld:: displayText()
 //{
-//
-//
-//    ostringstream text;
-//    int ticks = 2000 - m_ticks;
-//    text << "Ticks:" << setw(5) << ticks << " - " << compilerForEntrant[0]->getColonyName() << a[0] << ": ";
-//    text << text.fill('0') << setw(2) << m_antNum[0];
-//    if (fileNames.size() > 1)
-//        text << "  " << compilerForEntrant[1]->getColonyName() << a[1] << ": " << text.fill('0') << setw(2) << m_antNum[1];
-//    if (fileNames.size() > 2)
-//        text << "  " << compilerForEntrant[2]->getColonyName() << a[2] << ": " << text.fill('0') << setw(2) << m_antNum[2];
-//    if (fileNames.size() > 3)
-//        text << "  " << compilerForEntrant[3]->getColonyName() << a[3] << ": " << text.fill('0') << setw(2) <<  m_antNum[3];
-//    string s = text.str();
-//    setGameStatText(s);
+
 //}
+
+

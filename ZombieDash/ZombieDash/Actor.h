@@ -13,7 +13,6 @@
 
 
 //  ----------------- GraphObject ---------------------------------
-
 //GraphObject(int imageID, double startX, double startY, int startDirection = 0, int depth = 0);
 //double getX() const; // in pixels (0-255)
 //double getY() const; // in pixels (0-255)
@@ -21,39 +20,35 @@
 //int getDirection() const; // in degrees (0-359)
 //void setDirection(Direction d); // {up, down, left, right}
 //double getRadius() const; // in pixels (0-255)
-
-//You must not redefine any of these methods in your derived classes since they are not defined as virtual in our base class.
 // ------------------------------------------------------------------
 
 class StudentWorld;
 
-
+//========================= Actor class derived from GraphOnject =========================
 class Actors: public GraphObject
 {
 public:
-    //constructor
     Actors(int imageID, int startX, int startY, int startDirection = 0, int depth = 0, StudentWorld *sWorld=nullptr );
-    //pure virtual doSomething
     virtual void doSomething()=0;
-    //bool is(double, double);
-   // virtual base class destructor
     virtual bool blockActors(int, int);
-//    virtual int direction();
-//    virtual bool isAlive() const;
-//    virtual bool isInfected() const;
+    virtual bool doesOverlap(Actors *);
+    //===========MIGHT NEED TO  IMPLEMENT FOR THER ACTORS
+    virtual bool isAlive() const;
+    void setAlive(bool);
+    virtual bool isInfected() const;
 //    virtual void killTheActor();
-//    virtual void gotInfected();
-//    virtual bool objectOverlap(Actors &);
+    virtual void setInfection(bool);
 //    virtual bool isMoved();
 //    virtual void setMove(bool);
     StudentWorld *getWorld() const;
     virtual ~Actors();
+    virtual Direction randomDir();
     
 private:
     //private members
-//    bool m_alive;
+    bool m_alive;
     StudentWorld *m_StudentWorld;
-//    bool m_infected;
+    bool m_infected;
 //    bool m_isMoved;
     //bool m_block;
 };
@@ -77,66 +72,94 @@ public:
      ~Penelope();
    // virtual bool blockActors() const;
 //    virtual int direction();
-//    virtual bool isAlive() const;
+   // virtual bool isAlive() const;
 //    virtual void gotInfected() ;
 //    virtual void killTheActor();
-//private:
-//    int m_infectionCount;
+private:
+   int m_infectionCount;
 };
 class Exit :public Actors
 {
 public:
     Exit(int startX, int startY, StudentWorld *sWorld);
     virtual void doSomething();
+    virtual bool doesOverlap(Actors*);
     //virtual bool blockActors() ;
     ~Exit();
 };
+class Citizen: public Actors
+{
+public:
+    Citizen(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~Citizen();
+};
+class DumbZombies : public Actors
+{
+public:
+    DumbZombies(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~DumbZombies();
 
+};
+class SmartZombies : public Actors
+{
+public:
+    SmartZombies(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~SmartZombies();
+};
 
+class Landmines : public Actors
+{
+public:
+    Landmines (int, int, StudentWorld*);
+    virtual void doSomething();
+    ~Landmines ();
+};
+class Pits: public Actors
+{
+public:
+    Pits(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~Pits();
+};
+class Flames : public Actors
+{
+public:
+    Flames(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~Flames();
 
-
-
-//for part 2 submission
-//class DumbZombies : public Actors
-//{
-//
-//};
-//class SmartZombies : public Actors
-//{
-//
-//};
-//class DumbZombies : public Actors
-//{
-//
-//};
-//class Landmines : public Actors
-//{
-//
-//};
-//class Pits: public Actors
-//{
-//
-//};
-//class Flames : public Actors
-//{
-//
-//};
-//class Vomit : public Actors
-//{
-//
-//};
-//class VaccineGoodies : public Actors
-//{
-//
-//};
-//class GasCanGoodies : public Actors
-//{
-//
-//};
-//class LandminesGoodies : public Actors
-//{
-//
-//};
+};
+class Vomit : public Actors
+{
+public:
+    Vomit(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~Vomit();
+};
+class VaccineGoodies : public Actors
+{
+public:
+    VaccineGoodies(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~VaccineGoodies();
+};
+class GasCanGoodies : public Actors
+{
+public:
+    GasCanGoodies(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~GasCanGoodies();
+};
+class LandminesGoodies : public Actors
+{
+public:
+    LandminesGoodies(int, int, StudentWorld*);
+    virtual void doSomething();
+    ~LandminesGoodies();
+};
 
 
 #endif /* representPenelope_hpp */
