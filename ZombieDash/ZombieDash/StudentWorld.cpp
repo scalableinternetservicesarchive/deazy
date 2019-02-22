@@ -107,34 +107,40 @@ int StudentWorld::init()
     //start the game if there was no error
     return GWSTATUS_CONTINUE_GAME;
 }
-
+//move() method that will be called by the framework and call each actors to do something, update the level and tells the framework what to do
 int StudentWorld::move()
 {
-    //iterate through all Penelope object
-    //displayText();
+    //iterate through all objects
     for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
     {
-        //if the current object is nullptr, ignore and continue, aka do nothing
+        //if the current object is nullptr, ignore and continue
         if(*it==nullptr) continue;
         // tell all the objects to do Something during the tick to do something (e.g. move)
         (*it)->doSomething();
         //if the Penelope is dead, return from move() with GWSTATUS_PLAYER_DIED
-//      if((*it)->isAlive()==false)
-//          return GWSTATUS_PLAYER_DIED;
+        if( penelopePtr->isAlive()==false)
+          return GWSTATUS_PLAYER_DIED;
         //if Penelope overlaps with Exit, return the level is finished
         if((*it)->doesOverlap(penelopePtr))
             return GWSTATUS_FINISHED_LEVEL;
     }
+   //Remove newly-dead actors after each tick
+   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
+    {
+        //if the current actor is dead, remove that actor from the level
+        if ( (*iter)->isAlive() == false)
+        {
+            delete *iter;
+            iter=m_level.erase(iter);
+        }
+        else
+            iter++;
+    }
+    //    // Update the game status line
+    //    Update Display Text // update the score/lives/level text at screen top
+    //    // the player hasn’t completed the current level and hasn’t died, so
+    //    // continue playing the current level
     
-//Remove newly-dead actors after each tick
-//   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
-//    {
-//        //if the current actor is dead, remove that actor from the level and
-//        if ((*iter)->isAlive() == false)
-//            iter=m_level.erase(iter);
-//        else
-//            iter++;
-//    }
     
     //    It must ask all of the actors that are currently alive in the game world to do
     //        something (e.g., ask a dumb zombie to move itself, ask a goodie to check if it
@@ -160,47 +166,11 @@ int StudentWorld::move()
     //    GWSTATUS_PLAYER_DIED
     //    GWSTATUS_CONTINUE_GAME
     //    GWSTATUS_FINISHED_LEVEL
-    
-    
-    //    Here’s pseudocode for how the move() method might be implemented:
-    //        int StudentWorld::move()
-    //    {
-    //        // The term "actors" refers to all zombies, Penelope, goodies,
-    //        // pits, flames, vomit, landmines, etc.
-    //        // Give each actor a chance to do something, including Penelope
-    //        for each of the actors in the game world
-    //    {
-    //        if (actor[i] is still alive)
-    //        {
-    //            // tell each actor to do something (e.g. move)
-    //            actor[i]->doSomething();
-    //            if (Penelope died during this tick)
-    //                return GWSTATUS_PLAYER_DIED;
-    //            if (Penelope completed the current level)
-    //                return GWSTATUS_FINISHED_LEVEL;
-    //        }
-    //    }
-    //    // Remove newly-dead actors after each tick
-    //    Remove and delete dead game objects
-    //    // Update the game status line
-    //    Update Display Text // update the score/lives/level text at screen top
-    //    // the player hasn’t completed the current level and hasn’t died, so
-    //    // continue playing the current level
       return GWSTATUS_CONTINUE_GAME;
 }
 //cleanUp() method that would be called by the framework to destroy all the objects
 void StudentWorld::cleanUp()
 {
-    //    When your cleanUp() method is called by our game framework, it means that Penelope
-    //    lost a life (e.g., she fell into a pit, turned into a zombie after being infected, or walked
-    //                 into a flame she fired herself) or has completed the current level. In this case, every actor
-    //    in the entire game (Penelope and every zombie, goodie, projectile, landmine, wall, pit,
-    //                        etc.) must be deleted and removed from the StudentWorld’s container of active objects,
-    //    resulting in an empty level. If the user has more lives left, our provided code will
-    //    subsequently call your init() method to reload and repopulate the level with a new set of
-    //    actors, and the level will then continue from scratch.
-    //    You must not call the cleanUp() method yourself when Penelope dies. Instead, this
-    //    method will be called by our code when init() returns an appropriate status
     //iterate through all the objects
     for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
     {
@@ -233,8 +203,6 @@ bool StudentWorld:: isBlocked(  int dest_x, int dest_y, Actors *actorPtr)
     //otherwise return true
     return true;
 }
-
-
 
 //void StudentWorld:: displayText()
 //{

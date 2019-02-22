@@ -70,13 +70,19 @@ public:
     virtual void doSomething();
     virtual bool blockActors(int, int);
      ~Penelope();
+//    int numOfLandmines();
+//    int numOfFlamethrower_charges();
+//    int numOfVaccines();
    // virtual bool blockActors() const;
 //    virtual int direction();
    // virtual bool isAlive() const;
 //    virtual void gotInfected() ;
 //    virtual void killTheActor();
 private:
-   int m_infectionCount;
+   int m_infectionCount,
+       m_landmines,
+       m_flamethrower_charges,
+       m_vaccines;
 };
 class Exit :public Actors
 {

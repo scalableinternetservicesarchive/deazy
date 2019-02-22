@@ -230,20 +230,38 @@ void Penelope:: doSomething()
                 }
                 break;
 //              If the user pressed the tab key and if Penelope has any landmines in her
-//              inventory, Penelope will introduce a new landmine object at her current
-//              (x,y) location into the game and her landmine count will decrease by 1.
-//            case KEY_PRESS_TAB:
-//                break;
+//              inventory
+            case KEY_PRESS_TAB:
+                if(m_landmines>0)
+                {
+                    //Penelope will introduce a new landmine object at her current (x,y) location into the game
+                
+                    //new Landmines(this->getX(), this->getY(), this)
+                    //landmine count will decrease by 1
+                    m_landmines--;
+                }
+                break;
 //                If the user pressed the enter key and if Penelope has any vaccines in her
-//                inventory, Penelope will set her infected status to false and reduce her
-//                vaccine count by 1. (She wasted that vaccine if she was not infected.)
-//            case KEY_PRESS_ENTER:
-//                break;
+//                inventory
+            case KEY_PRESS_ENTER:
+                if(m_vaccines>0)
+                {
+                    //Penelope will set her infected status to false and reduce her vaccine count by 1
+                    setInfection(false);
+                    // reduce vaccine count by 1. (She wasted that vaccine if she was not infected.)
+                    m_vaccines--;
+                }
+                break;
 //                If the player pressed the space key and Penelope has at least one
 //                flamethrower charge, then Penelope will attempt to fire three flames into
 //                the three slots directly in front of her:
-//            case KEY_PRESS_SPACE:
-//                break;
+            case KEY_PRESS_SPACE:
+                if(m_flamethrower_charges>0)
+                {
+                    //then Penelope will attempt to fire three flames into the three slots directly in front of her:
+                    m_flamethrower_charges--;
+                }
+                break;
             }
         }
 //    What Penelope Must Do In Other Circumstances
@@ -259,19 +277,27 @@ void Penelope:: doSomething()
 //    • Penelope blocks other objects from moving nearby/onto her. Penelope’s bounding
 //    box must never intersect with that of any citizen, zombie, or wall.
 }
-//==============================================End of Penelope Methods ===========================================
 
+
+////return number of Landmines that Penelope has
+//int Penelope:: numOfLandmines()
+//{
+//    return m_landmines;
+//}
+//// return the number of Flamethrower_charges that Penelope has
+//int Penelope:: numOfFlamethrower_charges()
+//{
+//    return m_flamethrower_charges;
+//}
+////return number of vaccines that Penelope has
+//int Penelope:: numOfVaccines()
+//{
+//    return m_vaccines;
+//}
+//==============================================End of Penelope Methods ===========================================
 
 // ============================================= Wall Methods =====================================================
 
-//1. A wall object must have an image ID of IID_WALL.
-//2. The object must start at the location on the level as specified in the current level’s
-//data file. The object’s starting location in the level must be equal to
-//(SPRITE_WIDTH * level_x, SPRITE_HEIGHT * level_y); its starting level_x
-//and level_y can be obtained using our provided Level class. Hint: The
-//StudentWorld object can pass in this (x,y) location when constructing the object.
-//3. A wall object has a direction of right.
-//4. A wall object has a depth of 0.
 //Walls constructor
 Walls::Walls(int startX, int startY, StudentWorld *sWorld)
 :Actors(IID_WALL,  startX ,  startY, right,0,sWorld)
