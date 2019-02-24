@@ -31,6 +31,10 @@ public:
     Direction findWhatDirectionCitizenShouldFaceToFollowPenelope(int,int);
     Direction determineOneHorizontalOneVerticalDirectionRandomly(int, int,int);
     bool euclideanDistanceFromCitizenToZombie(int,int);
+    bool doesOverlapWithPenelope(int, int);
+    bool doesOverlapWithPit(int, int,Actors*);
+    bool doesExitOverlapWithCitizen(int, int);
+    bool personOrzombie();
 private:
     //2D list for stroing all the actors
     vector<Actors*> m_level;

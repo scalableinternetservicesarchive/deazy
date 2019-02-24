@@ -351,3 +351,47 @@ bool StudentWorld:: euclideanDistanceFromCitizenToZombie(int citizenX, int citiz
     //if there is no zombie with that specification close to a citizen, return false
     return false;
 }
+//check if the passed object overlap with penelope
+bool StudentWorld:: doesOverlapWithPenelope(int point_x, int point_y)
+{
+    //calculate the center of the current wall and the point passed in
+    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointY_center= point_y + SPRITE_HEIGHT/2;
+    int penelopeX_center= penelopePtr->getX() +SPRITE_WIDTH/2;
+    int penelopeY_center= penelopePtr->getY() +SPRITE_HEIGHT/2;
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    int deltaX= pow((pointX_center - penelopeX_center),2);
+    int deltaY= pow((pointY_center - penelopeY_center),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY < pow(16,2)) return true;
+    //otherwise it does not
+    return false;
+}
+//check if the any person or zombie overlaps with a pit
+bool StudentWorld:: doesOverlapWithPit(int pit_x, int pit_y,Actors* actor)
+{
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        //=================== CODE HERE ====================================
+    }
+    return false;
+}
+//check if the citizen overlap with exit
+bool StudentWorld:: doesExitOverlapWithCitizen(int exit_x, int exit_y)
+{
+    //iterate through all the actors
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        if((*iter)->isCitizen())
+        {
+            
+        }
+    }
+    return false;
+}

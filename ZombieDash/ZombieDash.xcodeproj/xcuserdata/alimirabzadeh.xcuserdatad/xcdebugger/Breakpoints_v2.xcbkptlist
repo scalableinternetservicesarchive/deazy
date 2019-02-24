@@ -31,8 +31,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "569"
             endingLineNumber = "569"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "SmartZombies::blockActors(int point_x, int point_y)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

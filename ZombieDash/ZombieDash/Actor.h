@@ -46,6 +46,9 @@ public:
     virtual bool isCitizen();
     virtual bool isZombie();
     virtual bool levelHasZombie();
+    virtual bool flameDamagable();
+    virtual bool vomitInfectable();
+    virtual bool flameBlockable();
     
 private:
     //private members
@@ -62,7 +65,8 @@ class Walls: public Actors
 public:
     Walls(int startX, int startY, StudentWorld *sWorld);
     virtual void doSomething();
-    virtual bool blockActors(int, int) ;
+    virtual bool blockActors(int, int);
+    virtual bool flameBlockable();
      ~Walls();
     
 };
@@ -74,6 +78,8 @@ public:
     virtual void doSomething();
     virtual bool blockActors(int, int);
      ~Penelope();
+    virtual bool flameDamagable();
+    virtual bool vomitInfectable();
 //    int numOfLandmines();
 //    int numOfFlamethrower_charges();
 //    int numOfVaccines();
@@ -94,7 +100,7 @@ public:
     Exit(int startX, int startY, StudentWorld *sWorld);
     virtual void doSomething();
     virtual bool doesOverlap(Actors*);
-    //virtual bool blockActors() ;
+    virtual bool flameBlockable();
     ~Exit();
 };
 class Citizen: public Actors
@@ -105,6 +111,8 @@ public:
     ~Citizen();
     virtual bool isCitizen();
     virtual bool blockActors(int, int);
+    virtual bool flameDamagable();
+    virtual bool vomitInfectable();
 private:
     int m_infectionCount;
     int m_paralyzedCounter;
@@ -118,6 +126,9 @@ public:
     virtual bool isZombie();
     virtual bool levelHasZombie();
     virtual bool blockActors(int, int);
+    virtual bool flameDamagable();
+private:
+    int m_paralyzedCounter;
 
 };
 class SmartZombies : public Actors
@@ -129,6 +140,7 @@ public:
     virtual bool isZombie();
     virtual bool levelHasZombie();
     virtual bool blockActors(int, int);
+    virtual bool flameDamagable();
 };
 
 class Landmines : public Actors
@@ -137,6 +149,7 @@ public:
     Landmines (int, int, StudentWorld*);
     virtual void doSomething();
     ~Landmines ();
+    virtual bool flameDamagable();
 };
 class Pits: public Actors
 {
@@ -148,9 +161,11 @@ public:
 class Flames : public Actors
 {
 public:
-    Flames(int, int, StudentWorld*);
+    Flames(int, int, Direction,StudentWorld*);
     virtual void doSomething();
     ~Flames();
+private:
+   int m_creationCount;
 
 };
 class Vomit : public Actors
@@ -159,6 +174,8 @@ public:
     Vomit(int, int, StudentWorld*);
     virtual void doSomething();
     ~Vomit();
+private:
+    int m_creationCount;
 };
 class VaccineGoodies : public Actors
 {
@@ -166,6 +183,7 @@ public:
     VaccineGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~VaccineGoodies();
+    virtual bool flameDamagable();
 };
 class GasCanGoodies : public Actors
 {
@@ -173,6 +191,7 @@ public:
     GasCanGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~GasCanGoodies();
+    virtual bool flameDamagable();
 };
 class LandminesGoodies : public Actors
 {
@@ -180,6 +199,7 @@ public:
     LandminesGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~LandminesGoodies();
+    virtual bool flameDamagable();
 };
 
 

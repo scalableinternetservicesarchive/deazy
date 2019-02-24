@@ -68,6 +68,10 @@ bool Actors::isCitizen()
 {
     return false;
 }
+bool Actors:: flameBlockable()
+{
+    return false;
+}
 // Randomly picks a direction
 Direction Actors::randomDir()
 {
@@ -95,6 +99,14 @@ bool Actors:: isZombie()
     return false;
 }
 bool Actors:: levelHasZombie()
+{
+    return false;
+}
+bool Actors:: flameDamagable()
+{
+    return false;
+}
+bool Actors:: vomitInfectable()
 {
     return false;
 }
@@ -146,6 +158,14 @@ Penelope::Penelope(int startX, int startY, StudentWorld * sWorld)
 }
 Penelope::~Penelope()
 {}
+bool Penelope:: flameDamagable()
+{
+    return true;
+}
+bool Penelope:: vomitInfectable()
+{
+    return true;
+}
 //Penelope doSomething function
 void Penelope:: doSomething()
 {
@@ -354,6 +374,10 @@ void Walls:: doSomething()
 }
 Walls::~Walls()
 {}
+bool Walls:: flameBlockable()
+{
+    return true;
+}
 
 //What a Wall Must Do In Other Circumstances
 //• A wall cannot be damaged by a flame.
@@ -371,7 +395,27 @@ Exit::Exit(int startX, int startY, StudentWorld *sWorld)
 {}
 void Exit::doSomething()
 {
-    return;
+    //1. The exit must determine if it overlaps with a citizen (not Penelope!). If so, then the exit must:
+
+    if(getWorld()->doesExitOverlapWithCitizen(this->getX(), this->getY()))
+    {
+        //a. Inform the StudentWorld object that the user is to receive 500 points.
+        //============================== CODE HERE ==========================
+        // b. Set the citizen object’s state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick) – note, this must not kill the citizen in a way that deducts points from the player as if the citizen died due to a zombie infection, a flame, or a pit.
+        // =============================    CODE HERE ===========================
+        //  c. Play a sound effect to indicate that the citizen was saved by using the exit: SOUND_CITIZEN_SAVED.
+        getWorld()->playSound(SOUND_CITIZEN_SAVED);
+    }
+    //2. The exit must determine if it overlaps7 with Penelope. If so and all citizens have either exited the level or died, then:
+    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
+    {
+       // If so and all citizens have either exited the level or died, then:
+    
+        // ============== CODE HERE ==================
+       // a. Inform the StudentWorld object that Penelope has finished the current level
+        // ============== CODE HERE ==================
+        
+    }
 }
 Exit::~Exit()
 {}
@@ -389,7 +433,10 @@ bool Exit::doesOverlap(Actors * otherObject)
         return true;
     return false;
 }
-
+bool Exit:: flameBlockable()
+{
+    return true;
+}
 //===================================End of the Exit Method ================================
 
 
@@ -415,12 +462,40 @@ bool Exit::doesOverlap(Actors * otherObject)
 
 // ================================= Dumb Zombies Methods ================================================
 DumbZombies::  DumbZombies(int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_ZOMBIE, startX , startY, right,0,sWorld)
+:Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(0)
 {
     setAlive(true);
 }
+bool DumbZombies:: flameDamagable()
+{
+    return true;
+}
 void DumbZombies:: doSomething()
 {
+    m_paralyzedCounter++;
+    //    1. The dumb zombie must check to see if it is currently alive. If not, then its doSomething() method must return immediately – none of the following steps  should be performed
+    if(!isAlive())
+        return;
+//    2. The dumb zombie will become paralyzed every other tick trying to figure out what to do. The 2nd, 4th, 6th, etc., calls to doSomething() for a dumb zombie are the  “paralysis” ticks for which doSomething() must return immediately – none of the following steps should be performed.
+    if(m_paralyzedCounter % 2 == 0)
+        return;
+//   3. The dumb zombie must check to see if a person (either Penelope or one of the citizens on the level) is in front of it in the direction it is facing:
+    Direction zombieDir= this-> getDirection();
+    // ============= Switch to check for direction, depends on the direction pass the dest in that direction to the function studetWorld to see if that object is person
+    switch (zombieDir)
+    {
+        case up:
+            break;
+        case down:
+            break;
+        case right:
+            break;
+        case left:
+            break;
+    }
+    
+    
+    
     
     //Randomly pick a direction and move 1 pixel in that direction
 //    Direction randNum= randInt(0, 3);
@@ -484,6 +559,10 @@ SmartZombies:: SmartZombies(int startX, int startY, StudentWorld* sWorld)
     setAlive(true);
 }
 
+bool SmartZombies:: flameDamagable()
+{
+    return true;
+}
 void SmartZombies:: doSomething()
 {
 //    1. The smart zombie must check to see if it is currently alive. If not, then its
@@ -563,6 +642,10 @@ Landmines::  ~Landmines ()
 {
     
 }
+bool Landmines:: flameDamagable()
+{
+    return true;
+}
 //=============================================== end of Landmines methods ==================================
 
 
@@ -572,19 +655,41 @@ Pits:: Pits(int startX, int startY, StudentWorld* sWorld)
 {}
 void Pits:: doSomething()
 {
-    return;
+//    A pit must be given an opportunity to do something during every tick (in its doSomething() method). When given an opportunity to do something during a tick, the pit will cause any person or zombie that overlaps with it to be destroyed (they fall into the pit). When the person/zombie is destroyed, it must behave just as it were damaged by a flame (e.g., if a dumb zombie falls into a pit, the player gets 1000 points, the game plays a dying noise, etc.; if Penelope falls into a pit the current level will end; a citizen falling into a pit dies, and the player loses 1000 points, etc.).
+    
+    //check if the pit overlaps with any actor
+    
 }
 Pits:: ~Pits()
 {}
 //=============================================== end of Pits methods ==================================
 
 //================================================ Flames ======================================
-Flames:: Flames(int startX, int startY, StudentWorld* sWorld)
-: Actors(IID_FLAME, startX , startY, right,0,sWorld)
-{}
+Flames:: Flames(int startX, int startY, Direction dir,StudentWorld* sWorld)
+: Actors(IID_FLAME, startX , startY, dir,0,sWorld), m_creationCount(0)
+{
+    //A flame object starts in an “alive” state.
+    setAlive(true);
+}
 void Flames:: doSomething()
 {
-    return;
+    m_creationCount++;
+    //1. It must check to see if it is currently alive. If not, then doSomething() must return immediately – none of the following steps should be performed.
+    if(!isAlive())
+        return;
+    //After exactly two ticks from its creation
+    if(m_creationCount==2)
+    {
+        //the flame must set its state to dead so it can be destroyed and removed from the level by the StudentWorld object
+        setAlive(false);
+            return;
+    }
+//    3. Otherwise, the flame will damage all damageable objects that overlap8 with the flame. The following objects are all damageable and must react to being damaged in the appropriate way: Penelope, citizens, all types of goodies, landmines, and all types of zombies.
+    
+    
+    //=================== CODE HERE ========================
+    
+    
 }
 Flames:: ~Flames()
 {}
@@ -593,11 +698,25 @@ Flames:: ~Flames()
 
 //================================================ Vomit ======================================
 Vomit::Vomit(int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_VOMIT, startX , startY, right,0,sWorld)
-{}
+:Actors(IID_VOMIT, startX , startY, right,0,sWorld), m_creationCount(0)
+{
+    setAlive(true);
+}
 void Vomit:: doSomething()
 {
-    return;
+    m_creationCount++;
+    // It must check to see if it is currently alive. If not, then doSomething() must return immediately – none of the following steps should be performed.
+    if(!isAlive())
+        return;
+    //After exactly two ticks from its creation
+    if(m_creationCount==2)
+    {
+        //the flame must set its state to dead so it can be destroyed and removed from the level by the StudentWorld object
+        setAlive(false);
+        return;
+    }
+   // Otherwise, the vomit will infect any infectable object that overlaps9 with the vomit. The following objects are infectable and must react to being infected in the appropriate way: Penelope and citizens.
+    
 }
 Vomit:: ~Vomit()
 {}
@@ -607,41 +726,104 @@ Vomit:: ~Vomit()
 
 VaccineGoodies:: VaccineGoodies(int startX, int startY, StudentWorld* sWorld)
 :Actors(IID_VACCINE_GOODIE, startX , startY, right,1,sWorld)
-{}
+{
+    setAlive(true);
+}
 void VaccineGoodies:: doSomething()
 {
-    return;
+    // It must check to see if it is currently alive. If not, then doSomething() must return immediately – none of the following steps should be performed.
+    if(!isAlive())
+        return;
+    // The vaccine goodie must determine if it overlaps with Penelope. If so, then the vaccine goodie must
+    if(getWorld()->doesOverlapWithPenelope( this-> getX() , this->getY()))
+    {
+       // a. Inform the StudentWorld object that the user is to receive 50 points.
+        //=====================CODE HERE
+        //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
+        setAlive(false);
+        //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
+        getWorld()->playSound(SOUND_GOT_GOODIE);
+        //d. Inform the StudentWorld object that Penelope is to receive one dose of vaccine.
+        //============================== CODE HERE =========================
+    }
+    
 }
 VaccineGoodies:: ~VaccineGoodies()
 {}
+bool VaccineGoodies:: flameDamagable()
+{
+    setAlive(false);
+    return true;
+}
 //=============================================== end of VaccineGoodies methods ==================================
 
 //================================================ GasCanGoodies ======================================
 
 GasCanGoodies:: GasCanGoodies(int startX, int startY, StudentWorld* sWorld)
 :Actors(IID_GAS_CAN_GOODIE, startX , startY, right,1,sWorld)
-{}
+{
+    setAlive(true);
+}
 void GasCanGoodies:: doSomething()
 {
-    return;
+   // 1. It must check to see if it is currently alive. If not, then doSomething() must return immediately – none of the following steps should be performed.
+    if(!isAlive())
+        return;
+   // 2. The gas can goodie must determine if it overlaps with Penelope. If so, then the gas can goodie must:
+    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
+    {
+        //a. Inform the StudentWorld object that the user is to receive 50 points.
+        //================= CODE HERE
+        //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
+        setAlive(false);
+        //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
+        getWorld()->playSound(SOUND_GOT_GOODIE);
+        //d. Inform the StudentWorld object that Penelope is to receive 5 charges for her flamethrower.
+        //================= CODE HERE
+    }
 }
 GasCanGoodies:: ~GasCanGoodies()
 {}
+bool GasCanGoodies:: flameDamagable()
+{
+    setAlive(false);
+    return true;
+}
 //=============================================== end of GasCanGoodies methods ==================================
 
 //================================================ LandminesGoodies ======================================
 
 LandminesGoodies::LandminesGoodies(int startX, int startY, StudentWorld* sWorld)
 :Actors( IID_LANDMINE_GOODIE, startX , startY, right,1,sWorld  )
-{}
+{
+    setAlive(true);
+}
 
 void LandminesGoodies:: doSomething()
 {
-    return;
+    // 1. It must check to see if it is currently alive. If not, then doSomething() must return immediately – none of the following steps should be performed.
+    if(!isAlive())
+        return;
+    // 2. The gas can goodie must determine if it overlaps with Penelope. If so, then the gas can goodie must:
+    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY() ))
+    {
+        //a. Inform the StudentWorld object that the user is to receive 50 points.
+        //=================  CODE HERE  ==============
+        //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
+        setAlive(false);
+        //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
+        getWorld()->playSound(SOUND_GOT_GOODIE);
+       // d. Inform Inform the StudentWorld object that Penelope is to receive 2 landmines.
+        //================= CODE HERE
+    }
+    
 }
 LandminesGoodies:: ~LandminesGoodies()
+{}
+bool LandminesGoodies:: flameDamagable()
 {
-    
+    setAlive(false);
+    return true;
 }
 //=============================================== end of LandminesGoodies methods ==================================
 
@@ -653,6 +835,10 @@ Citizen:: Citizen(int startX, int startY, StudentWorld* sWorld)
     setInfection(false);
     //citizen starts alive
     setAlive(true);
+}
+bool Citizen:: flameDamagable()
+{
+    return true;
 }
 void Citizen:: doSomething()
 {
@@ -973,10 +1159,10 @@ bool Citizen:: isCitizen()
 bool Citizen::blockActors(int point_x, int point_y)
 {
     //calculate the center of the current wall and the point passed in
-    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointX_center= point_x + SPRITE_WIDTH/2;
     int pointY_center= point_y + SPRITE_HEIGHT/2;
-    int citizenX_center= this->getX() +SPRITE_WIDTH/2;
-    int citizenY_center= this->getY() +SPRITE_HEIGHT/2;
+    int citizenX_center= this->getX() + SPRITE_WIDTH/2;
+    int citizenY_center= this->getY() + SPRITE_HEIGHT/2;
     
     // then use the Udulican formula, instead the distance between the centers should be less than 16
     int deltaX= pow((pointX_center - citizenX_center),2);
@@ -986,5 +1172,9 @@ bool Citizen::blockActors(int point_x, int point_y)
     if(deltaX + deltaY < pow(16,2)) return true;
     //otherwise it does not
     return false;
+}
+bool Citizen:: vomitInfectable()
+{
+    return true;
 }
 //=============================================== end of Citizen methods ==================================
