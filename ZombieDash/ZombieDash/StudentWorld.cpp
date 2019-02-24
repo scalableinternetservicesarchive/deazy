@@ -46,6 +46,7 @@ int StudentWorld::init()
     //get the level file to load
     Level lev(assetPath());
     //get the level based what level penelope is on
+    //GWSTATUS_PLAYER_WON
     string levelFile = "level0"+ to_string(getLevel()+1)+".txt";
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
@@ -110,6 +111,8 @@ int StudentWorld::init()
 //move() method that will be called by the framework and call each actors to do something, update the level and tells the framework what to do
 int StudentWorld::move()
 {
+    
+    
     //iterate through all objects
     for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
     {
@@ -117,25 +120,29 @@ int StudentWorld::move()
         if(*it==nullptr) continue;
         // tell all the objects to do Something during the tick to do something (e.g. move)
         (*it)->doSomething();
+        
         //if the Penelope is dead, return from move() with GWSTATUS_PLAYER_DIED
         if( penelopePtr->isAlive()==false)
           return GWSTATUS_PLAYER_DIED;
         //if Penelope overlaps with Exit, return the level is finished
+//        if(citizne alive && citizen overlap exit)
+//            if((*it)->doesOverlap(penelopePtr))
+//                return GWSTATUS_FINISHED_LEVEL;
         if((*it)->doesOverlap(penelopePtr))
             return GWSTATUS_FINISHED_LEVEL;
     }
    //Remove newly-dead actors after each tick
-   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
-    {
-        //if the current actor is dead, remove that actor from the level
-        if ( (*iter)->isAlive() == false)
-        {
-            delete *iter;
-            iter=m_level.erase(iter);
-        }
-        else
-            iter++;
-    }
+//   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
+//    {
+//        //if the current actor is dead, remove that actor from the level
+//        if ( (*iter)->isAlive() == false)
+//        {
+//            delete *iter;
+//            iter=m_level.erase(iter);
+//        }
+//        else
+//            iter++;
+//    }
     //    // Update the game status line
     //    Update Display Text // update the score/lives/level text at screen top
     //    // the player hasn’t completed the current level and hasn’t died, so
@@ -160,12 +167,6 @@ int StudentWorld::move()
     //    (e.g., the user’s current score, the number of landmines Penelope has, the current
     //     level, etc.).
     
-    
-    //    The move() method must return one of three different values when it returns at the end of
-    //    each tick (all are defined in GameConstants.h):
-    //    GWSTATUS_PLAYER_DIED
-    //    GWSTATUS_CONTINUE_GAME
-    //    GWSTATUS_FINISHED_LEVEL
       return GWSTATUS_CONTINUE_GAME;
 }
 //cleanUp() method that would be called by the framework to destroy all the objects
@@ -196,7 +197,7 @@ bool StudentWorld:: isBlocked(  int dest_x, int dest_y, Actors *actorPtr)
         //if the current object is the same as the passed actor OR it is nullptr then  skip
         if( (*iter)==actorPtr || (*iter) == nullptr)
             continue;
-        //if it a an objet that has the blockActors methods( walls, zombies, citizens, Penelope), return false as they block the current object
+        //if it is an objet that has the blockActors methods( walls, zombies, citizens, Penelope), return false as they block the current object
         else if((*iter)->blockActors(dest_x, dest_y))
             return false;
     }
@@ -209,4 +210,144 @@ bool StudentWorld:: isBlocked(  int dest_x, int dest_y, Actors *actorPtr)
 
 //}
 
-
+//check if the passed object is a citizen
+void StudentWorld:: addNewZombie(int startX, int startY)
+{
+    int zombiePercentage= randInt(0, 100);
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if the actor is a citizen
+        if((*iter)->isCitizen())
+        {
+            //There’s a 70% chance a dumb zombie object will be introduced.
+            if(zombiePercentage<=70)
+                m_level.push_back(new DumbZombies(startX,startY,this));
+            else
+               //here’s a 30% chance a smart zombie object will be introduced
+                m_level.push_back(new SmartZombies(startX,startY,this));
+        }
+    }
+}
+//return the distance between the citizen and peneople
+int StudentWorld:: distanceToPenelope(int citizenX, int citizenY)
+{
+    return sqrt(pow(citizenX - penelopePtr->getX(), 2) + pow(citizenY - penelopePtr->getY(), 2));
+}
+//return the distance between the citizen and nearest zombie
+int StudentWorld:: distanceToNearestZombie(int citizenX, int citizenY)
+{
+    //By default min dist is 240, the largest possible distance on the level
+    int minDist=240;
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        if((*iter)==nullptr) continue;
+        if((*iter)->isZombie())
+        {
+            int zombieX= (*iter)->getX();
+            int zombieY=(*iter)->getY();
+            //calculate the distance between the citizen and the current zombie
+            int tempMinDist= sqrt(pow(zombieX - citizenX, 2) + pow(zombieY - citizenY, 2));
+            //if tempMinDist is smaller than minDist
+            if(tempMinDist<minDist)
+                //store the temp value in minDist
+                minDist=tempMinDist;
+        }
+    }
+    return minDist;
+}
+//detemine Euclidean Distance From Penelope
+bool StudentWorld:: euclideanDistanceFromPenelope(int citizenX, int citizenY)
+{
+    int deltaX= citizenX - penelopePtr->getX();
+    int deltaY= citizenY - penelopePtr->getY();
+    int result= pow(deltaX,2) + pow(deltaY, 2);
+    //if less than 80 pixels, return true
+    if(result<= pow(80, 2))
+        return true;
+    return false;
+}
+//check if there is at least one zombie on the level
+bool StudentWorld:: zombieExist()
+{
+    //iterate through all the actors
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        if((*iter)==nullptr) continue;
+        //if found one zombie retern true
+        if((*iter)->levelHasZombie())
+            return true;
+    }
+    //otherwise, return false as it could not find any
+    return false;
+}
+//check if the passed point which is for a citizen has either the sam y or x, row or col.
+ bool StudentWorld:: isCitizenOnTheSameRowOrColumnWithPenelope(int citizenX, int citizenY)
+{
+    //if the either is the same, return true
+    if(citizenX== penelopePtr->getX() || citizenY== penelopePtr->getY())
+        return true;
+    //otherwise false
+    return false;
+}
+//return a direction that a citizen should face based on Penelope location, called if penelope and citizen are on the same row or col
+Direction StudentWorld:: findWhatDirectionCitizenShouldFaceToFollowPenelope(int citizenX, int citizenY)
+{
+    //if both on the same column
+    if(citizenX== penelopePtr->getX())
+    {
+        //if penelope on right of the citzen
+        if(citizenX < penelopePtr->getX())
+            return Actors::right;
+        return Actors:: left;
+    }
+    //on the same row
+    else
+    {
+        //if penelope on top the citizen
+        if(citizenY < penelopePtr->getY())
+            return Actors:: up;
+        return Actors:: down;
+    }
+}
+//randmoly pick a direction for a citizen if he is not on the same row or col
+Direction StudentWorld:: determineOneHorizontalOneVerticalDirectionRandomly(int citizenX, int citizenY, int randomDirection)
+{
+    //if the random integer is 0, pick horizontal direction
+    if(randomDirection==0)
+    {
+        if(citizenX < penelopePtr->getX())
+            return Actors:: right;
+        else
+            return Actors:: left;
+    }
+    //otherwise pick a vertical direction
+    else
+    {
+        if(citizenY < penelopePtr->getY())
+            return Actors:: up;
+        else
+            return Actors:: down;
+    }
+}
+//return true if the Euclidean Distance From Citizen To Zombie is less than 80 pixle
+bool StudentWorld:: euclideanDistanceFromCitizenToZombie(int citizenX, int citizenY)
+{
+    //iterate through all the actors
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        //if the current actor is zombie
+        if((*iter)->isZombie())
+        {
+            int deltaX= citizenX - (*iter)->getX();
+            int deltaY= citizenY - (*iter)->getY();
+            int result= pow(deltaX,2) + pow(deltaY, 2);
+            //if less than 80 pixels, return true
+            if(result<= pow(80, 2))
+                return true;
+        }
+    }
+    //if there is no zombie with that specification close to a citizen, return false
+    return false;
+}

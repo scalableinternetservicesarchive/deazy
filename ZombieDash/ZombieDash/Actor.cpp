@@ -64,6 +64,10 @@ bool Actors::doesOverlap(Actors* otherObject)
 {
     return false;
 }
+bool Actors::isCitizen()
+{
+    return false;
+}
 // Randomly picks a direction
 Direction Actors::randomDir()
 {
@@ -85,6 +89,14 @@ Direction Actors::randomDir()
             break;
     }
     return dirChoice;
+}
+bool Actors:: isZombie()
+{
+    return false;
+}
+bool Actors:: levelHasZombie()
+{
+    return false;
 }
 //bool Actors:: blockActors()const
 //{
@@ -134,10 +146,6 @@ Penelope::Penelope(int startX, int startY, StudentWorld * sWorld)
 }
 Penelope::~Penelope()
 {}
-bool Penelope::blockActors(int x, int y)
-{
-    return false;
-}
 //Penelope doSomething function
 void Penelope:: doSomething()
 {
@@ -264,7 +272,7 @@ void Penelope:: doSomething()
                 break;
             }
         }
-//    What Penelope Must Do In Other Circumstances
+//    =========================   What Penelope Must Do In Other Circumstances
     
 //    • Penelope can be infected by vomit. When vomit overlaps with Penelope, her
 //    infection status becomes true.
@@ -274,11 +282,29 @@ void Penelope:: doSomething()
 //    o The game must play a SOUND_PLAYER_DIE sound effect
 //    o (The StudentWorld object should detect her death and the current level
 //       ends)
+    
+
+
+}
 //    • Penelope blocks other objects from moving nearby/onto her. Penelope’s bounding
 //    box must never intersect with that of any citizen, zombie, or wall.
+bool Penelope::blockActors(int point_x, int point_y)
+{
+    //calculate the center of the current wall and the point passed in
+    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointY_center= point_y + SPRITE_HEIGHT/2;
+    int penelopeX_center= this->getX() +SPRITE_WIDTH/2;
+    int penelopeY_center= this->getY() +SPRITE_HEIGHT/2;
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    int deltaX= pow((pointX_center - penelopeX_center),2);
+    int deltaY= pow((pointY_center - penelopeY_center),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY < pow(16,2)) return true;
+    //otherwise it does not
+    return false;
 }
-
-
 ////return number of Landmines that Penelope has
 //int Penelope:: numOfLandmines()
 //{
@@ -390,42 +416,69 @@ bool Exit::doesOverlap(Actors * otherObject)
 // ================================= Dumb Zombies Methods ================================================
 DumbZombies::  DumbZombies(int startX, int startY, StudentWorld* sWorld)
 :Actors(IID_ZOMBIE, startX , startY, right,0,sWorld)
-{}
+{
+    setAlive(true);
+}
 void DumbZombies:: doSomething()
 {
     
     //Randomly pick a direction and move 1 pixel in that direction
-    Direction randNum= randInt(0, 3);
-    switch(randNum)
-    {
-        case 0:
-            setDirection(up);
-            this->moveTo(this->getX(),this->getY()+1 );
-            break;
-        case 1:
-            setDirection(right);
-            this->moveTo(this->getX() +1,this->getY() );
-            break;
-        case 2:
-            setDirection(down);
-            this->moveTo(this->getX(),this->getY()-1 );
-            break;
-        case 3:
-            setDirection(left);
-            this->moveTo(this->getX()-1,this->getY() );
-            break;
-    }
+//    Direction randNum= randInt(0, 3);
+//    switch(randNum)
+//    {
+//        case 0:
+//            setDirection(up);
+//            this->moveTo(this->getX(),this->getY()+1 );
+//            break;
+//        case 1:
+//            setDirection(right);
+//            this->moveTo(this->getX() +1,this->getY() );
+//            break;
+//        case 2:
+//            setDirection(down);
+//            this->moveTo(this->getX(),this->getY()-1 );
+//            break;
+//        case 3:
+//            setDirection(left);
+//            this->moveTo(this->getX()-1,this->getY() );
+//            break;
+//    }
 }
 DumbZombies:: ~DumbZombies()
 {
     
+}
+bool DumbZombies:: isZombie()
+{
+    return true;
+}
+bool DumbZombies:: levelHasZombie()
+{
+    return true;
+}
+bool DumbZombies::blockActors(int point_x, int point_y)
+{
+    //calculate the center of the current wall and the point passed in
+    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointY_center= point_y + SPRITE_HEIGHT/2;
+    int dumbZombieX_center= this->getX() +SPRITE_WIDTH/2;
+    int dumbZombieY_center= this->getY() +SPRITE_HEIGHT/2;
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    int deltaX= pow((pointX_center - dumbZombieX_center),2);
+    int deltaY= pow((pointY_center - dumbZombieY_center),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY < pow(16,2)) return true;
+    //otherwise it does not
+    return false;
 }
 //=============================================== end of dumb zombies methods ==================================
 
 //================================================ Smart Zombies ======================================
 
 SmartZombies:: SmartZombies(int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_EXIT, startX , startY, right,0,sWorld)
+:Actors(IID_ZOMBIE, startX , startY, right,0,sWorld)
 {
     //Smart Zombie start alive
     setAlive(true);
@@ -443,31 +496,58 @@ void SmartZombies:: doSomething()
 //        “paralysis” ticks for which doSomething() must return immediately – none of the
 //            following steps should be performed
     
-    Direction randNum= randInt(0, 3);
-    switch(randNum)
-    {
-        case 0:
-            setDirection(up);
-            this->moveTo(this->getX(),this->getY()+1 );
-            break;
-        case 1:
-            setDirection(right);
-            this->moveTo(this->getX() +1,this->getY() );
-            break;
-        case 2:
-            setDirection(down);
-            this->moveTo(this->getX(),this->getY()-1 );
-            break;
-        case 3:
-            setDirection(left);
-            this->moveTo(this->getX()-1,this->getY() );
-            break;
-    }
+//    Direction randNum= randInt(0, 3);
+//    switch(randNum)
+//    {
+//        case 0:
+//            setDirection(up);
+//            this->moveTo(this->getX(),this->getY()+1 );
+//            break;
+//        case 1:
+//            setDirection(right);
+//            this->moveTo(this->getX() +1,this->getY() );
+//            break;
+//        case 2:
+//            setDirection(down);
+//            this->moveTo(this->getX(),this->getY()-1 );
+//            break;
+//        case 3:
+//            setDirection(left);
+//            this->moveTo(this->getX()-1,this->getY() );
+//            break;
+//    }
 }
 
 SmartZombies:: ~SmartZombies()
 {
     
+}
+//return true as it is a zombie
+bool SmartZombies:: isZombie()
+{
+    return true;
+}
+bool SmartZombies:: levelHasZombie()
+{
+    return true;
+}
+
+bool SmartZombies::blockActors(int point_x, int point_y)
+{
+    //calculate the center of the current wall and the point passed in
+    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointY_center= point_y + SPRITE_HEIGHT/2;
+    int smartZombieX_center= this->getX() +SPRITE_WIDTH/2;
+    int smartZombieY_center= this->getY() +SPRITE_HEIGHT/2;
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    int deltaX= pow((pointX_center - smartZombieX_center),2);
+    int deltaY= pow((pointY_center - smartZombieY_center),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY < pow(16,2)) return true;
+    //otherwise it does not
+    return false;
 }
 //=============================================== end of Smart zombies methods ==================================
 
@@ -567,14 +647,344 @@ LandminesGoodies:: ~LandminesGoodies()
 
 //================================================ Citizen ======================================
 Citizen:: Citizen(int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_CITIZEN, startX , startY, right,0,sWorld )
-{}
+:Actors(IID_CITIZEN, startX , startY, right,0,sWorld ), m_infectionCount(0), m_paralyzedCounter(0)
+{
+    //when construct a citzen, he is not infected
+    setInfection(false);
+    //citizen starts alive
+    setAlive(true);
+}
 void Citizen:: doSomething()
 {
-    return;
+    //====================  BUG: Every tick pick a new direction ===========================
+    
+//    The citizen must check to see if it is currently alive. If not, then its doSomething()
+//        method must return immediately – none of the following steps should be
+//        performed.
+    //increase paralyzed counter each time doSomething()
+    m_paralyzedCounter++;
+    if(!isAlive())
+        return;
+    if(isInfected())
+    {
+        m_infectionCount++;
+        if(m_infectionCount==500)
+        {
+            //Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
+            setAlive(false);
+            //Play a SOUND_ZOMBIE_BORN sound effect
+            getWorld()->playSound(SOUND_ZOMBIE_BORN);
+            //Decrease the player’s score by 1000 for failing to save this citizen (the player’s score could go negative!)
+            
+              /// ================== CODE HERE ==========
+            
+            //Introduce a new zombie object into the same (x,y) coordinate as the former citizen by adding it to the StudentWorld object:
+            getWorld()->addNewZombie(this->getX(), this->getY());
+            //Immediately return (since the citizen is now dead!)
+            return;
+        }
+    }
+    //            Otherwise, the citizen will become paralyzed every other tick trying to figure out
+    //            what to do. The 2nd, 4th, 6th, etc., calls to doSomething() for a citizen are the
+    //                “paralysis” ticks for which doSomething() must return immediately – none of the
+    //                    following steps should be performed.
+    if(m_paralyzedCounter%2==0)
+        return;
+
+    //The citizen must determine its distance to Penelope: dist_p
+    int dist_p= getWorld()->distanceToPenelope(this->getX(), this->getY());
+    //The citizen must determine its distance to the nearest zombie: dist_z
+    int dist_z= getWorld()->distanceToNearestZombie(this->getX(), this->getY());
+    int dest_x,dest_y;
+//    If dist_p < dist_z or no zombies exist in the level (so dist_z is irrelevant), and the
+//    citizen's Euclidean distance from Penelope is less than or equal to 80 pixels (so
+//    the citizen wants to follow Penelope):
+    if((dist_p<dist_z ||  !getWorld()->zombieExist() ) && getWorld()->euclideanDistanceFromPenelope(this->getX(), this->getY()))
+    {
+        //If the citizen is on the same row or column as Penelope:
+        if(getWorld()->isCitizenOnTheSameRowOrColumnWithPenelope(this->getX(), this->getY()))
+        {
+            //find out what direction Penelope should face
+            Direction dir= getWorld()->findWhatDirectionCitizenShouldFaceToFollowPenelope(this->getX(), this->getY());
+            
+            //set the dest of citizen based on where it is facing to
+            if(dir==up)
+            {
+                //citizen can move up
+                dest_x=this->getX();
+                dest_y=this->getY()+2;
+            }
+            if(dir==down)
+            {
+                dest_x=this->getX();
+                dest_y=this->getY()-2;
+            }
+            if(dir==right)
+            {
+                dest_x=this->getX()+2;
+                dest_y=this->getY();
+            }
+            if(dir==left)
+            {
+                dest_x=this->getX()-2;
+                dest_y=this->getY();
+            }
+//         If the citizen can move 2 pixels in the direction toward Penelope  without being blocked16 (by another citizen, Penelope, a zombie, or a wall), the citizen will
+            if(getWorld()->isBlocked(dest_x, dest_y, this))
+            {
+               // 1. Set its direction to be facing toward Penelope.
+                setDirection(dir);
+                // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                this->moveTo(dest_x, dest_y);
+               // 3. Immediately return and do nothing more during the current tick.
+                return;
+            }
+        }
+        //If the citizen is not on the same row or column as Penelope, determine the one horizontal and the one vertical direction that would get the citizen closer to Penelope. Then
+        else
+        {
+            int randomInt = randInt(0, 1);
+            //if randmoly get zero, pick horizontal direction
+            if(randomInt==0)
+            {
+                Direction dir= getWorld()->determineOneHorizontalOneVerticalDirectionRandomly(this->getX(), this->getY(), 0);
+                switch (dir)
+                {
+                    case right:
+                        dest_x=this->getX()+2;
+                        dest_y=this->getY();
+                        break;
+                    case left:
+                        dest_x=this->getX()-2;
+                        dest_y=this->getY();
+                        break;
+                }
+                //if not blocked in that direction
+                if(getWorld()->isBlocked(dest_x, dest_y, this))
+                {
+                    // 1. Set its direction to be facing toward Penelope.
+                    setDirection(dir);
+                    // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                    this->moveTo(dest_x, dest_y);
+                    // 3. Immediately return and do nothing more during the current tick.
+                    return;
+                }
+                //if blocked, pick a vertical direction
+                else
+                {
+                    Direction dir= getWorld()->determineOneHorizontalOneVerticalDirectionRandomly(this->getX(), this->getY(), 1);
+                    switch (dir)
+                    {
+                        case up:
+                            dest_x=this->getX();
+                            dest_y=this->getY()+2;
+                            break;
+                        case down:
+                            dest_x=this->getX();
+                            dest_y=this->getY()-2;
+                            break;
+                    }
+                    //if not blocked in that direction
+                    if(getWorld()->isBlocked(dest_x, dest_y, this))
+                    {
+                        // 1. Set its direction to be facing toward Penelope.
+                        setDirection(dir);
+                        // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                        this->moveTo(dest_x, dest_y);
+                        // 3. Immediately return and do nothing more during the current tick.
+                        return;
+                    }
+                }
+            }
+            //if randomly got 1, pick the vertical direction
+            else
+            {
+                Direction dir= getWorld()->determineOneHorizontalOneVerticalDirectionRandomly(this->getX(), this->getY(), 1);
+                switch (dir)
+                {
+                    case up:
+                        dest_x=this->getX();
+                        dest_y=this->getY()+2;
+                        break;
+                    case down:
+                        dest_x=this->getX();
+                        dest_y=this->getY()-2;
+                        break;
+                }
+                //if not blocked in that direction
+                if(getWorld()->isBlocked(dest_x, dest_y, this))
+                {
+                    // 1. Set its direction to be facing toward Penelope.
+                    setDirection(dir);
+                    // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                    this->moveTo(dest_x, dest_y);
+                    // 3. Immediately return and do nothing more during the current tick.
+                    return;
+                }
+                //if blocked in that diretion
+                else
+                {
+                    Direction dir= getWorld()->determineOneHorizontalOneVerticalDirectionRandomly(this->getX(), this->getY(), 0);
+                    switch (dir)
+                    {
+                        case right:
+                            dest_x=this->getX()+2;
+                            dest_y=this->getY();
+                            break;
+                        case left:
+                            dest_x=this->getX()-2;
+                            dest_y=this->getY();
+                            break;
+                    }
+                        //if not blocked in that direction
+                    if(getWorld()->isBlocked(dest_x, dest_y, this))
+                    {
+                        // 1. Set its direction to be facing toward Penelope.
+                        setDirection(dir);
+                        // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                        this->moveTo(dest_x, dest_y);
+                        // 3. Immediately return and do nothing more during the current tick.
+                        return;
+                    }
+                }
+            }
+        }
+    }
+   // If there is a zombie whose Euclidean distance from the citizen is less than or equal to 80 pixels, the citizen wants to run away, so:
+    if(getWorld()-> euclideanDistanceFromCitizenToZombie(this->getX(), this->getY()))
+    {
+        //the citizen determines the distance to the nearest zombie of any type if it were to move to this new location
+        int nearestZombie= getWorld()-> distanceToNearestZombie(this->getX(), this->getY());
+        
+       // a. For each of the four directions up, down, left and right, the citizen must:
+        for(Direction dir=0; dir<4; dir++)
+        {
+            //checking for up
+            if(dir==0)
+            {
+                if(getWorld()->isBlocked(this->getX(), this->getY()+2, this))
+                {
+                    //if moving to the new location make it away from the new
+                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX(), this->getY()+2))
+                    {
+                        //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
+                        setDirection(up);
+                        //Move 2 pixels in that direction using the GraphObject class's moveTo() method
+                        this->moveTo(this->getX(), this->getY()+2);
+                        //Immediately return and do nothing more during the current tick.
+                        return;
+                    }
+                }
+                else
+                    // If the citizen is blocked from moving there, it ignores this direction.
+                    continue;
+            }
+            //checking for down
+            if(dir ==1)
+            {
+                if(getWorld()->isBlocked(this->getX(), this->getY()-2, this))
+                {
+                    //if moving to the new location make it away from the new
+                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX(), this->getY()-2))
+                    {
+                        //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
+                        setDirection(down);
+                        //Move 2 pixels in that direction using the GraphObject class's moveTo() method
+                        this->moveTo(this->getX(), this->getY()-2);
+                        //Immediately return and do nothing more during the current tick.
+                        return;
+                    }
+                }
+                else
+                    // If the citizen is blocked from moving there, it ignores this direction.
+                    continue;
+            }
+            //checking for right
+            if(dir ==2)
+            {
+                if(getWorld()->isBlocked(this->getX()+2, this->getY(), this))
+                {
+                    ///if moving to the new location make it away from the new
+                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX()+2, this->getY()))
+                    {
+                        //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
+                        setDirection(right);
+                        //Move 2 pixels in that direction using the GraphObject class's moveTo() method
+                        this->moveTo(this->getX()+2, this->getY());
+                        //Immediately return and do nothing more during the current tick.
+                        return;
+                    }
+                }
+                else
+                    // If the citizen is blocked from moving there, it ignores this direction.
+                    continue;
+            }
+            //checking for left
+            if(dir ==3)
+            {
+                if(getWorld()->isBlocked(this->getX()-2, this->getY(), this))
+                {
+                    ///if moving to the new location make it away from the new
+                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX()-2, this->getY()))
+                    {
+                        //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
+                        setDirection(left);
+                        //Move 2 pixels in that direction using the GraphObject class's moveTo() method
+                        this->moveTo(this->getX()-2, this->getY());
+                        //Immediately return and do nothing more during the current tick.
+                        return;
+                    }
+                }
+                else
+                    // If the citizen is blocked from moving there, it ignores this direction.
+                    continue;
+            }
+//            If none of the movement options would allow the citizen to get further away from the nearest zombie (e.g., right now it’s 20 pixels away from the nearest zombie, but if it were to move in any of the four directions it would get even closer to some zombie), then doSomething() immediately returns
+            return;
+        }
+    }
 }
+
+//What a Citizen Must Do In Other Circumstances
+//• A citizen can be damaged by flames. If a flame overlaps17 with a citizen, it will
+//kill the citizen. The citizen must:
+//o Set its own state to dead (so that it will be removed from the game by the
+//                             StudentWorld object at the end of the current tick).
+//o Play a sound effect to indicate that the citizen died:
+//SOUND_CITIZEN_DIE.
+//o Decrease the player’s score by 1000 points.
+//• A citizen can be infected by vomit. When vomit overlaps with a citizen, the
+//citizen's infection status becomes true.
+//• A citizen blocks other objects from moving nearby/onto it. A citizen's bounding
+//box must never intersect with that of any other citizen, Penelope, dumb zombie,
+//or smart zombie).
+//• A Citizen does not block flames.
+
+//destructor
 Citizen:: ~Citizen()
 {
     
+}
+//return true of the object is citizwn
+bool Citizen:: isCitizen()
+{
+    return true;
+}
+bool Citizen::blockActors(int point_x, int point_y)
+{
+    //calculate the center of the current wall and the point passed in
+    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointY_center= point_y + SPRITE_HEIGHT/2;
+    int citizenX_center= this->getX() +SPRITE_WIDTH/2;
+    int citizenY_center= this->getY() +SPRITE_HEIGHT/2;
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    int deltaX= pow((pointX_center - citizenX_center),2);
+    int deltaY= pow((pointY_center - citizenY_center),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY < pow(16,2)) return true;
+    //otherwise it does not
+    return false;
 }
 //=============================================== end of Citizen methods ==================================

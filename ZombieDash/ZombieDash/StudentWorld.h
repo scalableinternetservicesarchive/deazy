@@ -22,6 +22,15 @@ public:
     void displayText();
     bool isBlocked( int, int, Actors * );
     Direction randmonDir();
+    void addNewZombie(int, int);
+    int distanceToPenelope(int, int);
+    int distanceToNearestZombie(int, int);
+    bool euclideanDistanceFromPenelope(int, int);
+    bool zombieExist();
+    bool isCitizenOnTheSameRowOrColumnWithPenelope(int, int);
+    Direction findWhatDirectionCitizenShouldFaceToFollowPenelope(int,int);
+    Direction determineOneHorizontalOneVerticalDirectionRandomly(int, int,int);
+    bool euclideanDistanceFromCitizenToZombie(int,int);
 private:
     //2D list for stroing all the actors
     vector<Actors*> m_level;

@@ -6,6 +6,29 @@
 	<integer>9</integer>
 	<key>logs</key>
 	<dict>
+		<key>291AB275-2D25-43CC-A3B2-67BF2D48E248</key>
+		<dict>
+			<key>className</key>
+			<string>IDEActivityLogSection</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.target.product-type.tool</string>
+			<key>fileName</key>
+			<string>291AB275-2D25-43CC-A3B2-67BF2D48E248.xcactivitylog</string>
+			<key>highLevelStatus</key>
+			<string>W</string>
+			<key>signature</key>
+			<string>ZombieDash-ditlhgjoltqlfcapqfsuizweojkr</string>
+			<key>timeStartedRecording</key>
+			<real>572664165.11538005</real>
+			<key>timeStoppedRecording</key>
+			<real>572664166.13583195</real>
+			<key>title</key>
+			<string>Build target ZombieDash</string>
+			<key>uniqueIdentifier</key>
+			<string>291AB275-2D25-43CC-A3B2-67BF2D48E248</string>
+		</dict>
 		<key>521F0A54-6129-4FD1-9C2E-4EDE7FA31D58</key>
 		<dict>
 			<key>className</key>
@@ -28,29 +51,6 @@
 			<string>Build target ZombieDash</string>
 			<key>uniqueIdentifier</key>
 			<string>521F0A54-6129-4FD1-9C2E-4EDE7FA31D58</string>
-		</dict>
-		<key>77F241DE-5997-4FFF-983C-309D50196EA7</key>
-		<dict>
-			<key>className</key>
-			<string>IDEActivityLogSection</string>
-			<key>documentTypeString</key>
-			<string>&lt;nil&gt;</string>
-			<key>domainType</key>
-			<string>Xcode.IDEActivityLogDomainType.target.product-type.tool</string>
-			<key>fileName</key>
-			<string>77F241DE-5997-4FFF-983C-309D50196EA7.xcactivitylog</string>
-			<key>highLevelStatus</key>
-			<string>W</string>
-			<key>signature</key>
-			<string>ZombieDash-ditlhgjoltqlfcapqfsuizweojkr</string>
-			<key>timeStartedRecording</key>
-			<real>572497317.93210804</real>
-			<key>timeStoppedRecording</key>
-			<real>572497319.17928004</real>
-			<key>title</key>
-			<string>Build target ZombieDash</string>
-			<key>uniqueIdentifier</key>
-			<string>77F241DE-5997-4FFF-983C-309D50196EA7</string>
 		</dict>
 	</dict>
 	<key>preserveOldLogs</key>

@@ -43,6 +43,9 @@ public:
     StudentWorld *getWorld() const;
     virtual ~Actors();
     virtual Direction randomDir();
+    virtual bool isCitizen();
+    virtual bool isZombie();
+    virtual bool levelHasZombie();
     
 private:
     //private members
@@ -52,6 +55,7 @@ private:
 //    bool m_isMoved;
     //bool m_block;
 };
+
 
 class Walls: public Actors
 {
@@ -99,6 +103,11 @@ public:
     Citizen(int, int, StudentWorld*);
     virtual void doSomething();
     ~Citizen();
+    virtual bool isCitizen();
+    virtual bool blockActors(int, int);
+private:
+    int m_infectionCount;
+    int m_paralyzedCounter;
 };
 class DumbZombies : public Actors
 {
@@ -106,6 +115,9 @@ public:
     DumbZombies(int, int, StudentWorld*);
     virtual void doSomething();
     ~DumbZombies();
+    virtual bool isZombie();
+    virtual bool levelHasZombie();
+    virtual bool blockActors(int, int);
 
 };
 class SmartZombies : public Actors
@@ -114,6 +126,9 @@ public:
     SmartZombies(int, int, StudentWorld*);
     virtual void doSomething();
     ~SmartZombies();
+    virtual bool isZombie();
+    virtual bool levelHasZombie();
+    virtual bool blockActors(int, int);
 };
 
 class Landmines : public Actors
