@@ -111,7 +111,8 @@ int StudentWorld::init()
 //move() method that will be called by the framework and call each actors to do something, update the level and tells the framework what to do
 int StudentWorld::move()
 {
-    
+//    The status line must be formatted like this (the spec and sample executables are inconsistent):
+//Score: 004500  Level: 27  Lives: 3  Vaccines: 2  Flames: 16  Mines: 1  Infected: 0
     
     //iterate through all objects
     for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
@@ -129,13 +130,17 @@ int StudentWorld::move()
 //            if((*it)->doesOverlap(penelopePtr))
 //                return GWSTATUS_FINISHED_LEVEL;
         if((*it)->doesOverlap(penelopePtr))
+        {
+            playSound(SOUND_LEVEL_FINISHED);
             return GWSTATUS_FINISHED_LEVEL;
+        }
+        
     }
    //Remove newly-dead actors after each tick
 //   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
 //    {
 //        //if the current actor is dead, remove that actor from the level
-//        if ( (*iter)->isAlive() == false)
+//        if ( !((*iter)->isAlive()))
 //        {
 //            delete *iter;
 //            iter=m_level.erase(iter);
@@ -369,29 +374,176 @@ bool StudentWorld:: doesOverlapWithPenelope(int point_x, int point_y)
     //otherwise it does not
     return false;
 }
-//check if the any person or zombie overlaps with a pit
-bool StudentWorld:: doesOverlapWithPit(int pit_x, int pit_y,Actors* actor)
+////check if the any person or zombie overlaps with a pit
+//bool StudentWorld:: doesOverlapWithPit(int pit_x, int pit_y,Actors* actor)
+//{
+//    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+//    {
+//        //if nullptr continue
+//        if((*iter)==nullptr) continue;
+//        //=================== CODE HERE ====================================
+//    }
+//    return false;
+//}
+////check if the citizen overlap with exit
+//bool StudentWorld:: doesExitOverlapWithCitizen(int exit_x, int exit_y)
+//{
+//    //iterate through all the actors
+//    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+//    {
+//        //if nullptr continue
+//        if((*iter)==nullptr) continue;
+//        if((*iter)->isCitizen())
+//        {
+//
+//        }
+//    }
+//    return false;
+//}
+//check if there is a person in front of the current zombie
+bool StudentWorld:: isPersonInFrontOfZommbie(int zombieFacing_x, int zombieFacing_y)
 {
     for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
     {
         //if nullptr continue
         if((*iter)==nullptr) continue;
-        //=================== CODE HERE ====================================
-    }
-    return false;
-}
-//check if the citizen overlap with exit
-bool StudentWorld:: doesExitOverlapWithCitizen(int exit_x, int exit_y)
-{
-    //iterate through all the actors
-    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
-    {
-        //if nullptr continue
-        if((*iter)==nullptr) continue;
-        if((*iter)->isCitizen())
+        //calculate the center of the current person and zombie passed in
+        int zombieFacingX_center= zombieFacing_x+ SPRITE_WIDTH/2;
+        int zombieFacingY_center= zombieFacing_y + SPRITE_HEIGHT/2;
+        //if the current object is
+        if((*iter)->isCitizen() || (*iter)==penelopePtr)
         {
-            
+            int personX_center= (*iter)->getX() +SPRITE_WIDTH/2;
+            int personY_center= (*iter)->getY()+SPRITE_HEIGHT/2;
+            // then use the Udulican formula, instead the distance between the centers should be less than 16
+            int deltaX= pow((zombieFacingX_center - personX_center),2);
+            int deltaY= pow((zombieFacingY_center - personY_center),2);
+            if(deltaX + deltaY < pow(16,2)) return true;
         }
     }
     return false;
 }
+//check if there is person in 10 pixels of vomit coordinate
+bool StudentWorld:: isPersonWhoseEuclideanDistanceFromVomitCoordinates(int vomitCoordinate_x, int vomitCoordinate_y)
+{
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        //if the object is a person
+        if((*iter)->isCitizen() || (*iter)==penelopePtr)
+        {
+            // then use the Edulican formula
+            int deltaX= pow((vomitCoordinate_x - (*iter)->getX()),2);
+            int deltaY= pow((vomitCoordinate_y - (*iter)->getY()),2);
+            if(deltaX + deltaY <= pow(10,2)) return true;
+        }
+    }
+    return false;
+}
+// Introduce a vomit at this point
+void StudentWorld:: introduceVomitAtThisPoint(int introVomit_x, int introVomit_y)
+{
+    m_level.push_back(new Vomit(introVomit_x, introVomit_y, this));
+}
+//return a random direction
+// Randomly picks a direction
+Direction StudentWorld::randomDir()
+{
+    int choice = randInt(0, 3);
+    Direction dirChoice;
+    switch (choice)
+    {
+        case 0:
+            dirChoice = Actors:: up;
+            break;
+        case 1:
+            dirChoice = Actors::right;
+            break;
+        case 2:
+            dirChoice = Actors::down;
+            break;
+        case 3:
+            dirChoice = Actors::left;
+            break;
+    }
+    return dirChoice;
+}
+//add a vaccine goodie at the location passed
+//void StudentWorld:: addVaccineGoodieHere(int here_x,int here_y)
+//{
+//    m_level.push_back(new VaccineGoodies(here_x,here_y, this));
+//}
+
+//This function returns the person object that is closest
+Actors* StudentWorld:: findClosestPersonToSmartZombie(int smartZombie_x,int smartZombie_y)
+{
+    int minDist= 240;
+    Actors *nearestActor;
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        if((*iter) -> isCitizen() || (*iter)==penelopePtr)
+        {
+            int personX= (*iter)->getX();
+            int personY=(*iter)->getY();
+            //calculate the distance between the citizen and the current zombie
+            int deltaX= pow((smartZombie_x - personX),2);
+            int deltaY= pow((smartZombie_x - personY),2);
+            //if tempMinDist is smaller than minDist
+            if(deltaX + deltaY < minDist)
+            {
+                //store the temp value in minDist
+                minDist=deltaX + deltaY;
+                nearestActor = *iter;
+            }
+        }
+    }
+    return nearestActor;
+}
+// find the distance from smart zombie to the person
+int StudentWorld :: findTheDistanceFromSmartZombieToPerson(int smartZombie_x,int smartZombie_y, Actors* thePersonPtr)
+{
+   return sqrt( pow(smartZombie_x - thePersonPtr->getX(), 2) + pow(smartZombie_y- thePersonPtr->getY(), 2)) ;
+}
+//return true if smartZombie is one the same row or col with the person
+bool StudentWorld :: smartZombieSameRowOrColWithThePerson(int smartZombie_x,int smartZombie_y, Actors* thePersonPtr)
+{
+    if(smartZombie_x == thePersonPtr->getX() || smartZombie_y == thePersonPtr->getY() )
+        return true;
+    return false;
+}
+
+Direction StudentWorld:: pickDirectionToGetCloserToPerson(int smartZombie_x,int smartZombie_y, Actors* thePersonPtr)
+{
+    if(smartZombie_x< thePersonPtr->getX())
+        return Actors::right;
+    else if(smartZombie_x > thePersonPtr->getX())
+        return Actors:: left;
+    else if(smartZombie_y< thePersonPtr->getY())
+        return Actors::up;
+    else
+        return Actors:: down;
+}
+//randmoly pick a direction for a citizen if he is not on the same row or col
+Direction StudentWorld:: pickRandomDirForSmartZombieToFollowPerson(int smartZombie_x,int smartZombie_y,int randomDirection, Actors* thePersonPtr )
+{
+    //if the random integer is 0, pick horizontal direction
+    if(randomDirection==0)
+    {
+        if( smartZombie_x < thePersonPtr->getX())
+            return Actors:: right;
+        else
+            return Actors:: left;
+    }
+    //otherwise pick a vertical direction
+    else
+    {
+        if( smartZombie_x < thePersonPtr->getY())
+            return Actors:: up;
+        else
+            return Actors:: down;
+    }
+}
+

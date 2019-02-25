@@ -34,7 +34,16 @@ public:
     bool doesOverlapWithPenelope(int, int);
     bool doesOverlapWithPit(int, int,Actors*);
     bool doesExitOverlapWithCitizen(int, int);
-    bool personOrzombie();
+    bool isPersonInFrontOfZommbie(int,int);
+    bool isPersonWhoseEuclideanDistanceFromVomitCoordinates(int, int);
+    void introduceVomitAtThisPoint(int, int);
+    Direction randomDir();
+    void addVaccineGoodieHere(int,int);
+    Actors* findClosestPersonToSmartZombie(int,int);
+    int findTheDistanceFromSmartZombieToPerson(int,int,Actors*);
+    bool smartZombieSameRowOrColWithThePerson(int,int, Actors*);
+    Direction pickDirectionToGetCloserToPerson(int, int, Actors*);
+    Direction pickRandomDirForSmartZombieToFollowPerson(int, int, int,Actors*);
 private:
     //2D list for stroing all the actors
     vector<Actors*> m_level;

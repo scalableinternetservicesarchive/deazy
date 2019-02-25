@@ -49,6 +49,7 @@ public:
     virtual bool flameDamagable();
     virtual bool vomitInfectable();
     virtual bool flameBlockable();
+    virtual bool isPerson();
     
 private:
     //private members
@@ -80,6 +81,7 @@ public:
      ~Penelope();
     virtual bool flameDamagable();
     virtual bool vomitInfectable();
+    virtual bool isPerson();
 //    int numOfLandmines();
 //    int numOfFlamethrower_charges();
 //    int numOfVaccines();
@@ -113,6 +115,7 @@ public:
     virtual bool blockActors(int, int);
     virtual bool flameDamagable();
     virtual bool vomitInfectable();
+    virtual bool isPerson();
 private:
     int m_infectionCount;
     int m_paralyzedCounter;
@@ -128,7 +131,8 @@ public:
     virtual bool blockActors(int, int);
     virtual bool flameDamagable();
 private:
-    int m_paralyzedCounter;
+    int m_paralyzedCounter,
+        m_movementPlan;
 
 };
 class SmartZombies : public Actors
@@ -141,6 +145,9 @@ public:
     virtual bool levelHasZombie();
     virtual bool blockActors(int, int);
     virtual bool flameDamagable();
+private:
+    int m_paralyzedCounter,
+        m_movementPlan;
 };
 
 class Landmines : public Actors

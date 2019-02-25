@@ -37,8 +37,7 @@ class GraphObject
 
     double getX() const
     {
-          // If already moved but not yet animated, use new location anyway.
-
+        // If already moved but not yet animated, use new location anyway.
         return m_destX;
     }
 
