@@ -139,19 +139,16 @@ int StudentWorld::move()
    //Remove newly-dead actors after each tick
 //   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
 //    {
-//        if((*iter) == nullptr )
-//        {
-//            continue;
-//        }
+//        if((*iter)==nullptr) continue;
 //        //if the current actor is dead, remove that actor from the level
-//        else if ( ((*iter)->isAlive() == false))
+//        else if ( (*iter)->isAlive() == false)
 //        {
 //            delete (*iter);
 //            m_level.erase(iter);
 //
 //        }
-//        else iter++;
-////
+//        else
+//            iter++;
 //    }
     //    // Update the game status line
     //    Update Display Text // update the score/lives/level text at screen top
@@ -496,7 +493,7 @@ Actors* StudentWorld:: findClosestPersonToSmartZombie(int smartZombie_x,int smar
     {
         //if nullptr continue
         if((*iter)==nullptr) continue;
-        if((*iter) -> isCitizen() || (*iter)==penelopePtr)
+        else if((*iter) -> isCitizen() || (*iter)==penelopePtr)
         {
             int personX= (*iter)->getX();
             int personY=(*iter)->getY();

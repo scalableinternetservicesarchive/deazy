@@ -29,7 +29,7 @@
 			<key>uniqueIdentifier</key>
 			<string>521F0A54-6129-4FD1-9C2E-4EDE7FA31D58</string>
 		</dict>
-		<key>F1724233-CDFC-4CA3-9D32-4B9A6A34E73B</key>
+		<key>8ECD9B78-0EC9-4687-8C7B-9ACEB978135A</key>
 		<dict>
 			<key>className</key>
 			<string>IDEActivityLogSection</string>
@@ -38,19 +38,19 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.target.product-type.tool</string>
 			<key>fileName</key>
-			<string>F1724233-CDFC-4CA3-9D32-4B9A6A34E73B.xcactivitylog</string>
+			<string>8ECD9B78-0EC9-4687-8C7B-9ACEB978135A.xcactivitylog</string>
 			<key>highLevelStatus</key>
 			<string>W</string>
 			<key>signature</key>
 			<string>ZombieDash-ditlhgjoltqlfcapqfsuizweojkr</string>
 			<key>timeStartedRecording</key>
-			<real>572952741.86622703</real>
+			<real>572988731.709337</real>
 			<key>timeStoppedRecording</key>
-			<real>572952743.055161</real>
+			<real>572988733.10756302</real>
 			<key>title</key>
 			<string>Build target ZombieDash</string>
 			<key>uniqueIdentifier</key>
-			<string>F1724233-CDFC-4CA3-9D32-4B9A6A34E73B</string>
+			<string>8ECD9B78-0EC9-4687-8C7B-9ACEB978135A</string>
 		</dict>
 	</dict>
 	<key>preserveOldLogs</key>

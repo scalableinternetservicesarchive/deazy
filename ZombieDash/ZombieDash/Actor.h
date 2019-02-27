@@ -133,8 +133,8 @@ public:
     virtual bool blockActors(int, int);
     virtual void flameDamagable();
 private:
-    int m_paralyzedCounter,
-        m_movementPlan;
+    bool m_paralyzedCounter;
+     int   m_movementPlan;
 
 };
 class SmartZombies : public Actors
@@ -148,8 +148,8 @@ public:
     virtual bool blockActors(int, int);
     virtual void flameDamagable();
 private:
-    int m_paralyzedCounter,
-        m_movementPlan;
+    bool m_paralyzedCounter;
+     int  m_movementPlan;
 };
 
 class Landmines : public Actors

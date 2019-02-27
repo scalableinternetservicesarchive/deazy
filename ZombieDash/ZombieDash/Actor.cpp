@@ -541,7 +541,7 @@ bool Exit:: flameBlockable()
 
 // ================================= Dumb Zombies Methods ================================================
 DumbZombies::  DumbZombies(int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(0), m_movementPlan(0)
+:Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(true), m_movementPlan(0)
 {
     setAlive(true);
 }
@@ -561,12 +561,13 @@ void DumbZombies:: flameDamagable()
 }
 void DumbZombies:: doSomething()
 {
-    m_paralyzedCounter++;
+    
     //    1. The dumb zombie must check to see if it is currently alive. If not, then its doSomething() method must return immediately – none of the following steps  should be performed
     if(!isAlive())
         return;
 //    2. The dumb zombie will become paralyzed every other tick trying to figure out what to do. The 2nd, 4th, 6th, etc., calls to doSomething() for a dumb zombie are the  “paralysis” ticks for which doSomething() must return immediately – none of the following steps should be performed.
-    if(m_paralyzedCounter % 2 == 0)
+    m_paralyzedCounter = !m_paralyzedCounter;
+    if(m_paralyzedCounter)
         return;
 //   3. The dumb zombie must check to see if a person (either Penelope or one of the citizens on the level) is in front of it in the direction it is facing:
     Direction zombieDir= this-> getDirection();
@@ -655,47 +656,60 @@ void DumbZombies:: doSomething()
     }//end of switch
     //The dumb zombie will check to see if it needs a new movement plan because its current movement plan distance has reached zero. If so, the dumb zombie will:
     //Pick a new random movement plan distance in the range 3 through 10 inclusive.
-    m_movementPlan= randInt(3, 10);
+   
     //Set its direction to a random direction (up, down, left, or right).
-    this->setDirection(getWorld()->randomDir());
-    //5. The dumb zombie will then determine a destination coordinate (dest_x, dest_y) that is 1 pixel in front of it in the direction it is facing.
-    switch (this->getDirection())
+
+    if(m_movementPlan==0)
     {
-        //if the zombie is facing up
-        // for all the cases check If the movement to (dest_x, dest_y) would not cause the dumb zombie’s bounding box to intersect with the bounding box14 of any wall, person o other zombieobjects, then
-        case up:
-           if(getWorld()->isBlocked(this->getX(), this->getY()+1, this))
-           {
-               this->moveTo(this->getX(), this->getY()+1);
-               m_movementPlan--;
-           }
-            break;
-        case down:
-            if(getWorld()->isBlocked(this->getX(), this->getY()-1, this))
-            {
-                this->moveTo(this->getX(), this->getY()-1);
-                m_movementPlan--;
-            }
-            break;
-        case right:
-            if(getWorld()->isBlocked(this->getX()+1, this->getY(), this))
-            {
-                this->moveTo(this->getX()+1, this->getY());
-                m_movementPlan--;
-            }
-            break;
-        case left:
-            if(getWorld()->isBlocked(this->getX()-1, this->getY(), this))
-            {
-                this->moveTo(this->getX()-1, this->getY());
-                m_movementPlan--;
-            }
-            break;
-    }//end of switch
+        m_movementPlan= randInt(3, 10);
+        this->setDirection(getWorld()->randomDir());
+    }
+        //5. The dumb zombie will then determine a destination coordinate (dest_x, dest_y) that is 1 pixel in front of it in the direction it is facing.
+        switch (this->getDirection())
+        {
+            //if the zombie is facing up
+            // for all the cases check If the movement to (dest_x, dest_y) would not cause the dumb zombie’s bounding box to intersect with the bounding box14 of any wall, person o other zombieobjects, then
+            case up:
+               if(getWorld()->isBlocked(this->getX(), this->getY()+1, this))
+               {
+                   this->moveTo(this->getX(), this->getY()+1);
+                   m_movementPlan--;
+               }
+                else
+                    m_movementPlan=0;
+                break;
+            case down:
+                if(getWorld()->isBlocked(this->getX(), this->getY()-1, this))
+                {
+                    this->moveTo(this->getX(), this->getY()-1);
+                    m_movementPlan--;
+                }
+                else
+                    m_movementPlan=0;
+                break;
+            case right:
+                if(getWorld()->isBlocked(this->getX()+1, this->getY(), this))
+                {
+                    this->moveTo(this->getX()+1, this->getY());
+                    m_movementPlan--;
+                }
+                else
+                    m_movementPlan=0;
+                break;
+            case left:
+                if(getWorld()->isBlocked(this->getX()-1, this->getY(), this))
+                {
+                    this->moveTo(this->getX()-1, this->getY());
+                    m_movementPlan--;
+                }
+                
+                break;
+            
+        }//end of switch
+//        m_movementPlan=0;
     
-    //7. Otherwise, the dumb zombie was blocked from moving by another wall, person or zombie, so set the movement plan distance to 0 (which will cause the dumb
-    // zombie to pick a new direction to move during the next tick).
-    m_movementPlan=0;
+   
+    
 }
 DumbZombies:: ~DumbZombies()
 {}
@@ -729,10 +743,10 @@ bool DumbZombies :: blockActors(int point_x, int point_y)
 //================================================ Smart Zombies ======================================
 
 SmartZombies:: SmartZombies(int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(0), m_movementPlan(0)
+:Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(true), m_movementPlan(0)
 {
     //Smart Zombie start alive
-    setAlive(true);
+    this->setAlive(true);
 }
 
 void SmartZombies:: flameDamagable()
@@ -747,7 +761,7 @@ void SmartZombies:: flameDamagable()
 }
 void SmartZombies:: doSomething()
 {
-    m_paralyzedCounter++;
+   
 //    1. The smart zombie must check to see if it is currently alive. If not, then its
 //        doSomething() method must return immediately – none of the following steps
 //        should be performed
@@ -757,12 +771,12 @@ void SmartZombies:: doSomething()
 //    what to do. The 2nd, 4th, 6th, etc., calls to doSomething() for a smart zombie are the
 //        “paralysis” ticks for which doSomething() must return immediately – none of the
 //            following steps should be performed
-    if(m_paralyzedCounter % 2 == 0)
+    m_paralyzedCounter = !m_paralyzedCounter;
+    if(m_paralyzedCounter)
         return;
     //  3. The dumb zombie must check to see if a person (either Penelope or one of the citizens on the level) is in front of it in the direction it is facing:
-    Direction zombieDir= this-> getDirection();
     //switch case to function depending on the direction the dumbzombie is facing
-    switch (zombieDir)
+    switch (this-> getDirection())
     {
             //if the zombie is facing up
         case up:
@@ -845,53 +859,83 @@ void SmartZombies:: doSomething()
     }//end of switch
     //The dumb zombie will check to see if it needs a new movement plan because its current movement plan distance has reached zero. If so, the dumb zombie will:
     //Pick a new random movement plan distance in the range 3 through 10 inclusive.
-    m_movementPlan= randInt(3, 10);
-//    b. Select the person (Penelope or a citizen) closest to the smart zombie, i.e., the one whose Euclidean distance from the zombie is the smallest. If more than one person is the same smallest distance away, select one of them.
-   Actors* nearestPerson= getWorld()-> findClosestPersonToSmartZombie(this->getX(), this->getY());
-   // i. If the distance to the selected nearest person is more than 80 pixels away, the direction is chosen from up, down, left, and right.
-    if( getWorld()-> findTheDistanceFromSmartZombieToPerson(this->getX(), this->getY(), nearestPerson) > 80)
-        //Set its direction to a random direction:
-        this->setDirection(getWorld()->randomDir());
-    //Otherwise, the nearest person is less than or equal to 80 pixels away, the direction is chosen to be one that would cause the zombie to get closer to the person
-    else
+    if(m_movementPlan==0)
     {
-        //If the zombie is on the same row or column as the person, choose the (only) direction that gets the zombie closer
-        if(getWorld()-> smartZombieSameRowOrColWithThePerson(this->getX(), this->getY(), nearestPerson))
-        {
-            this->setDirection(getWorld()-> pickDirectionToGetCloserToPerson(this->getX(), this->getY(), nearestPerson));
-        }
+        m_movementPlan= randInt(3, 10);
+        //    b. Select the person (Penelope or a citizen) closest to the smart zombie, i.e., the one whose Euclidean distance from the zombie is the smallest. If more than one person is the same smallest distance away, select one of them.
+        Actors* nearestPerson= getWorld()-> findClosestPersonToSmartZombie(this->getX(), this->getY());
+        // i. If the distance to the selected nearest person is more than 80 pixels away, the direction is chosen from up, down, left, and right.
+        if( getWorld()-> findTheDistanceFromSmartZombieToPerson(this->getX(), this->getY(), nearestPerson) > 80)
+            //Set its direction to a random direction:
+            this->setDirection(getWorld()->randomDir());
+        //Otherwise, the nearest person is less than or equal to 80 pixels away, the direction is chosen to be one that would cause the zombie to get closer to the person
         else
         {
-            int dest_x, dest_y;
-           // 2. Otherwise, choose randomly between the two directions (one horizontal and one vertical) that get the zombie closer.
-            int randomInt = randInt(0, 1);
-            //if randmoly get zero, pick horizontal direction
-            if(randomInt==0)
+            //If the zombie is on the same row or column as the person, choose the (only) direction that gets the zombie closer
+            if(getWorld()-> smartZombieSameRowOrColWithThePerson(this->getX(), this->getY(), nearestPerson))
             {
-                Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),0, nearestPerson );
-                switch (dir)
+                this->setDirection(getWorld()-> pickDirectionToGetCloserToPerson(this->getX(), this->getY(), nearestPerson));
+            }
+            else
+            {
+                int dest_x, dest_y;
+                // 2. Otherwise, choose randomly between the two directions (one horizontal and one vertical) that get the zombie closer.
+                int randomInt = randInt(0, 1);
+                //if randmoly get zero, pick horizontal direction
+                if(randomInt==0)
                 {
-                    case right:
-                        dest_x=this->getX()+1;
-                        dest_y=this->getY();
-                        break;
-                    case left:
-                        dest_x=this->getX()-1;
-                        dest_y=this->getY();
-                        break;
+                    ///==================NOT RIGHT ================ FIX THIS ===============
+                    Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),0, nearestPerson );
+                    switch (dir)
+                    {
+                        case right:
+                            dest_x=this->getX()+1;
+                            dest_y=this->getY();
+                            break;
+                        case left:
+                            dest_x=this->getX()-1;
+                            dest_y=this->getY();
+                            break;
+                    }
+                    //if not blocked in that direction
+                    if(getWorld()->isBlocked(dest_x, dest_y, this))
+                    {
+                        // 1. Set its direction to be facing toward Penelope.
+                        this->setDirection(dir);
+                        // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                        this->moveTo(dest_x, dest_y);
+                        //c. Decrease the movement plan distance by
+                        m_movementPlan--;
+                        
+                    }
+                    //if blocked, pick a vertical direction
+                    else
+                    {
+                        Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),1, nearestPerson );
+                        switch (dir)
+                        {
+                            case up:
+                                dest_x=this->getX();
+                                dest_y=this->getY()+1;
+                                break;
+                            case down:
+                                dest_x=this->getX();
+                                dest_y=this->getY()-1;
+                                break;
+                        }
+                        //if not blocked in that direction
+                        if(getWorld()->isBlocked(dest_x, dest_y, this))
+                        {
+                            // 1. Set its direction to be facing toward Penelope.
+                            this->setDirection(dir);
+                            // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                            this->moveTo(dest_x, dest_y);
+                            //c. Decrease the movement plan distance by
+                            m_movementPlan--;
+                        }
+                    }
                 }
-                //if not blocked in that direction
-                if(getWorld()->isBlocked(dest_x, dest_y, this))
-                {
-                    // 1. Set its direction to be facing toward Penelope.
-                    this->setDirection(dir);
-                    // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
-                    this->moveTo(dest_x, dest_y);
-                    //c. Decrease the movement plan distance by
-                    m_movementPlan--;
-                    
-                }
-                //if blocked, pick a vertical direction
+                //if randomly got 1, pick the vertical direction
                 else
                 {
                     Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),1, nearestPerson );
@@ -916,64 +960,40 @@ void SmartZombies:: doSomething()
                         //c. Decrease the movement plan distance by
                         m_movementPlan--;
                     }
-                }
-            }
-            //if randomly got 1, pick the vertical direction
-            else
-            {
-                Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),1, nearestPerson );
-                switch (dir)
-                {
-                    case up:
-                        dest_x=this->getX();
-                        dest_y=this->getY()+1;
-                        break;
-                    case down:
-                        dest_x=this->getX();
-                        dest_y=this->getY()-1;
-                        break;
-                }
-                //if not blocked in that direction
-                if(getWorld()->isBlocked(dest_x, dest_y, this))
-                {
-                    // 1. Set its direction to be facing toward Penelope.
-                    this->setDirection(dir);
-                    // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
-                    this->moveTo(dest_x, dest_y);
-                    //c. Decrease the movement plan distance by
-                    m_movementPlan--;
-                }
-                //if blocked in that diretion
-                else
-                {
-                    Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),0, nearestPerson );
-                    switch (dir)
+                    //if blocked in that diretion
+                    else
                     {
-                        case right:
-                            dest_x=this->getX()+1;
-                            dest_y=this->getY();
-                            break;
-                        case left:
-                            dest_x=this->getX()-1;
-                            dest_y=this->getY();
-                            break;
-                    }
-                    //if not blocked in that direction
-                    if(getWorld()->isBlocked(dest_x, dest_y, this))
-                    {
-                        // 1. Set its direction to be facing toward Penelope.
-                        this->setDirection(dir);
-                        // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
-                        this->moveTo(dest_x, dest_y);
-                        //c. Decrease the movement plan distance by
-                        m_movementPlan--;
+                        Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),0, nearestPerson );
+                        switch (dir)
+                        {
+                            case right:
+                                dest_x=this->getX()+1;
+                                dest_y=this->getY();
+                                break;
+                            case left:
+                                dest_x=this->getX()-1;
+                                dest_y=this->getY();
+                                break;
+                        }
+                        //if not blocked in that direction
+                        if(getWorld()->isBlocked(dest_x, dest_y, this))
+                        {
+                            // 1. Set its direction to be facing toward Penelope.
+                            this->setDirection(dir);
+                            // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                            this->moveTo(dest_x, dest_y);
+                            //c. Decrease the movement plan distance by
+                            m_movementPlan--;
+                        }
                     }
                 }
             }
         }
     }
+    else
+ 
 //    Otherwise, the smart zombie was blocked from moving by another wall, person or zombie, so set the movement plan distance to 0 (which will cause the smart zombie to pick a new direction to move during the next tick).
-    m_movementPlan=0;
+        m_movementPlan=0;
     
 }
 
