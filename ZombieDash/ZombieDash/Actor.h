@@ -46,8 +46,8 @@ public:
     virtual bool isCitizen();
     virtual bool isZombie();
     virtual bool levelHasZombie();
-    virtual bool flameDamagable(int,int);
-    virtual bool vomitInfectable();
+    virtual void flameDamagable();
+    virtual void vomitInfectable();
     virtual bool flameBlockable();
     virtual bool isPerson();
     
@@ -68,7 +68,7 @@ public:
     virtual void doSomething();
     virtual bool blockActors(int, int);
     virtual bool flameBlockable();
-     
+    
      ~Walls();
     
 };
@@ -80,9 +80,10 @@ public:
     virtual void doSomething();
     virtual bool blockActors(int, int);
      ~Penelope();
-    virtual bool flameDamagable(int,int);
-    virtual bool vomitInfectable();
+    virtual void flameDamagable();
+    virtual void vomitInfectable();
     virtual bool isPerson();
+    void gGoodieIncrement();
 //    int numOfLandmines();
 //    int numOfFlamethrower_charges();
 //    int numOfVaccines();
@@ -114,8 +115,8 @@ public:
     ~Citizen();
     virtual bool isCitizen();
     virtual bool blockActors(int, int);
-    virtual bool flameDamagable(int , int);
-    virtual bool vomitInfectable();
+    virtual void flameDamagable();
+    virtual void vomitInfectable();
     virtual bool isPerson();
 private:
     int m_infectionCount;
@@ -130,7 +131,7 @@ public:
     virtual bool isZombie();
     virtual bool levelHasZombie();
     virtual bool blockActors(int, int);
-    virtual bool flameDamagable(int,int);
+    virtual void flameDamagable();
 private:
     int m_paralyzedCounter,
         m_movementPlan;
@@ -145,7 +146,7 @@ public:
     virtual bool isZombie();
     virtual bool levelHasZombie();
     virtual bool blockActors(int, int);
-    virtual bool flameDamagable(int,int);
+    virtual void flameDamagable();
 private:
     int m_paralyzedCounter,
         m_movementPlan;
@@ -157,7 +158,11 @@ public:
     Landmines (int, int, StudentWorld*);
     virtual void doSomething();
     ~Landmines ();
-    virtual bool flameDamagable(int,int);
+    virtual void flameDamagable();
+    bool activeState();
+private:
+    int m_safteyTick;
+    bool m_activeState;
 };
 class Pits: public Actors
 {
@@ -191,7 +196,7 @@ public:
     VaccineGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~VaccineGoodies();
-    virtual bool flameDamagable(int,int);
+    virtual void flameDamagable();
 };
 class GasCanGoodies : public Actors
 {
@@ -199,7 +204,7 @@ public:
     GasCanGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~GasCanGoodies();
-    virtual bool flameDamagable(int,int);
+    virtual void flameDamagable();
 };
 class LandminesGoodies : public Actors
 {
@@ -207,7 +212,7 @@ public:
     LandminesGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~LandminesGoodies();
-    virtual bool flameDamagable(int,int);
+    virtual void flameDamagable();
 };
 
 

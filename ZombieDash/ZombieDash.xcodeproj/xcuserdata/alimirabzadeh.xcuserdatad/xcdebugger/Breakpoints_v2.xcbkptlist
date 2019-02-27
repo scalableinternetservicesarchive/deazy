@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.1952879"
+            timestampString = "572952744.078228"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "236"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/StudentWorld.cpp"
-            timestampString = "572941801.195359"
+            timestampString = "572952744.078622"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "514"
-            endingLineNumber = "514"
+            startingLineNumber = "520"
+            endingLineNumber = "520"
             landmarkName = "StudentWorld :: findTheDistanceFromSmartZombieToPerson(int smartZombie_x,int smartZombie_y, Actors* thePersonPtr)"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.195726"
+            timestampString = "572952744.078931"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "771"
-            endingLineNumber = "771"
+            startingLineNumber = "850"
+            endingLineNumber = "850"
             landmarkName = "SmartZombies:: doSomething()"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/StudentWorld.cpp"
-            timestampString = "572941801.195778"
+            timestampString = "572952744.079211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "509"
-            endingLineNumber = "509"
+            startingLineNumber = "515"
+            endingLineNumber = "515"
             landmarkName = "StudentWorld:: findClosestPersonToSmartZombie(int smartZombie_x,int smartZombie_y)"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,7 +74,39 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.1960239"
+            timestampString = "572952744.079487"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "849"
+            endingLineNumber = "849"
+            landmarkName = "SmartZombies:: doSomething()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZombieDash/StudentWorld.cpp"
+            timestampString = "572952744.079758"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "514"
+            endingLineNumber = "514"
+            landmarkName = "StudentWorld:: findClosestPersonToSmartZombie(int smartZombie_x,int smartZombie_y)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ZombieDash/Actor.cpp"
+            timestampString = "572952744.080017"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "770"
@@ -89,28 +121,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ZombieDash/StudentWorld.cpp"
-            timestampString = "572941801.196072"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508"
-            landmarkName = "StudentWorld:: findClosestPersonToSmartZombie(int smartZombie_x,int smartZombie_y)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.196314"
+            timestampString = "572952744.080285"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "691"
-            endingLineNumber = "691"
+            startingLineNumber = "789"
+            endingLineNumber = "789"
             landmarkName = "SmartZombies:: doSomething()"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.196364"
+            timestampString = "572952744.080551"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "710"
-            endingLineNumber = "710"
+            startingLineNumber = "808"
+            endingLineNumber = "808"
             landmarkName = "SmartZombies:: doSomething()"
             landmarkType = "7">
          </BreakpointContent>
@@ -138,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.196409"
+            timestampString = "572952744.080825"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "729"
-            endingLineNumber = "729"
+            startingLineNumber = "828"
+            endingLineNumber = "828"
             landmarkName = "SmartZombies:: doSomething()"
             landmarkType = "7">
          </BreakpointContent>
@@ -154,27 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.196453"
+            timestampString = "572952744.081091"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "749"
-            endingLineNumber = "749"
-            landmarkName = "SmartZombies:: doSomething()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.196496"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "748"
-            endingLineNumber = "748"
+            startingLineNumber = "827"
+            endingLineNumber = "827"
             landmarkName = "SmartZombies:: doSomething()"
             landmarkType = "7">
          </BreakpointContent>
@@ -186,11 +186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/StudentWorld.cpp"
-            timestampString = "572941801.196539"
+            timestampString = "572952744.081358"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "341"
-            endingLineNumber = "341"
+            startingLineNumber = "346"
+            endingLineNumber = "346"
             landmarkName = "StudentWorld:: euclideanDistanceFromCitizenToZombie(int citizenX, int citizenY)"
             landmarkType = "7">
          </BreakpointContent>
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ZombieDash/Actor.cpp"
-            timestampString = "572941801.196804"
+            timestampString = "572952744.081625"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "690"
-            endingLineNumber = "690"
+            startingLineNumber = "769"
+            endingLineNumber = "769"
             landmarkName = "SmartZombies:: doSomething()"
             landmarkType = "7">
          </BreakpointContent>

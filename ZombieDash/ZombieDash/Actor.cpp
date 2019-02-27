@@ -118,13 +118,13 @@ bool Actors:: levelHasZombie()
 {
     return false;
 }
-bool Actors:: flameDamagable(int x , int y)
+void Actors:: flameDamagable()
 {
-    return false;
+    return;
 }
-bool Actors:: vomitInfectable()
+void Actors:: vomitInfectable()
 {
-    return false;
+    return;
 }
 //bool Actors:: blockActors()const
 //{
@@ -168,19 +168,19 @@ Penelope::Penelope(int startX, int startY, StudentWorld * sWorld)
 :Actors(IID_PLAYER, startX , startY, right , 0 , sWorld ), m_infectionCount(0)
 {
     //when constructing set life status of Penelope to be true as alive
-    setAlive(true);
+    this->setAlive(true);
     //set Penelope infection in the beginning false, as not infected
     setInfection(false);
 }
 Penelope::~Penelope()
 {}
-bool Penelope:: flameDamagable(int x, int y)
+void Penelope:: flameDamagable()
 {
-    return true;
+    return;
 }
-bool Penelope:: vomitInfectable()
+void Penelope:: vomitInfectable()
 {
-    return true;
+    this->setAlive(false);
 }
 bool Penelope:: isPerson()
 {
@@ -200,7 +200,7 @@ void Penelope:: doSomething()
         if(m_infectionCount==500)
         {
             //She must immediately set her status to dead
-            setAlive(true);
+            this->setAlive(true);
             //------- NOT SURE TO BE HERE !!!!!!!!!!!!!!!!!!!!!!!
             getWorld()->decLives();
             //The game must play a SOUND_PLAYER_DIE sound effect
@@ -283,8 +283,7 @@ void Penelope:: doSomething()
                 if(m_landmines>0)
                 {
                     //Penelope will introduce a new landmine object at her current (x,y) location into the game
-                
-                    //new Landmines(this->getX(), this->getY(), this)
+                    getWorld()->introduceLandmineHere(this->getX(), this->getY());
                     //landmine count will decrease by 1
                     m_landmines--;
                 }
@@ -295,7 +294,7 @@ void Penelope:: doSomething()
                 if(m_vaccines>0)
                 {
                     //Penelope will set her infected status to false and reduce her vaccine count by 1
-                    setInfection(false);
+                    this->setInfection(false);
                     // reduce vaccine count by 1. (She wasted that vaccine if she was not infected.)
                     m_vaccines--;
                 }
@@ -308,6 +307,81 @@ void Penelope:: doSomething()
                 {
                     //then Penelope will attempt to fire three flames into the three slots directly in front of her:
                     m_flamethrower_charges--;
+                    //Penelope must play the SOUND_PLAYER_FIRE
+                    getWorld()->playSound(SOUND_PLAYER_FIRE);
+                    //Penelope will add up to three new flame objects to the game. If Penelope is at (px, py) this is where the new flame objects will go: For i = 0, 1, and 2,
+                    int fireDest_x, fireDest_y;
+                    for (int i=0; i <3 ; i++)
+                    {
+                        //If Penelope is facing up: posi = (px, py + i *SPRITE_HEIGHT)
+                        if(this->getDirection()==up)
+                        {
+                            //Compute the position posi where the next flame will go.
+                            fireDest_x=this->getX();
+                            fireDest_y= this->getY() + i*SPRITE_HEIGHT;
+                            //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            {
+                                //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
+                                getWorld()->introduceFlameObject(fireDest_x, fireDest_y, up);
+                            }
+                            else
+                                //ii. If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                                break;
+                        }
+                        //If Penelope is facing down: posi = (px, py − i *SPRITE_HEIGHT)
+                        if(this->getDirection()==down)
+                        {
+                            //Compute the position posi where the next flame will go.
+                            fireDest_x=this->getX();
+                            fireDest_y= this->getY() - i*SPRITE_HEIGHT;
+                            //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            {
+                                //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
+                                getWorld()->introduceFlameObject(fireDest_x, fireDest_y, down);
+                            }
+                            else
+                                //ii. If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                                break;
+                        }
+                        //If Penelope is facing right: posi = (px + i *SPRITE_WIDTH, py)
+                        if(this->getDirection()==right)
+                        {
+                            //Compute the position posi where the next flame will go.
+                            fireDest_x=this->getX()+ i*SPRITE_WIDTH;
+                            fireDest_y= this->getY() ;
+                            //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            {
+                                //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
+                                getWorld()->introduceFlameObject(fireDest_x, fireDest_y, down);
+                            }
+                            else
+                                //ii. If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                                break;
+                        }
+                        //If Penelope is facing left: posi = (px − i *SPRITE_WIDTH, py)
+                        if(this->getDirection()==left)
+                        {
+                            //Compute the position posi where the next flame will go.
+                            fireDest_x=this->getX();
+                            
+                            fireDest_y= this->getY() - i*SPRITE_WIDTH;
+                            //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            {
+                                //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
+                                getWorld()->introduceFlameObject(fireDest_x, fireDest_y, down);
+                            }
+                            else
+                                //ii. If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
+                                break;
+                        }
+                        
+                    }
+                    
+                        
                 }
                 break;
             }
@@ -325,6 +399,10 @@ void Penelope:: doSomething()
     
 
 
+}
+void Penelope:: gGoodieIncrement()
+{
+    m_flamethrower_charges++;
 }
 //    • Penelope blocks other objects from moving nearby/onto her. Penelope’s bounding
 //    box must never intersect with that of any citizen, zombie, or wall.
@@ -467,24 +545,19 @@ DumbZombies::  DumbZombies(int startX, int startY, StudentWorld* sWorld)
 {
     setAlive(true);
 }
-bool DumbZombies:: flameDamagable(int x, int y)
+void DumbZombies:: flameDamagable()
 {
-    //A dumb zombie can be damaged by flames. If a flame overlaps with a dumb zombie, it will kill the dumb zombie. The dumb zombie must:
+   //Set its own state to dead
+    this->setAlive(false);
+    //o Play a sound effect to indicate that the dumb zombie died: SOUND_ZOMBIE_DIE.
+    getWorld()->playSound(SOUND_ZOMBIE_DIE);
+    //Increase the player’s score by 1000 points.
+    // ================ CODE HERE ===================
     
-    // =========================================== CODE HERE ===================================
-    
-//    setAlive(false);
-//    //Play a sound effect to indicate that the dumb zombie died: SOUND_ZOMBIE_DIE.
-//    getWorld()->playSound(SOUND_ZOMBIE_DIE);
-//    //Increase the player’s score by 1000 points.
-////    1 in 10 dumb zombies are mindlessly carrying a vaccine goodie that they'll drop when they die. If this dumb zombie has a vaccine goodie, it will introduce a new vaccine goodie at its (x,y) coordinate by adding it to the StudentWorld object
-//    if(1==randInt(1, 10))
-//    {
-//        getWorld()->addVaccineGoodieHere(this-, <#int#>)
-//    }
-    
-    
-    return true;
+    //1 in 10 dumb zombies are mindlessly carrying a vaccine goodie that they'll drop when they die. If this dumb zombie has a vaccine goodie, it will
+   // introduce a new vaccine goodie at its (x,y) coordinate by adding it to the StudentWorld object.
+    if(1==randInt(1, 10))
+        getWorld()->addVaccineGoodieHere(this->getX(), this->getY());
 }
 void DumbZombies:: doSomething()
 {
@@ -662,9 +735,15 @@ SmartZombies:: SmartZombies(int startX, int startY, StudentWorld* sWorld)
     setAlive(true);
 }
 
-bool SmartZombies:: flameDamagable(int x, int y)
+void SmartZombies:: flameDamagable()
 {
-    return true;
+    //Set its own state to dead
+    this->setAlive(false);
+    //o Play a sound effect to indicate that the smart zombie died: SOUND_ZOMBIE_DIE.
+    getWorld()->playSound(SOUND_ZOMBIE_DIE);
+    //Increase the player’s score by 2000 points.
+    
+    //========================= CODE HERE
 }
 void SmartZombies:: doSomething()
 {
@@ -933,20 +1012,94 @@ bool SmartZombies::blockActors(int point_x, int point_y)
 
 //================================================ Landmines======================================
 Landmines:: Landmines (int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_LANDMINE, startX , startY, right,1,sWorld)
-{}
+:Actors(IID_LANDMINE, startX , startY, right,1,sWorld), m_safteyTick(30), m_activeState(false)
+{
+    this->setAlive(true);
+}
 void Landmines:: doSomething()
 {
-    //When a landmine explodes, the flames it creates should have a direction of up.
-    return;
+    //1. It must check to see if it is currently alive. If not, then doSomething() must return immediately – none of the following steps should be performed.
+    if(!isAlive())
+        return;
+    //If the landmine is not yet active then
+    if(m_activeState==false)
+    {
+        //a. It must decrement the number of safety ticks left.
+        m_safteyTick--;
+        //. If the number of safety ticks is zero, the landmine becomes active.
+        if(m_safteyTick==0)
+            m_activeState=true;
+        //c. The doSomething() method must return immediately, doing nothing more during this tick.
+        return;
+    }
+    //The landmine must determine if it overlaps13 with a citizen or Penelope. If so, then the landmine must:
+    if(getWorld()-> doesOverlapsWithcitizenPenelope(this))
+    {
+        //Set its state to dead
+        setAlive(false);
+        //b. Play a sound effect to indicate that the landmine exploded: SOUND_LANDMINE_EXPLODE.
+        getWorld()->playSound(SOUND_LANDMINE_EXPLODE);
+        // introduce a flame object
+        getWorld()->introduceFlameObject(this->getX(), this->getY(),up);
+        //d. Introduce flame objects in the eight adjacent slots around the landmine (north, northeast, east, southeast, south, southwest, west, northwest). Each such
+//        adjacent spot must exactly SPRITE_WIDTH pixels away horizontally and/or SPRITE_HEIGHT pixels away vertically. (SPRITE_WIDTH and SPRITE_HEIGHT are both 16.) So if the landmine goodie were at position (100, 100), the northwest flame would be added at (84, 116), the east goodie at (116, 100), the southeast goodie at (116, 84), etc.
+        //(north
+        getWorld()->introduceFlameObject(this->getX(), this->getY() +SPRITE_HEIGHT,up);
+        //northEast
+        getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
+        //east
+        getWorld()->introduceFlameObject(this->getX() +SPRITE_WIDTH, this->getY(),up);
+        //south East
+        getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
+        //south
+        getWorld()->introduceFlameObject(this->getX(), this->getY() -SPRITE_HEIGHT,up);
+        //SOUTH WEST
+        getWorld()->introduceFlameObject(this->getX()-SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
+        //WEST
+        getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY(),up);
+        //north west
+        getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
+        //e. Introduce a pit object at the same (x,y) location as the landmine.
+        getWorld()->introducePitObject(this->getX(), this->getY());
+    }
+    
 }
 Landmines::  ~Landmines ()
 {
     
 }
-bool Landmines:: flameDamagable(int x, int y)
+void Landmines:: flameDamagable()
 {
-    return true;
+    //Set its state to dead
+    setAlive(false);
+    //Play a sound effect to indicate that the landmine exploded: SOUND_LANDMINE_EXPLODE.
+    getWorld()->playSound(SOUND_LANDMINE_EXPLODE);
+    // introduce a flame object
+    getWorld()->introduceFlameObject(this->getX(), this->getY(),up);
+    //d. Introduce flame objects in the eight adjacent slots around the landmine (north, northeast, east, southeast, south, southwest, west, northwest). Each such
+    //        adjacent spot must exactly SPRITE_WIDTH pixels away horizontally and/or SPRITE_HEIGHT pixels away vertically. (SPRITE_WIDTH and SPRITE_HEIGHT are both 16.) So if the landmine goodie were at position (100, 100), the northwest flame would be added at (84, 116), the east goodie at (116, 100), the southeast goodie at (116, 84), etc.
+    //(north
+    getWorld()->introduceFlameObject(this->getX(), this->getY() +SPRITE_HEIGHT,up);
+    //northEast
+    getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
+    //east
+    getWorld()->introduceFlameObject(this->getX() +SPRITE_WIDTH, this->getY(),up);
+    //south East
+    getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
+    //south
+    getWorld()->introduceFlameObject(this->getX(), this->getY() -SPRITE_HEIGHT,up);
+    //SOUTH WEST
+    getWorld()->introduceFlameObject(this->getX()-SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
+    //WEST
+    getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY(),up);
+    //north west
+    getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
+    //e. Introduce a pit object at the same (x,y) location as the landmine.
+    getWorld()->introducePitObject(this->getX(), this->getY());
+}
+bool Landmines:: activeState()
+{
+    return m_activeState;
 }
 //=============================================== end of Landmines methods ==================================
 
@@ -983,15 +1136,12 @@ void Flames:: doSomething()
     if(m_creationCount==2)
     {
         //the flame must set its state to dead so it can be destroyed and removed from the level by the StudentWorld object
-        setAlive(false);
+        this->setAlive(false);
             return;
     }
 //    3. Otherwise, the flame will damage all damageable objects that overlap8 with the flame. The following objects are all damageable and must react to being damaged in the appropriate way: Penelope, citizens, all types of goodies, landmines, and all types of zombies.
     
-    
-    //=================== CODE HERE ========================
-    
-    
+    getWorld()->flameDamagesWhenOverlapsWithTheseObjecr(this);
 }
 Flames:: ~Flames()
 {}
@@ -1014,10 +1164,11 @@ void Vomit:: doSomething()
     if(m_creationCount==2)
     {
         //the flame must set its state to dead so it can be destroyed and removed from the level by the StudentWorld object
-        setAlive(false);
+        this->setAlive(false);
         return;
     }
    // Otherwise, the vomit will infect any infectable object that overlaps with the vomit. The following objects are infectable and must react to being infected in the appropriate way: Penelope and citizens.
+    getWorld()->doesOverlapsWithcitizenPenelope(this);
     
 }
 Vomit:: ~Vomit()
@@ -1042,9 +1193,9 @@ void VaccineGoodies:: doSomething()
     if(getWorld()->doesOverlapWithPenelope( this-> getX() , this->getY()))
     {
        // a. Inform the StudentWorld object that the user is to receive 50 points.
-        //=====================CODE HERE
+        //=====================CODE HERE=================
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
-        setAlive(false);
+        this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
         getWorld()->playSound(SOUND_GOT_GOODIE);
         //d. Inform the StudentWorld object that Penelope is to receive one dose of vaccine.
@@ -1054,10 +1205,9 @@ void VaccineGoodies:: doSomething()
 }
 VaccineGoodies:: ~VaccineGoodies()
 {}
-bool VaccineGoodies:: flameDamagable(int x, int y)
+ void VaccineGoodies:: flameDamagable()
 {
-    setAlive(false);
-    return true;
+    this->setAlive(false);
 }
 //=============================================== end of VaccineGoodies methods ==================================
 
@@ -1066,7 +1216,7 @@ bool VaccineGoodies:: flameDamagable(int x, int y)
 GasCanGoodies:: GasCanGoodies(int startX, int startY, StudentWorld* sWorld)
 :Actors(IID_GAS_CAN_GOODIE, startX , startY, right,1,sWorld)
 {
-    setAlive(true);
+    this->setAlive(true);
 }
 void GasCanGoodies:: doSomething()
 {
@@ -1079,19 +1229,18 @@ void GasCanGoodies:: doSomething()
         //a. Inform the StudentWorld object that the user is to receive 50 points.
         //================= CODE HERE
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
-        setAlive(false);
+        this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
         getWorld()->playSound(SOUND_GOT_GOODIE);
         //d. Inform the StudentWorld object that Penelope is to receive 5 charges for her flamethrower.
-        //================= CODE HERE
+        // ================== CODE HERE ===================
     }
 }
 GasCanGoodies:: ~GasCanGoodies()
 {}
-bool GasCanGoodies:: flameDamagable(int x, int y)
+void GasCanGoodies:: flameDamagable()
 {
-    setAlive(false);
-    return true;
+   this-> setAlive(false);
 }
 //=============================================== end of GasCanGoodies methods ==================================
 
@@ -1100,7 +1249,7 @@ bool GasCanGoodies:: flameDamagable(int x, int y)
 LandminesGoodies::LandminesGoodies(int startX, int startY, StudentWorld* sWorld)
 :Actors( IID_LANDMINE_GOODIE, startX , startY, right,1,sWorld  )
 {
-    setAlive(true);
+    this->setAlive(true);
 }
 
 void LandminesGoodies:: doSomething()
@@ -1109,25 +1258,24 @@ void LandminesGoodies:: doSomething()
     if(!isAlive())
         return;
     // 2. The gas can goodie must determine if it overlaps with Penelope. If so, then the gas can goodie must:
-    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY() ))
+    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
     {
         //a. Inform the StudentWorld object that the user is to receive 50 points.
         //=================  CODE HERE  ==============
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
-        setAlive(false);
+        this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
         getWorld()->playSound(SOUND_GOT_GOODIE);
        // d. Inform Inform the StudentWorld object that Penelope is to receive 2 landmines.
-        //================= CODE HERE
+        //================= CODE HERE =============
     }
     
 }
 LandminesGoodies:: ~LandminesGoodies()
 {}
-bool LandminesGoodies:: flameDamagable(int x, int y)
+void LandminesGoodies:: flameDamagable()
 {
-    setAlive(false);
-    return true;
+    this->setAlive(false);
 }
 //=============================================== end of LandminesGoodies methods ==================================
 
@@ -1140,13 +1288,18 @@ Citizen:: Citizen(int startX, int startY, StudentWorld* sWorld)
     //citizen starts alive
     setAlive(true);
 }
-bool Citizen:: flameDamagable(int x, int y)
+void Citizen:: flameDamagable()
 {
-    return true;
+   //Set its own state to dead
+    this->setAlive(false);
+    //o Play a sound effect to indicate that the citizen died: SOUND_CITIZEN_DIE.
+    getWorld()->playSound(SOUND_CITIZEN_DIE);
+    //o Decrease the player’s score by 1000 points.
+    
+    //================= CODE HERE ===========================
 }
 void Citizen:: doSomething()
 {
-    //====================  BUG: Every tick pick a new direction ===========================
     
 //    The citizen must check to see if it is currently alive. If not, then its doSomething()
 //        method must return immediately – none of the following steps should be
@@ -1161,7 +1314,7 @@ void Citizen:: doSomething()
         if(m_infectionCount==500)
         {
             //Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
-            setAlive(false);
+            this->setAlive(false);
             //Play a SOUND_ZOMBIE_BORN sound effect
             getWorld()->playSound(SOUND_ZOMBIE_BORN);
             //Decrease the player’s score by 1000 for failing to save this citizen (the player’s score could go negative!)
@@ -1189,7 +1342,7 @@ void Citizen:: doSomething()
 //    If dist_p < dist_z or no zombies exist in the level (so dist_z is irrelevant), and the
 //    citizen's Euclidean distance from Penelope is less than or equal to 80 pixels (so
 //    the citizen wants to follow Penelope):
-    if((dist_p<dist_z ||  !getWorld()->zombieExist() ) && getWorld()->euclideanDistanceFromPenelope(this->getX(), this->getY()))
+    if((dist_p < dist_z ||  !getWorld()->zombieExist() ) && getWorld()->euclideanDistanceFromPenelope(this->getX(), this->getY()))
     {
         //If the citizen is on the same row or column as Penelope:
         if(getWorld()->isCitizenOnTheSameRowOrColumnWithPenelope(this->getX(), this->getY()))
@@ -1341,7 +1494,7 @@ void Citizen:: doSomething()
         }
     }
    // If there is a zombie whose Euclidean distance from the citizen is less than or equal to 80 pixels, the citizen wants to run away, so:
-    if( getWorld() -> euclideanDistanceFromCitizenToZombie(this->getX(), this->getY()))
+    else if( getWorld() -> euclideanDistanceFromCitizenToZombie(this->getX(), this->getY()))
     {
        // a. For each of the four directions up, down, left and right, the citizen must:
 //        for(Direction dir=0; dir<4; dir++)
@@ -1475,9 +1628,9 @@ bool Citizen::blockActors(int point_x, int point_y)
     //otherwise it does not
     return false;
 }
-bool Citizen:: vomitInfectable()
+void Citizen:: vomitInfectable()
 {
-    return true;
+    this->setAlive(false);
 }
 bool Citizen:: isPerson()
 {

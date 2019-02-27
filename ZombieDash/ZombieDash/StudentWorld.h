@@ -44,6 +44,14 @@ public:
     bool smartZombieSameRowOrColWithThePerson(int,int, Actors*);
     Direction pickDirectionToGetCloserToPerson(int, int, Actors*);
     Direction pickRandomDirForSmartZombieToFollowPerson(int, int, int,Actors*);
+    bool doesOverlapsWithcitizenPenelope(Actors *);
+    void introduceFlameObject(int,int, Direction);
+     void introducePitObject(int,int);
+    bool isFlameDamagable();
+    void vomitOverlapsWithcitizenPenelopeToInfect(Actors *);
+    void flameDamagesWhenOverlapsWithTheseObjecr(Actors *);
+    void introduceLandmineHere(int, int);
+
 private:
     //2D list for stroing all the actors
     vector<Actors*> m_level;

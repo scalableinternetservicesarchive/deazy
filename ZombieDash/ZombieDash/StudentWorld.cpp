@@ -139,14 +139,19 @@ int StudentWorld::move()
    //Remove newly-dead actors after each tick
 //   for (vector<Actors*>::iterator iter = m_level.begin(); iter != m_level.end();)
 //    {
-//        //if the current actor is dead, remove that actor from the level
-//        if ( !((*iter)->isAlive()))
+//        if((*iter) == nullptr )
 //        {
-//            delete *iter;
-//            iter=m_level.erase(iter);
+//            continue;
 //        }
-//        else
-//            iter++;
+//        //if the current actor is dead, remove that actor from the level
+//        else if ( ((*iter)->isAlive() == false))
+//        {
+//            delete (*iter);
+//            m_level.erase(iter);
+//
+//        }
+//        else iter++;
+////
 //    }
     //    // Update the game status line
     //    Update Display Text // update the score/lives/level text at screen top
@@ -363,19 +368,20 @@ bool StudentWorld:: euclideanDistanceFromCitizenToZombie(int citizenX, int citiz
 //check if the passed object overlap with penelope
 bool StudentWorld:: doesOverlapWithPenelope(int point_x, int point_y)
 {
-    //calculate the center of the current wall and the point passed in
-    int pointX_center= point_x+ SPRITE_WIDTH/2;
-    int pointY_center= point_y + SPRITE_HEIGHT/2;
-    int penelopeX_center= penelopePtr->getX() +SPRITE_WIDTH/2;
-    int penelopeY_center= penelopePtr->getY() +SPRITE_HEIGHT/2;
-    
-    // then use the Udulican formula, instead the distance between the centers should be less than 16
-    int deltaX= pow((pointX_center - penelopeX_center),2);
-    int deltaY= pow((pointY_center - penelopeY_center),2);
-    
-    //if that's cse then wall blocks the passed object
-    if(deltaX + deltaY < pow(16,2)) return true;
-    //otherwise it does not
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        //if the current actor is penelope or citizen
+        else if((*iter)==penelopePtr)
+        {
+            double deltaX= point_x - (*iter)->getX();
+            double deltaY= point_y - (*iter)->getY();
+            double result = pow(deltaX, 2) + pow(deltaY, 2);
+            if(result<= pow(10, 2))
+                return true;
+        }
+    }
     return false;
 }
 ////check if the any person or zombie overlaps with a pit
@@ -476,10 +482,10 @@ Direction StudentWorld::randomDir()
     return dirChoice;
 }
 //add a vaccine goodie at the location passed
-//void StudentWorld:: addVaccineGoodieHere(int here_x,int here_y)
-//{
-//    m_level.push_back(new VaccineGoodies(here_x,here_y, this));
-//}
+void StudentWorld:: addVaccineGoodieHere(int here_x,int here_y)
+{
+    m_level.push_back(new VaccineGoodies(here_x,here_y, this));
+}
 
 //This function returns the person object that is closest
 Actors* StudentWorld:: findClosestPersonToSmartZombie(int smartZombie_x,int smartZombie_y)
@@ -553,3 +559,77 @@ Direction StudentWorld:: pickRandomDirForSmartZombieToFollowPerson(int smartZomb
     }
 }
 
+bool StudentWorld:: doesOverlapsWithcitizenPenelope(Actors * actor)
+{
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        //if the current actor is penelope or citizen
+        else if((*iter)->isCitizen() || (*iter)==penelopePtr)
+        {
+            double deltaX= actor->getX() - (*iter)->getX();
+            double deltaY= actor->getY() - (*iter)->getY();
+            double result = pow(deltaX, 2) + pow(deltaY, 2);
+            if(result<= pow(10, 2))
+                return true;
+        }
+    }
+    return false;
+}
+//adding a flame object at the desired location
+void StudentWorld:: introduceFlameObject(int here_x, int here_y, Direction dir)
+{
+    m_level.push_back(new Flames(here_x, here_y, dir,this));
+}
+//introducing a new pits at this loation
+void StudentWorld:: introducePitObject(int here_x, int here_y)
+{
+    m_level.push_back(new Pits(here_x, here_y,this));
+}
+//check if the function can be damege by the flame
+
+
+/// ===========CODE HERE =======================
+
+
+//vomit will infect a person if overlaps
+void StudentWorld:: vomitOverlapsWithcitizenPenelopeToInfect(Actors *actor)
+{
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
+    {
+        //if nullptr continue
+        if((*iter)==nullptr) continue;
+        //if the current actor is penelope or citizen
+        else if((*iter)->isCitizen() || (*iter)==penelopePtr)
+        {
+            double deltaX= actor->getX() - (*iter)->getX();
+            double deltaY= actor->getY() - (*iter)->getY();
+            double result = pow(deltaX, 2) + pow(deltaY, 2);
+            if(result<= pow(10, 2))
+                (*iter)->vomitInfectable();
+        }
+    }
+    return;
+}
+
+void StudentWorld:: flameDamagesWhenOverlapsWithTheseObjecr(Actors *actorPtr)
+{
+    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)//iterate through all the objects//if nullptr continue
+    {
+        if((*iter)==nullptr) continue;
+    //if the current actor is penelope or citizen
+        else if((*iter)->isCitizen() || (*iter)==penelopePtr)
+        {
+            double deltaX= actorPtr->getX() - (*iter)->getX();
+            double deltaY= actorPtr->getY() - (*iter)->getY();
+            double result = pow(deltaX, 2) + pow(deltaY, 2);
+            if(result<= pow(10, 2))
+                (*iter)->flameDamagable();
+        }
+    }
+}
+void StudentWorld:: introduceLandmineHere(int here_x, int here_y)
+{
+    m_level.push_back(new Landmines(here_x, here_y, this));
+}
