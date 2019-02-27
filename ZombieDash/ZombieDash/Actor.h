@@ -46,7 +46,7 @@ public:
     virtual bool isCitizen();
     virtual bool isZombie();
     virtual bool levelHasZombie();
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
     virtual bool vomitInfectable();
     virtual bool flameBlockable();
     virtual bool isPerson();
@@ -68,6 +68,7 @@ public:
     virtual void doSomething();
     virtual bool blockActors(int, int);
     virtual bool flameBlockable();
+     
      ~Walls();
     
 };
@@ -79,7 +80,7 @@ public:
     virtual void doSomething();
     virtual bool blockActors(int, int);
      ~Penelope();
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
     virtual bool vomitInfectable();
     virtual bool isPerson();
 //    int numOfLandmines();
@@ -113,7 +114,7 @@ public:
     ~Citizen();
     virtual bool isCitizen();
     virtual bool blockActors(int, int);
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int , int);
     virtual bool vomitInfectable();
     virtual bool isPerson();
 private:
@@ -129,7 +130,7 @@ public:
     virtual bool isZombie();
     virtual bool levelHasZombie();
     virtual bool blockActors(int, int);
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
 private:
     int m_paralyzedCounter,
         m_movementPlan;
@@ -144,7 +145,7 @@ public:
     virtual bool isZombie();
     virtual bool levelHasZombie();
     virtual bool blockActors(int, int);
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
 private:
     int m_paralyzedCounter,
         m_movementPlan;
@@ -156,7 +157,7 @@ public:
     Landmines (int, int, StudentWorld*);
     virtual void doSomething();
     ~Landmines ();
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
 };
 class Pits: public Actors
 {
@@ -190,7 +191,7 @@ public:
     VaccineGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~VaccineGoodies();
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
 };
 class GasCanGoodies : public Actors
 {
@@ -198,7 +199,7 @@ public:
     GasCanGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~GasCanGoodies();
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
 };
 class LandminesGoodies : public Actors
 {
@@ -206,7 +207,7 @@ public:
     LandminesGoodies(int, int, StudentWorld*);
     virtual void doSomething();
     ~LandminesGoodies();
-    virtual bool flameDamagable();
+    virtual bool flameDamagable(int,int);
 };
 
 

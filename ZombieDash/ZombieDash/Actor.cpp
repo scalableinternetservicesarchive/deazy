@@ -118,7 +118,7 @@ bool Actors:: levelHasZombie()
 {
     return false;
 }
-bool Actors:: flameDamagable()
+bool Actors:: flameDamagable(int x , int y)
 {
     return false;
 }
@@ -174,7 +174,7 @@ Penelope::Penelope(int startX, int startY, StudentWorld * sWorld)
 }
 Penelope::~Penelope()
 {}
-bool Penelope:: flameDamagable()
+bool Penelope:: flameDamagable(int x, int y)
 {
     return true;
 }
@@ -399,6 +399,7 @@ bool Walls:: flameBlockable()
     return true;
 }
 
+
 //What a Wall Must Do In Other Circumstances
 //• A wall cannot be damaged by a flame.
 //• A wall cannot be infected by vomit.
@@ -460,34 +461,13 @@ bool Exit:: flameBlockable()
 }
 //===================================End of the Exit Method ================================
 
-
-
-
-
-
-
-//Determining Blocking of Movement
-//In Zombie Dash, citizens, zombies, and Penelope can move anywhere on the level, with
-//the following exceptions:
-//• They must not move onto any wall.
-//• They must not move onto any citizen, zombie, or Penelope.
-//When we say “P must not move onto Q” we mean the following: Moving P must not
-//result in P’s bounding box intersecting AT ALL with Q’s bounding box. If an actor has
-//its lower left corner at location (x,y), then the actor’s bounding box is the rectangle with
-//lower left corner (x,y) and upper right corner
-//(x+SPRITE_WIDTH−1, y+SPRITE_HEIGHT−1)
-//bool blockingOfMovement()
-//{
-//
-//}
-
 // ================================= Dumb Zombies Methods ================================================
 DumbZombies::  DumbZombies(int startX, int startY, StudentWorld* sWorld)
 :Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(0), m_movementPlan(0)
 {
     setAlive(true);
 }
-bool DumbZombies:: flameDamagable()
+bool DumbZombies:: flameDamagable(int x, int y)
 {
     //A dumb zombie can be damaged by flames. If a flame overlaps with a dumb zombie, it will kill the dumb zombie. The dumb zombie must:
     
@@ -522,6 +502,7 @@ void DumbZombies:: doSomething()
     {
         //if the zombie is facing up
         case up:
+        
             //The dumb zombie must check to see if a person (either Penelope or one of the citizens on the level) is in front of it in the direction it is facing:
             if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()+SPRITE_HEIGHT))
             {
@@ -681,7 +662,7 @@ SmartZombies:: SmartZombies(int startX, int startY, StudentWorld* sWorld)
     setAlive(true);
 }
 
-bool SmartZombies:: flameDamagable()
+bool SmartZombies:: flameDamagable(int x, int y)
 {
     return true;
 }
@@ -707,7 +688,7 @@ void SmartZombies:: doSomething()
             //if the zombie is facing up
         case up:
             //The dumb zombie must check to see if a person (either Penelope or one of the citizens on the level) is in front of it in the direction it is facing:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()+SPRITE_HEIGHT))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX(), this->getY()+SPRITE_HEIGHT))
@@ -726,7 +707,7 @@ void SmartZombies:: doSomething()
             }
             break;
         case down:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()-SPRITE_HEIGHT))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX(), this->getY()-SPRITE_HEIGHT))
@@ -745,7 +726,7 @@ void SmartZombies:: doSomething()
             }
             break;
         case right:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX()+SPRITE_WIDTH, this->getY()))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX()+SPRITE_HEIGHT, this->getY()))
@@ -764,7 +745,7 @@ void SmartZombies:: doSomething()
             }
             break;
         case left:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX()-SPRITE_WIDTH, this->getY()))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX()-SPRITE_HEIGHT, this->getY()))
@@ -963,7 +944,7 @@ Landmines::  ~Landmines ()
 {
     
 }
-bool Landmines:: flameDamagable()
+bool Landmines:: flameDamagable(int x, int y)
 {
     return true;
 }
@@ -979,7 +960,7 @@ void Pits:: doSomething()
 //    A pit must be given an opportunity to do something during every tick (in its doSomething() method). When given an opportunity to do something during a tick, the pit will cause any person or zombie that overlaps with it to be destroyed (they fall into the pit). When the person/zombie is destroyed, it must behave just as it were damaged by a flame (e.g., if a dumb zombie falls into a pit, the player gets 1000 points, the game plays a dying noise, etc.; if Penelope falls into a pit the current level will end; a citizen falling into a pit dies, and the player loses 1000 points, etc.).
     
     //check if the pit overlaps with any actor
-    
+    return;
 }
 Pits:: ~Pits()
 {}
@@ -1036,7 +1017,7 @@ void Vomit:: doSomething()
         setAlive(false);
         return;
     }
-   // Otherwise, the vomit will infect any infectable object that overlaps9 with the vomit. The following objects are infectable and must react to being infected in the appropriate way: Penelope and citizens.
+   // Otherwise, the vomit will infect any infectable object that overlaps with the vomit. The following objects are infectable and must react to being infected in the appropriate way: Penelope and citizens.
     
 }
 Vomit:: ~Vomit()
@@ -1073,7 +1054,7 @@ void VaccineGoodies:: doSomething()
 }
 VaccineGoodies:: ~VaccineGoodies()
 {}
-bool VaccineGoodies:: flameDamagable()
+bool VaccineGoodies:: flameDamagable(int x, int y)
 {
     setAlive(false);
     return true;
@@ -1107,7 +1088,7 @@ void GasCanGoodies:: doSomething()
 }
 GasCanGoodies:: ~GasCanGoodies()
 {}
-bool GasCanGoodies:: flameDamagable()
+bool GasCanGoodies:: flameDamagable(int x, int y)
 {
     setAlive(false);
     return true;
@@ -1143,7 +1124,7 @@ void LandminesGoodies:: doSomething()
 }
 LandminesGoodies:: ~LandminesGoodies()
 {}
-bool LandminesGoodies:: flameDamagable()
+bool LandminesGoodies:: flameDamagable(int x, int y)
 {
     setAlive(false);
     return true;
@@ -1159,7 +1140,7 @@ Citizen:: Citizen(int startX, int startY, StudentWorld* sWorld)
     //citizen starts alive
     setAlive(true);
 }
-bool Citizen:: flameDamagable()
+bool Citizen:: flameDamagable(int x, int y)
 {
     return true;
 }
@@ -1213,7 +1194,7 @@ void Citizen:: doSomething()
         //If the citizen is on the same row or column as Penelope:
         if(getWorld()->isCitizenOnTheSameRowOrColumnWithPenelope(this->getX(), this->getY()))
         {
-            //find out what direction Penelope should face
+            //find out what direction citizen should face
             Direction dir= getWorld()->findWhatDirectionCitizenShouldFaceToFollowPenelope(this->getX(), this->getY());
             
             //set the dest of citizen based on where it is facing to
@@ -1360,21 +1341,18 @@ void Citizen:: doSomething()
         }
     }
    // If there is a zombie whose Euclidean distance from the citizen is less than or equal to 80 pixels, the citizen wants to run away, so:
-    if(getWorld()-> euclideanDistanceFromCitizenToZombie(this->getX(), this->getY()))
+    if( getWorld() -> euclideanDistanceFromCitizenToZombie(this->getX(), this->getY()))
     {
-        //the citizen determines the distance to the nearest zombie of any type if it were to move to this new location
-        int nearestZombie= getWorld()-> distanceToNearestZombie(this->getX(), this->getY());
-        
        // a. For each of the four directions up, down, left and right, the citizen must:
-        for(Direction dir=0; dir<4; dir++)
-        {
+//        for(Direction dir=0; dir<4; dir++)
+//        {
             //checking for up
-            if(dir==0)
-            {
+//            if(dir==0)
+//            {
                 if(getWorld()->isBlocked(this->getX(), this->getY()+2, this))
                 {
                     //if moving to the new location make it away from the new
-                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX(), this->getY()+2))
+                    if(getWorld()->distanceToNearestZombie(this->getX(), this->getY()) < getWorld()->distanceToNearestZombie(this->getX(), this->getY()+2))
                     {
                         //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
                         setDirection(up);
@@ -1384,17 +1362,17 @@ void Citizen:: doSomething()
                         return;
                     }
                 }
-                else
-                    // If the citizen is blocked from moving there, it ignores this direction.
-                    continue;
-            }
+//                else
+//                    // If the citizen is blocked from moving there, it ignores this direction.
+//                    continue;
+//            }
             //checking for down
-            if(dir ==1)
-            {
-                if(getWorld()->isBlocked(this->getX(), this->getY()-2, this))
+//            if(dir ==1)
+//            {
+                else if(getWorld()->isBlocked(this->getX(), this->getY()-2, this))
                 {
                     //if moving to the new location make it away from the new
-                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX(), this->getY()-2))
+                    if(getWorld()->distanceToNearestZombie(this->getX(), this->getY()) < getWorld()->distanceToNearestZombie(this->getX(), this->getY()-2))
                     {
                         //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
                         setDirection(down);
@@ -1404,17 +1382,17 @@ void Citizen:: doSomething()
                         return;
                     }
                 }
-                else
-                    // If the citizen is blocked from moving there, it ignores this direction.
-                    continue;
-            }
+//                else
+//                    // If the citizen is blocked from moving there, it ignores this direction.
+//                    continue;
+//            }
             //checking for right
-            if(dir ==2)
-            {
+//            if(dir ==2)
+//            {
                 if(getWorld()->isBlocked(this->getX()+2, this->getY(), this))
                 {
                     ///if moving to the new location make it away from the new
-                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX()+2, this->getY()))
+                    if(getWorld()->distanceToNearestZombie(this->getX(), this->getY())< getWorld()->distanceToNearestZombie(this->getX()+2, this->getY()))
                     {
                         //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
                         setDirection(right);
@@ -1424,17 +1402,17 @@ void Citizen:: doSomething()
                         return;
                     }
                 }
-                else
-                    // If the citizen is blocked from moving there, it ignores this direction.
-                    continue;
-            }
+//                else
+//                    // If the citizen is blocked from moving there, it ignores this direction.
+//                    continue;
+//            }
             //checking for left
-            if(dir ==3)
-            {
+//            if(dir ==3)
+//            {
                 if(getWorld()->isBlocked(this->getX()-2, this->getY(), this))
                 {
                     ///if moving to the new location make it away from the new
-                    if(nearestZombie< getWorld()->distanceToNearestZombie(this->getX()-2, this->getY()))
+                    if(getWorld()->distanceToNearestZombie(this->getX(), this->getY())< getWorld()->distanceToNearestZombie(this->getX()-2, this->getY()))
                     {
                         //Set the citizen’s direction to the direction that will take it furthest away from the nearest zombie
                         setDirection(left);
@@ -1444,14 +1422,15 @@ void Citizen:: doSomething()
                         return;
                     }
                 }
-                else
-                    // If the citizen is blocked from moving there, it ignores this direction.
-                    continue;
-            }
+//                else
+//                    // If the citizen is blocked from moving there, it ignores this direction.
+//                    continue;
+//            }
 //            If none of the movement options would allow the citizen to get further away from the nearest zombie (e.g., right now it’s 20 pixels away from the nearest zombie, but if it were to move in any of the four directions it would get even closer to some zombie), then doSomething() immediately returns
-            return;
+           
         }
-    }
+//    }
+     return;
 }
 
 //What a Citizen Must Do In Other Circumstances

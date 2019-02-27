@@ -44,7 +44,7 @@
 		4B91F8BE2033F3F8003AFA78 /* StudentWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StudentWorld.h; sourceTree = "<group>"; };
 		4B91F8C52034176C003AFA78 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		4B91F8C720341775003AFA78 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
-		8AFDA5A42218C8710072D83D /* Level.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Level.h; path = "../../../../../../../Downloads/ZombieDash 2/ZombieDash/Level.h"; sourceTree = "<group>"; };
+		8AA6B16A2224C5BA00B41776 /* Level.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Level.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +83,7 @@
 				4B91F8B02033F3F7003AFA78 /* Actor.h */,
 				4B91F8BE2033F3F8003AFA78 /* StudentWorld.h */,
 				4B91F8B22033F3F7003AFA78 /* StudentWorld.cpp */,
-				8AFDA5A42218C8710072D83D /* Level.h */,
+				8AA6B16A2224C5BA00B41776 /* Level.h */,
 				4B91F8B52033F3F7003AFA78 /* GameConstants.h */,
 				4B91F8B82033F3F7003AFA78 /* GameController.cpp */,
 				4B91F8BA2033F3F7003AFA78 /* GameController.h */,

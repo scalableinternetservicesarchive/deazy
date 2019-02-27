@@ -47,10 +47,10 @@ int StudentWorld::init()
     Level lev(assetPath());
     //get the level based what level penelope is on
     //GWSTATUS_PLAYER_WON
-    string levelFile = "level0"+ to_string(getLevel()+1)+".txt";
+    string levelFile = "level0"+ to_string(getLevel())+".txt";
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
-        return GWSTATUS_LEVEL_ERROR;
+        return GWSTATUS_PLAYER_WON;
     else if (result == Level::load_fail_bad_format)
         return GWSTATUS_LEVEL_ERROR;
     //if succefully load the .txt file
@@ -183,7 +183,8 @@ void StudentWorld::cleanUp()
         //delete the current object
         delete *it;
         //then make the it pointer to points the next object while erasing the current one
-        it=m_level.erase(it);
+        m_level.erase(it);
+        it=m_level.begin();
     }
 }
 //Destructor
@@ -246,7 +247,7 @@ int StudentWorld:: distanceToNearestZombie(int citizenX, int citizenY)
     for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
     {
         if((*iter)==nullptr) continue;
-        if((*iter)->isZombie())
+        else if((*iter)->isZombie())
         {
             int zombieX= (*iter)->getX();
             int zombieY=(*iter)->getY();
@@ -256,6 +257,8 @@ int StudentWorld:: distanceToNearestZombie(int citizenX, int citizenY)
             if(tempMinDist<minDist)
                 //store the temp value in minDist
                 minDist=tempMinDist;
+            else
+                continue;
         }
     }
     return minDist;
@@ -301,17 +304,17 @@ Direction StudentWorld:: findWhatDirectionCitizenShouldFaceToFollowPenelope(int 
     if(citizenX== penelopePtr->getX())
     {
         //if penelope on right of the citzen
-        if(citizenX < penelopePtr->getX())
-            return Actors::right;
-        return Actors:: left;
+        if(citizenY < penelopePtr->getY())
+            return Actors::up;
+        return Actors:: down;
     }
     //on the same row
     else
     {
         //if penelope on top the citizen
-        if(citizenY < penelopePtr->getY())
-            return Actors:: up;
-        return Actors:: down;
+        if(citizenX < penelopePtr->getX())
+            return Actors:: right;
+        return Actors:: left;
     }
 }
 //randmoly pick a direction for a citizen if he is not on the same row or col
@@ -343,7 +346,7 @@ bool StudentWorld:: euclideanDistanceFromCitizenToZombie(int citizenX, int citiz
         //if nullptr continue
         if((*iter)==nullptr) continue;
         //if the current actor is zombie
-        if((*iter)->isZombie())
+        else if((*iter)->isZombie())
         {
             int deltaX= citizenX - (*iter)->getX();
             int deltaY= citizenY - (*iter)->getY();
@@ -351,6 +354,7 @@ bool StudentWorld:: euclideanDistanceFromCitizenToZombie(int citizenX, int citiz
             //if less than 80 pixels, return true
             if(result<= pow(80, 2))
                 return true;
+
         }
     }
     //if there is no zombie with that specification close to a citizen, return false
@@ -418,7 +422,9 @@ bool StudentWorld:: isPersonInFrontOfZommbie(int zombieFacing_x, int zombieFacin
             // then use the Udulican formula, instead the distance between the centers should be less than 16
             int deltaX= pow((zombieFacingX_center - personX_center),2);
             int deltaY= pow((zombieFacingY_center - personY_center),2);
-            if(deltaX + deltaY < pow(16,2)) return true;
+            if(deltaX + deltaY < pow(16,2))
+                return true;
+            continue;
         }
     }
     return false;
