@@ -28,9 +28,9 @@ class StudentWorld;
 class Actors: public GraphObject
 {
 public:
-    Actors(int imageID, int startX, int startY, int startDirection = 0, int depth = 0, StudentWorld *sWorld=nullptr );
+    Actors(int imageID, double startX, double startY, int startDirection = 0, int depth = 0, StudentWorld *sWorld=nullptr );
     virtual void doSomething()=0;
-    virtual bool blockActors(int, int);
+    virtual bool blockActors(double, double);
     virtual bool doesOverlap(Actors *);
     //===========MIGHT NEED TO  IMPLEMENT FOR THER ACTORS
     virtual bool isAlive() const;
@@ -46,9 +46,9 @@ public:
     virtual bool isCitizen();
     virtual bool isZombie();
     virtual bool levelHasZombie();
-    virtual void flameDamagable();
-    virtual void vomitInfectable();
-    virtual bool flameBlockable();
+    virtual void flameDamagable(double,double);
+    virtual void vomitInfectable(double, double);
+    virtual bool flameBlockable(double, double);
     virtual bool isPerson();
     
 private:
@@ -64,11 +64,10 @@ private:
 class Walls: public Actors
 {
 public:
-    Walls(int startX, int startY, StudentWorld *sWorld);
+    Walls(double startX, double startY, StudentWorld *sWorld);
     virtual void doSomething();
-    virtual bool blockActors(int, int);
-    virtual bool flameBlockable();
-    
+    virtual bool blockActors(double, double);
+    virtual bool flameBlockable(double, double);
      ~Walls();
     
 };
@@ -76,14 +75,13 @@ public:
 class Penelope : public Actors
 {
 public:
-    Penelope(int startX, int startY, StudentWorld *sWorld);
+    Penelope(double startX, double startY, StudentWorld *sWorld);
     virtual void doSomething();
-    virtual bool blockActors(int, int);
+    virtual bool blockActors(double, double);
      ~Penelope();
-    virtual void flameDamagable();
-    virtual void vomitInfectable();
+    virtual void flameDamagable(double,double);
+    virtual void vomitInfectable(double, double);
     virtual bool isPerson();
-    void gGoodieIncrement();
 //    int numOfLandmines();
 //    int numOfFlamethrower_charges();
 //    int numOfVaccines();
@@ -93,45 +91,42 @@ public:
 //    virtual void gotInfected() ;
 //    virtual void killTheActor();
 private:
-   int m_infectionCount,
-       m_landmines,
-       m_flamethrower_charges,
-       m_vaccines;
+    int m_infectionCount;
 };
 class Exit :public Actors
 {
 public:
-    Exit(int startX, int startY, StudentWorld *sWorld);
+    Exit(double startX, double startY, StudentWorld *sWorld);
     virtual void doSomething();
     virtual bool doesOverlap(Actors*);
-    virtual bool flameBlockable();
+    virtual bool flameBlockable(double, double);
     ~Exit();
 };
 class Citizen: public Actors
 {
 public:
-    Citizen(int, int, StudentWorld*);
+    Citizen(double, double, StudentWorld*);
     virtual void doSomething();
     ~Citizen();
     virtual bool isCitizen();
-    virtual bool blockActors(int, int);
-    virtual void flameDamagable();
-    virtual void vomitInfectable();
+    virtual bool blockActors(double, double);
+    virtual void flameDamagable(double, double);
+    virtual void vomitInfectable(double, double);
     virtual bool isPerson();
 private:
     int m_infectionCount;
-    int m_paralyzedCounter;
+    bool m_paralyzedCounter;
 };
 class DumbZombies : public Actors
 {
 public:
-    DumbZombies(int, int, StudentWorld*);
+    DumbZombies(double, double, StudentWorld*);
     virtual void doSomething();
     ~DumbZombies();
     virtual bool isZombie();
     virtual bool levelHasZombie();
-    virtual bool blockActors(int, int);
-    virtual void flameDamagable();
+    virtual bool blockActors(double, double);
+    virtual void flameDamagable(double, double);
 private:
     bool m_paralyzedCounter;
      int   m_movementPlan;
@@ -140,13 +135,13 @@ private:
 class SmartZombies : public Actors
 {
 public:
-    SmartZombies(int, int, StudentWorld*);
+    SmartZombies(double, double, StudentWorld*);
     virtual void doSomething();
     ~SmartZombies();
     virtual bool isZombie();
     virtual bool levelHasZombie();
-    virtual bool blockActors(int, int);
-    virtual void flameDamagable();
+    virtual bool blockActors(double, double);
+    virtual void flameDamagable(double, double);
 private:
     bool m_paralyzedCounter;
      int  m_movementPlan;
@@ -155,10 +150,10 @@ private:
 class Landmines : public Actors
 {
 public:
-    Landmines (int, int, StudentWorld*);
+    Landmines (double, double, StudentWorld*);
     virtual void doSomething();
     ~Landmines ();
-    virtual void flameDamagable();
+    virtual void flameDamagable(double, double);
     bool activeState();
 private:
     int m_safteyTick;
@@ -167,14 +162,14 @@ private:
 class Pits: public Actors
 {
 public:
-    Pits(int, int, StudentWorld*);
+    Pits(double, double, StudentWorld*);
     virtual void doSomething();
     ~Pits();
 };
 class Flames : public Actors
 {
 public:
-    Flames(int, int, Direction,StudentWorld*);
+    Flames(double, double, Direction,StudentWorld*);
     virtual void doSomething();
     ~Flames();
 private:
@@ -184,7 +179,7 @@ private:
 class Vomit : public Actors
 {
 public:
-    Vomit(int, int, StudentWorld*);
+    Vomit(double, double, StudentWorld*);
     virtual void doSomething();
     ~Vomit();
 private:
@@ -193,26 +188,26 @@ private:
 class VaccineGoodies : public Actors
 {
 public:
-    VaccineGoodies(int, int, StudentWorld*);
+    VaccineGoodies(double, double, StudentWorld*);
     virtual void doSomething();
     ~VaccineGoodies();
-    virtual void flameDamagable();
+    virtual void flameDamagable(double, double);
 };
 class GasCanGoodies : public Actors
 {
 public:
-    GasCanGoodies(int, int, StudentWorld*);
+    GasCanGoodies(double, double, StudentWorld*);
     virtual void doSomething();
     ~GasCanGoodies();
-    virtual void flameDamagable();
+    virtual void flameDamagable(double, double);
 };
 class LandminesGoodies : public Actors
 {
 public:
-    LandminesGoodies(int, int, StudentWorld*);
+    LandminesGoodies(double, double, StudentWorld*);
     virtual void doSomething();
     ~LandminesGoodies();
-    virtual void flameDamagable();
+    virtual void flameDamagable(double, double);
 };
 
 

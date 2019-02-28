@@ -38,7 +38,7 @@
 
 //  =================================== Actors Methods =================================
 //Actors Constructor
-Actors :: Actors(int imageID, int startX, int startY, int startDirection, int depth, StudentWorld *sWorld)
+Actors :: Actors(int imageID, double startX, double startY, int startDirection, int depth, StudentWorld *sWorld)
 :m_StudentWorld(sWorld),GraphObject(imageID,startX,startY, startDirection,depth)
 {}
 //set the life status of an object. true as in alive, false as in dead
@@ -68,7 +68,7 @@ StudentWorld* Actors:: getWorld() const
 Actors::~Actors()
 {}
 
-bool Actors::blockActors(int x, int y)
+bool Actors::blockActors(double x, double y)
 {
     return false;
 }
@@ -80,7 +80,7 @@ bool Actors::isCitizen()
 {
     return false;
 }
-bool Actors:: flameBlockable()
+bool Actors:: flameBlockable(double x, double y)
 {
     return false;
 }
@@ -118,11 +118,11 @@ bool Actors:: levelHasZombie()
 {
     return false;
 }
-void Actors:: flameDamagable()
+void Actors:: flameDamagable(double x, double y)
 {
     return;
 }
-void Actors:: vomitInfectable()
+void Actors:: vomitInfectable(double x, double y)
 {
     return;
 }
@@ -164,23 +164,40 @@ void Actors:: vomitInfectable()
  8. A Penelope object has an infection count of 0.
  */
 //Penelope Constructor
-Penelope::Penelope(int startX, int startY, StudentWorld * sWorld)
+Penelope::Penelope(double startX, double startY, StudentWorld * sWorld)
 :Actors(IID_PLAYER, startX , startY, right , 0 , sWorld ), m_infectionCount(0)
 {
     //when constructing set life status of Penelope to be true as alive
     this->setAlive(true);
     //set Penelope infection in the beginning false, as not infected
     setInfection(false);
+    getWorld()->incrementFlamethrowerCharges(0);
+    getWorld()->incrementLandmines(0);
+    getWorld()->incrementVaccine(0);
+    getWorld()->intitailStatusInfection(0);
+
 }
 Penelope::~Penelope()
 {}
-void Penelope:: flameDamagable()
+void Penelope:: flameDamagable(double point_x, double point_y)
 {
-    return;
+   
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2)) this->setAlive(false);
+    //otherwise it does not
+   
 }
-void Penelope:: vomitInfectable()
+void Penelope:: vomitInfectable(double x, double y)
 {
-    this->setAlive(false);
+    double deltaX= x - this->getX();
+    double deltaY= y - this->getY();
+    double result = pow(deltaX, 2) + pow(deltaY, 2);
+    if(result<= pow(10, 2))
+        this->setInfection(true);
 }
 bool Penelope:: isPerson()
 {
@@ -196,13 +213,11 @@ void Penelope:: doSomething()
     if(isInfected())
     {
         //increament the infection rate by one during each tick
-        m_infectionCount++;
-        if(m_infectionCount==500)
+        getWorld()->incrementInfection();
+        if(getWorld()->infectionCounter()==500)
         {
             //She must immediately set her status to dead
-            this->setAlive(true);
-            //------- NOT SURE TO BE HERE !!!!!!!!!!!!!!!!!!!!!!!
-            getWorld()->decLives();
+            this->setAlive(false);
             //The game must play a SOUND_PLAYER_DIE sound effect
             getWorld()->playSound(SOUND_PLAYER_DIE);
             //The doSomething() method must return immediately, doing nothing more during this tick
@@ -280,47 +295,48 @@ void Penelope:: doSomething()
 //              If the user pressed the tab key and if Penelope has any landmines in her
 //              inventory
             case KEY_PRESS_TAB:
-                if(m_landmines>0)
+                if(getWorld()->landminesCounter()>0)
                 {
                     //Penelope will introduce a new landmine object at her current (x,y) location into the game
                     getWorld()->introduceLandmineHere(this->getX(), this->getY());
                     //landmine count will decrease by 1
-                    m_landmines--;
+                    getWorld()->decrementLandmines();
                 }
                 break;
 //                If the user pressed the enter key and if Penelope has any vaccines in her
 //                inventory
             case KEY_PRESS_ENTER:
-                if(m_vaccines>0)
+                if(getWorld()-> vaccineCounter()>0)
                 {
                     //Penelope will set her infected status to false and reduce her vaccine count by 1
                     this->setInfection(false);
                     // reduce vaccine count by 1. (She wasted that vaccine if she was not infected.)
-                    m_vaccines--;
+                    getWorld()->decrementVaccine();
+                    getWorld()->intitailStatusInfection(0);
                 }
                 break;
 //                If the player pressed the space key and Penelope has at least one
 //                flamethrower charge, then Penelope will attempt to fire three flames into
 //                the three slots directly in front of her:
             case KEY_PRESS_SPACE:
-                if(m_flamethrower_charges>0)
+                if(getWorld()->flamethrowerCharges()>0)
                 {
                     //then Penelope will attempt to fire three flames into the three slots directly in front of her:
-                    m_flamethrower_charges--;
+                    getWorld()->decrementFlamethrowerCharges();
                     //Penelope must play the SOUND_PLAYER_FIRE
                     getWorld()->playSound(SOUND_PLAYER_FIRE);
                     //Penelope will add up to three new flame objects to the game. If Penelope is at (px, py) this is where the new flame objects will go: For i = 0, 1, and 2,
                     int fireDest_x, fireDest_y;
-                    for (int i=0; i <3 ; i++)
+                    for (int i=1; i <4 ; i++)
                     {
                         //If Penelope is facing up: posi = (px, py + i *SPRITE_HEIGHT)
                         if(this->getDirection()==up)
                         {
                             //Compute the position posi where the next flame will go.
                             fireDest_x=this->getX();
-                            fireDest_y= this->getY() + i*SPRITE_HEIGHT;
+                            fireDest_y= this->getY() + (i*SPRITE_HEIGHT);
                             //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
-                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            if(getWorld()->isBlockedFromFlame(fireDest_x, fireDest_y, this))
                             {
                                 //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
                                 getWorld()->introduceFlameObject(fireDest_x, fireDest_y, up);
@@ -330,13 +346,13 @@ void Penelope:: doSomething()
                                 break;
                         }
                         //If Penelope is facing down: posi = (px, py − i *SPRITE_HEIGHT)
-                        if(this->getDirection()==down)
+                        else if(this->getDirection()==down)
                         {
                             //Compute the position posi where the next flame will go.
                             fireDest_x=this->getX();
-                            fireDest_y= this->getY() - i*SPRITE_HEIGHT;
+                            fireDest_y= this->getY() - (i*SPRITE_HEIGHT);
                             //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
-                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            if(getWorld()->isBlockedFromFlame(fireDest_x, fireDest_y, this))
                             {
                                 //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
                                 getWorld()->introduceFlameObject(fireDest_x, fireDest_y, down);
@@ -346,13 +362,13 @@ void Penelope:: doSomething()
                                 break;
                         }
                         //If Penelope is facing right: posi = (px + i *SPRITE_WIDTH, py)
-                        if(this->getDirection()==right)
+                        else if(this->getDirection()==right)
                         {
                             //Compute the position posi where the next flame will go.
-                            fireDest_x=this->getX()+ i*SPRITE_WIDTH;
+                            fireDest_x=this->getX()+ (i*SPRITE_WIDTH);
                             fireDest_y= this->getY() ;
                             //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
-                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            if(getWorld()->isBlockedFromFlame(fireDest_x, fireDest_y, this))
                             {
                                 //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
                                 getWorld()->introduceFlameObject(fireDest_x, fireDest_y, down);
@@ -362,14 +378,14 @@ void Penelope:: doSomething()
                                 break;
                         }
                         //If Penelope is facing left: posi = (px − i *SPRITE_WIDTH, py)
-                        if(this->getDirection()==left)
+                        else
                         {
                             //Compute the position posi where the next flame will go.
-                            fireDest_x=this->getX();
+                            fireDest_x=this->getX()-( i*SPRITE_WIDTH);
                             
-                            fireDest_y= this->getY() - i*SPRITE_WIDTH;
+                            fireDest_y= this->getY() ;
                             //If a flame at posi would overlap1 with a wall or exit object, then immediately stop the loop.
-                            if(getWorld()->isBlocked(fireDest_x, fireDest_y, this))
+                            if(getWorld()->isBlockedFromFlame(fireDest_x, fireDest_y, this))
                             {
                                 //Otherwise add a new flame object2 at posi with a starting direction that is the same as the direction Penelope is facing.
                                 getWorld()->introduceFlameObject(fireDest_x, fireDest_y, down);
@@ -388,25 +404,14 @@ void Penelope:: doSomething()
         }
 //    =========================   What Penelope Must Do In Other Circumstances
     
-//    • Penelope can be infected by vomit. When vomit overlaps with Penelope, her
-//    infection status becomes true.
-//    • Penelope can be damaged. If a flame object overlaps with Penelope it will kill her.
-//    When killed:
-//    o She must immediately has her status set to dead,
-//    o The game must play a SOUND_PLAYER_DIE sound effect
-//    o (The StudentWorld object should detect her death and the current level
-//       ends)
+
     
 
 
 }
-void Penelope:: gGoodieIncrement()
-{
-    m_flamethrower_charges++;
-}
 //    • Penelope blocks other objects from moving nearby/onto her. Penelope’s bounding
 //    box must never intersect with that of any citizen, zombie, or wall.
-bool Penelope::blockActors(int point_x, int point_y)
+bool Penelope::blockActors(double point_x, double point_y)
 {
     //calculate the center of the current wall and the point passed in
     int pointX_center= point_x+ SPRITE_WIDTH/2;
@@ -423,31 +428,18 @@ bool Penelope::blockActors(int point_x, int point_y)
     //otherwise it does not
     return false;
 }
-////return number of Landmines that Penelope has
-//int Penelope:: numOfLandmines()
-//{
-//    return m_landmines;
-//}
-//// return the number of Flamethrower_charges that Penelope has
-//int Penelope:: numOfFlamethrower_charges()
-//{
-//    return m_flamethrower_charges;
-//}
-////return number of vaccines that Penelope has
-//int Penelope:: numOfVaccines()
-//{
-//    return m_vaccines;
-//}
 //==============================================End of Penelope Methods ===========================================
 
 // ============================================= Wall Methods =====================================================
 
 //Walls constructor
-Walls::Walls(int startX, int startY, StudentWorld *sWorld)
+Walls::Walls(double startX, double startY, StudentWorld *sWorld)
 :Actors(IID_WALL,  startX ,  startY, right,0,sWorld)
-{}
+{
+    this->setAlive(true);
+}
 //blocking movement method for a wall
-bool Walls::blockActors(int point_x, int point_y)
+bool Walls::blockActors(double point_x, double point_y)
 {
     //calculate the center of the current wall and the point passed in
     int pointX_center= point_x+ SPRITE_WIDTH/2;
@@ -472,9 +464,22 @@ void Walls:: doSomething()
 }
 Walls::~Walls()
 {}
-bool Walls:: flameBlockable()
+bool Walls:: flameBlockable(double point_x, double point_y)
 {
-    return true;
+    //calculate the center of the current wall and the point passed in
+    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointY_center= point_y + SPRITE_HEIGHT/2;
+    int wallX_center= this->getX() +SPRITE_WIDTH/2;
+    int wallY_center= this->getY() +SPRITE_HEIGHT/2;
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    int deltaX= pow((pointX_center - wallX_center),2);
+    int deltaY= pow((pointY_center - wallY_center),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY < pow(16,2)) return true;
+    //otherwise it does not
+    return false;
 }
 
 
@@ -489,32 +494,29 @@ bool Walls:: flameBlockable()
 
 //===================================  Exit Method ==========================================
 //Constructor
-Exit::Exit(int startX, int startY, StudentWorld *sWorld)
+Exit::Exit(double startX, double startY, StudentWorld *sWorld)
 :Actors(IID_EXIT, startX , startY, right,1,sWorld)
-{}
+{
+    this->setAlive(true);
+}
 void Exit::doSomething()
 {
     //1. The exit must determine if it overlaps with a citizen (not Penelope!). If so, then the exit must:
-
-//    if(getWorld()->doesExitOverlapWithCitizen(this->getX(), this->getY()))
-//    {
-//        //a. Inform the StudentWorld object that the user is to receive 500 points.
-//        //============================== CODE HERE ==========================
-//        // b. Set the citizen object’s state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick) – note, this must not kill the citizen in a way that deducts points from the player as if the citizen died due to a zombie infection, a flame, or a pit.
-//        // =============================    CODE HERE ===========================
-//        //  c. Play a sound effect to indicate that the citizen was saved by using the exit: SOUND_CITIZEN_SAVED.
-//        getWorld()->playSound(SOUND_CITIZEN_SAVED);
-//    }
-//    //2. The exit must determine if it overlaps7 with Penelope. If so and all citizens have either exited the level or died, then:
-//    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
-//    {
-//       // If so and all citizens have either exited the level or died, then:
-//
-//        // ============== CODE HERE ==================
-//       // a. Inform the StudentWorld object that Penelope has finished the current level
-//        // ============== CODE HERE ==================
-//
-//    }
+    if(getWorld()->doesExitOverlapWithCitizen(this->getX(), this->getY()))
+    {
+        //a. Inform the StudentWorld object that the user is to receive 500 points.
+        getWorld()->changeScore(500);
+        // b. Set the citizen object’s state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick) – note, this must not kill the citizen in a way that deducts points from the player as if the citizen died due to a zombie infection, a flame, or a pit.
+        // =============================    CODE HERE ===========================
+        //  c. Play a sound effect to indicate that the citizen was saved by using the exit: SOUND_CITIZEN_SAVED.
+        getWorld()->playSound(SOUND_CITIZEN_SAVED);
+    }
+    //2. The exit must determine if it overlaps7 with Penelope. If so and all citizens have either exited the level or died, then:
+    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()) && getWorld()->noCitizenOnLevel())
+    {
+       // a. Inform the StudentWorld object that Penelope has finished the current level
+        // ============== CODE HERE ==================
+    }
     return;
 }
 Exit::~Exit()
@@ -533,31 +535,53 @@ bool Exit::doesOverlap(Actors * otherObject)
         return true;
     return false;
 }
-bool Exit:: flameBlockable()
+bool Exit:: flameBlockable(double point_x, double point_y)
 {
-    return true;
+    //calculate the center of the current wall and the point passed in
+    int pointX_center= point_x+ SPRITE_WIDTH/2;
+    int pointY_center= point_x + SPRITE_HEIGHT/2;
+    int wallX_center= this->getX() +SPRITE_WIDTH/2;
+    int wallY_center= this->getY() +SPRITE_HEIGHT/2;
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    int deltaX= pow((pointX_center - wallX_center),2);
+    int deltaY= pow((pointY_center - wallY_center),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY < pow(16,2)) return true;
+    //otherwise it does not
+    return false;
 }
 //===================================End of the Exit Method ================================
 
 // ================================= Dumb Zombies Methods ================================================
-DumbZombies::  DumbZombies(int startX, int startY, StudentWorld* sWorld)
+DumbZombies::  DumbZombies(double startX, double startY, StudentWorld* sWorld)
 :Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(true), m_movementPlan(0)
 {
-    setAlive(true);
+    this->setAlive(true);
 }
-void DumbZombies:: flameDamagable()
+void DumbZombies:: flameDamagable(double point_x, double point_y)
 {
-   //Set its own state to dead
-    this->setAlive(false);
-    //o Play a sound effect to indicate that the dumb zombie died: SOUND_ZOMBIE_DIE.
-    getWorld()->playSound(SOUND_ZOMBIE_DIE);
-    //Increase the player’s score by 1000 points.
-    // ================ CODE HERE ===================
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
     
-    //1 in 10 dumb zombies are mindlessly carrying a vaccine goodie that they'll drop when they die. If this dumb zombie has a vaccine goodie, it will
-   // introduce a new vaccine goodie at its (x,y) coordinate by adding it to the StudentWorld object.
-    if(1==randInt(1, 10))
-        getWorld()->addVaccineGoodieHere(this->getX(), this->getY());
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2))
+    {
+        //Set its own state to dead
+        this->setAlive(false);
+        //o Play a sound effect to indicate that the dumb zombie died: SOUND_ZOMBIE_DIE.
+        getWorld()->playSound(SOUND_ZOMBIE_DIE);
+        //Increase the player’s score by 1000 points.
+        getWorld()->changeScore(1000);
+        
+        //1 in 10 dumb zombies are mindlessly carrying a vaccine goodie that they'll drop when they die. If this dumb zombie has a vaccine goodie, it will
+        // introduce a new vaccine goodie at its (x,y) coordinate by adding it to the StudentWorld object.
+        if(1==randInt(1, 10))
+            getWorld()->addVaccineGoodieHere(this->getX(), this->getY());
+    }
+   
 }
 void DumbZombies:: doSomething()
 {
@@ -721,7 +745,7 @@ bool DumbZombies :: levelHasZombie()
 {
     return true;
 }
-bool DumbZombies :: blockActors(int point_x, int point_y)
+bool DumbZombies :: blockActors(double point_x, double point_y)
 {
     //calculate the center of the current wall and the point passed in
     int pointX_center= point_x+ SPRITE_WIDTH/2;
@@ -742,22 +766,30 @@ bool DumbZombies :: blockActors(int point_x, int point_y)
 
 //================================================ Smart Zombies ======================================
 
-SmartZombies:: SmartZombies(int startX, int startY, StudentWorld* sWorld)
+SmartZombies:: SmartZombies(double startX, double startY, StudentWorld* sWorld)
 :Actors(IID_ZOMBIE, startX , startY, right,0,sWorld), m_paralyzedCounter(true), m_movementPlan(0)
 {
     //Smart Zombie start alive
     this->setAlive(true);
 }
 
-void SmartZombies:: flameDamagable()
+void SmartZombies:: flameDamagable(double point_x, double point_y)
 {
-    //Set its own state to dead
-    this->setAlive(false);
-    //o Play a sound effect to indicate that the smart zombie died: SOUND_ZOMBIE_DIE.
-    getWorld()->playSound(SOUND_ZOMBIE_DIE);
-    //Increase the player’s score by 2000 points.
+   
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
     
-    //========================= CODE HERE
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2))
+    {
+        //Set its own state to dead
+        this->setAlive(false);
+        //o Play a sound effect to indicate that the smart zombie died: SOUND_ZOMBIE_DIE.
+        getWorld()->playSound(SOUND_ZOMBIE_DIE);
+        //Increase the player’s score by 2000 points.
+        getWorld()->changeScore(2000);
+    }
 }
 void SmartZombies:: doSomething()
 {
@@ -781,7 +813,7 @@ void SmartZombies:: doSomething()
             //if the zombie is facing up
         case up:
             //The dumb zombie must check to see if a person (either Penelope or one of the citizens on the level) is in front of it in the direction it is facing:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY() + SPRITE_HEIGHT))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX(), this->getY()+SPRITE_HEIGHT))
@@ -800,7 +832,7 @@ void SmartZombies:: doSomething()
             }
             break;
         case down:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY() - SPRITE_HEIGHT))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX(), this->getY()-SPRITE_HEIGHT))
@@ -819,7 +851,7 @@ void SmartZombies:: doSomething()
             }
             break;
         case right:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX() +SPRITE_WIDTH, this->getY()))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX()+SPRITE_HEIGHT, this->getY()))
@@ -838,7 +870,7 @@ void SmartZombies:: doSomething()
             }
             break;
         case left:
-            if(getWorld()->isPersonInFrontOfZommbie(this->getX(), this->getY()))
+            if(getWorld()->isPersonInFrontOfZommbie(this->getX() -SPRITE_WIDTH, this->getY()))
             {
                 //If there is a person whose Euclidean distance from the vomit coordinates is less than or equal to 10 pixels,
                 if( getWorld()->isPersonWhoseEuclideanDistanceFromVomitCoordinates(this->getX()-SPRITE_HEIGHT, this->getY()))
@@ -878,7 +910,6 @@ void SmartZombies:: doSomething()
             }
             else
             {
-                int dest_x, dest_y;
                 // 2. Otherwise, choose randomly between the two directions (one horizontal and one vertical) that get the zombie closer.
                 int randomInt = randInt(0, 1);
                 //if randmoly get zero, pick horizontal direction
@@ -889,111 +920,93 @@ void SmartZombies:: doSomething()
                     switch (dir)
                     {
                         case right:
-                            dest_x=this->getX()+1;
-                            dest_y=this->getY();
+                            this->setDirection(right);
+//                            dest_x=this->getX()+1;
+//                            dest_y=this->getY();
                             break;
                         case left:
-                            dest_x=this->getX()-1;
-                            dest_y=this->getY();
+                            this->setDirection(left);
+//                            dest_x=this->getX()-1;
+//                            dest_y=this->getY();
                             break;
                     }
-                    //if not blocked in that direction
-                    if(getWorld()->isBlocked(dest_x, dest_y, this))
-                    {
-                        // 1. Set its direction to be facing toward Penelope.
-                        this->setDirection(dir);
-                        // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
-                        this->moveTo(dest_x, dest_y);
-                        //c. Decrease the movement plan distance by
-                        m_movementPlan--;
-                        
-                    }
-                    //if blocked, pick a vertical direction
-                    else
-                    {
-                        Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),1, nearestPerson );
-                        switch (dir)
-                        {
-                            case up:
-                                dest_x=this->getX();
-                                dest_y=this->getY()+1;
-                                break;
-                            case down:
-                                dest_x=this->getX();
-                                dest_y=this->getY()-1;
-                                break;
-                        }
-                        //if not blocked in that direction
-                        if(getWorld()->isBlocked(dest_x, dest_y, this))
-                        {
-                            // 1. Set its direction to be facing toward Penelope.
-                            this->setDirection(dir);
-                            // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
-                            this->moveTo(dest_x, dest_y);
-                            //c. Decrease the movement plan distance by
-                            m_movementPlan--;
-                        }
-                    }
                 }
-                //if randomly got 1, pick the vertical direction
+                    //if blocked, pick a vertical direction
                 else
                 {
                     Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),1, nearestPerson );
                     switch (dir)
                     {
                         case up:
-                            dest_x=this->getX();
-                            dest_y=this->getY()+1;
+                            this->setDirection(up);
+//                            dest_x=this->getX();
+//                            dest_y=this->getY()+1;
                             break;
                         case down:
-                            dest_x=this->getX();
-                            dest_y=this->getY()-1;
+                            this->setDirection(down);
+//                            dest_x=this->getX();
+//                            dest_y=this->getY()-1;
                             break;
-                    }
-                    //if not blocked in that direction
-                    if(getWorld()->isBlocked(dest_x, dest_y, this))
-                    {
-                        // 1. Set its direction to be facing toward Penelope.
-                        this->setDirection(dir);
-                        // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
-                        this->moveTo(dest_x, dest_y);
-                        //c. Decrease the movement plan distance by
-                        m_movementPlan--;
-                    }
-                    //if blocked in that diretion
-                    else
-                    {
-                        Direction dir= getWorld()->pickRandomDirForSmartZombieToFollowPerson(this->getX(),this->getY(),0, nearestPerson );
-                        switch (dir)
-                        {
-                            case right:
-                                dest_x=this->getX()+1;
-                                dest_y=this->getY();
-                                break;
-                            case left:
-                                dest_x=this->getX()-1;
-                                dest_y=this->getY();
-                                break;
-                        }
-                        //if not blocked in that direction
-                        if(getWorld()->isBlocked(dest_x, dest_y, this))
-                        {
-                            // 1. Set its direction to be facing toward Penelope.
-                            this->setDirection(dir);
-                            // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
-                            this->moveTo(dest_x, dest_y);
-                            //c. Decrease the movement plan distance by
-                            m_movementPlan--;
-                        }
                     }
                 }
             }
         }
     }
-    else
+    
+    switch (this->getDirection())
+    {
+        case up:
+            //if not blocked in that direction
+            if(getWorld()->isBlocked(this->getX(), this->getY()+1, this))
+            {
+                // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                this->moveTo(this->getX(), this->getY()+1);
+                //c. Decrease the movement plan distance by
+                m_movementPlan--;
+            }
+            else
+                m_movementPlan=0;
+            break;
+        case down:
+            //if not blocked in that direction
+            if(getWorld()->isBlocked(this->getX(), this->getY()-1, this))
+            {
+                // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                this->moveTo(this->getX(), this->getY()-1);
+                //c. Decrease the movement plan distance by
+                m_movementPlan--;
+            }
+            else
+                m_movementPlan=0;
+            break;
+        case right:
+            //if not blocked in that direction
+            if(getWorld()->isBlocked(this->getX()+1, this->getY(), this))
+            {
+                // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                this->moveTo(this->getX()+1, this->getY());
+                //c. Decrease the movement plan distance by
+                m_movementPlan--;
+            }
+            else
+                m_movementPlan=0;
+            break;
+        case left:
+            //if not blocked in that direction
+            if(getWorld()->isBlocked(this->getX()-1, this->getY(), this))
+            {
+                // 2. Move 2 pixels in that direction using the GraphObject class's moveTo() method.
+                this->moveTo(this->getX()-1, this->getY());
+                //c. Decrease the movement plan distance by
+                m_movementPlan--;
+            }
+            else
+                m_movementPlan=0;
+            break;
+    }
+    
  
 //    Otherwise, the smart zombie was blocked from moving by another wall, person or zombie, so set the movement plan distance to 0 (which will cause the smart zombie to pick a new direction to move during the next tick).
-        m_movementPlan=0;
     
 }
 
@@ -1011,7 +1024,7 @@ bool SmartZombies:: levelHasZombie()
     return true;
 }
 
-bool SmartZombies::blockActors(int point_x, int point_y)
+bool SmartZombies::blockActors(double point_x, double point_y)
 {
     //calculate the center of the current wall and the point passed in
     int pointX_center= point_x+ SPRITE_WIDTH/2;
@@ -1031,7 +1044,7 @@ bool SmartZombies::blockActors(int point_x, int point_y)
 //=============================================== end of Smart zombies methods ==================================
 
 //================================================ Landmines======================================
-Landmines:: Landmines (int startX, int startY, StudentWorld* sWorld)
+Landmines:: Landmines (double startX, double startY, StudentWorld* sWorld)
 :Actors(IID_LANDMINE, startX , startY, right,1,sWorld), m_safteyTick(30), m_activeState(false)
 {
     this->setAlive(true);
@@ -1052,11 +1065,11 @@ void Landmines:: doSomething()
         //c. The doSomething() method must return immediately, doing nothing more during this tick.
         return;
     }
-    //The landmine must determine if it overlaps13 with a citizen or Penelope. If so, then the landmine must:
+    //The landmine must determine if it overlaps with a citizen or Penelope. If so, then the landmine must:
     if(getWorld()-> doesOverlapsWithcitizenPenelope(this))
     {
         //Set its state to dead
-        setAlive(false);
+        this->setAlive(false);
         //b. Play a sound effect to indicate that the landmine exploded: SOUND_LANDMINE_EXPLODE.
         getWorld()->playSound(SOUND_LANDMINE_EXPLODE);
         // introduce a flame object
@@ -1088,34 +1101,43 @@ Landmines::  ~Landmines ()
 {
     
 }
-void Landmines:: flameDamagable()
+void Landmines:: flameDamagable(double point_x, double point_y)
 {
-    //Set its state to dead
-    setAlive(false);
-    //Play a sound effect to indicate that the landmine exploded: SOUND_LANDMINE_EXPLODE.
-    getWorld()->playSound(SOUND_LANDMINE_EXPLODE);
-    // introduce a flame object
-    getWorld()->introduceFlameObject(this->getX(), this->getY(),up);
-    //d. Introduce flame objects in the eight adjacent slots around the landmine (north, northeast, east, southeast, south, southwest, west, northwest). Each such
-    //        adjacent spot must exactly SPRITE_WIDTH pixels away horizontally and/or SPRITE_HEIGHT pixels away vertically. (SPRITE_WIDTH and SPRITE_HEIGHT are both 16.) So if the landmine goodie were at position (100, 100), the northwest flame would be added at (84, 116), the east goodie at (116, 100), the southeast goodie at (116, 84), etc.
-    //(north
-    getWorld()->introduceFlameObject(this->getX(), this->getY() +SPRITE_HEIGHT,up);
-    //northEast
-    getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
-    //east
-    getWorld()->introduceFlameObject(this->getX() +SPRITE_WIDTH, this->getY(),up);
-    //south East
-    getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
-    //south
-    getWorld()->introduceFlameObject(this->getX(), this->getY() -SPRITE_HEIGHT,up);
-    //SOUTH WEST
-    getWorld()->introduceFlameObject(this->getX()-SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
-    //WEST
-    getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY(),up);
-    //north west
-    getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
-    //e. Introduce a pit object at the same (x,y) location as the landmine.
-    getWorld()->introducePitObject(this->getX(), this->getY());
+    
+    // then use the Udulican formula, instead the distance between the centers should be less than 10
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
+    
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2))
+    {
+        //Set its state to dead
+        this->setAlive(false);
+        //Play a sound effect to indicate that the landmine exploded: SOUND_LANDMINE_EXPLODE.
+        getWorld()->playSound(SOUND_LANDMINE_EXPLODE);
+        // introduce a flame object
+        getWorld()->introduceFlameObject(this->getX(), this->getY(),up);
+        //d. Introduce flame objects in the eight adjacent slots around the landmine (north, northeast, east, southeast, south, southwest, west, northwest). Each such
+        //        adjacent spot must exactly SPRITE_WIDTH pixels away horizontally and/or SPRITE_HEIGHT pixels away vertically. (SPRITE_WIDTH and SPRITE_HEIGHT are both 16.) So if the landmine goodie were at position (100, 100), the northwest flame would be added at (84, 116), the east goodie at (116, 100), the southeast goodie at (116, 84), etc.
+        //(north
+        getWorld()->introduceFlameObject(this->getX(), this->getY() +SPRITE_HEIGHT,up);
+        //northEast
+        getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
+        //east
+        getWorld()->introduceFlameObject(this->getX() +SPRITE_WIDTH, this->getY(),up);
+        //south East
+        getWorld()->introduceFlameObject(this->getX()+SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
+        //south
+        getWorld()->introduceFlameObject(this->getX(), this->getY() -SPRITE_HEIGHT,up);
+        //SOUTH WEST
+        getWorld()->introduceFlameObject(this->getX()-SPRITE_WIDTH, this->getY()-SPRITE_HEIGHT,up);
+        //WEST
+        getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY(),up);
+        //north west
+        getWorld()->introduceFlameObject(this->getX() -SPRITE_WIDTH, this->getY() +SPRITE_HEIGHT,up);
+        //e. Introduce a pit object at the same (x,y) location as the landmine.
+        getWorld()->introducePitObject(this->getX(), this->getY());
+    }
 }
 bool Landmines:: activeState()
 {
@@ -1125,7 +1147,7 @@ bool Landmines:: activeState()
 
 
 //================================================ Pits ======================================
-Pits:: Pits(int startX, int startY, StudentWorld* sWorld)
+Pits:: Pits(double startX, double startY, StudentWorld* sWorld)
 :Actors(IID_PIT, startX , startY, right,0,sWorld)
 {}
 void Pits:: doSomething()
@@ -1140,11 +1162,11 @@ Pits:: ~Pits()
 //=============================================== end of Pits methods ==================================
 
 //================================================ Flames ======================================
-Flames:: Flames(int startX, int startY, Direction dir,StudentWorld* sWorld)
+Flames:: Flames(double startX, double startY, Direction dir,StudentWorld* sWorld)
 : Actors(IID_FLAME, startX , startY, dir ,0,sWorld), m_creationCount(0)
 {
     //A flame object starts in an “alive” state.
-    setAlive(true);
+    this->setAlive(true);
 }
 void Flames:: doSomething()
 {
@@ -1160,7 +1182,6 @@ void Flames:: doSomething()
             return;
     }
 //    3. Otherwise, the flame will damage all damageable objects that overlap8 with the flame. The following objects are all damageable and must react to being damaged in the appropriate way: Penelope, citizens, all types of goodies, landmines, and all types of zombies.
-    
     getWorld()->flameDamagesWhenOverlapsWithTheseObjecr(this);
 }
 Flames:: ~Flames()
@@ -1169,10 +1190,10 @@ Flames:: ~Flames()
 
 
 //================================================ Vomit ======================================
-Vomit::Vomit(int startX, int startY, StudentWorld* sWorld)
+Vomit::Vomit(double startX, double startY, StudentWorld* sWorld)
 :Actors(IID_VOMIT, startX , startY, right,0,sWorld), m_creationCount(0)
 {
-    setAlive(true);
+    this->setAlive(true);
 }
 void Vomit:: doSomething()
 {
@@ -1188,7 +1209,7 @@ void Vomit:: doSomething()
         return;
     }
    // Otherwise, the vomit will infect any infectable object that overlaps with the vomit. The following objects are infectable and must react to being infected in the appropriate way: Penelope and citizens.
-    getWorld()->doesOverlapsWithcitizenPenelope(this);
+    getWorld()->vomitOverlapsWithcitizenPenelopeToInfect(this);
     
 }
 Vomit:: ~Vomit()
@@ -1199,10 +1220,10 @@ Vomit:: ~Vomit()
 
 //================================================ VaccineGoodies ======================================
 
-VaccineGoodies:: VaccineGoodies(int startX, int startY, StudentWorld* sWorld)
+VaccineGoodies:: VaccineGoodies(double startX, double startY, StudentWorld* sWorld)
 :Actors(IID_VACCINE_GOODIE, startX , startY, right,1,sWorld)
 {
-    setAlive(true);
+    this->setAlive(true);
 }
 void VaccineGoodies:: doSomething()
 {
@@ -1213,27 +1234,32 @@ void VaccineGoodies:: doSomething()
     if(getWorld()->doesOverlapWithPenelope( this-> getX() , this->getY()))
     {
        // a. Inform the StudentWorld object that the user is to receive 50 points.
-        //=====================CODE HERE=================
+        getWorld()->changeScore(50);
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
         this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
         getWorld()->playSound(SOUND_GOT_GOODIE);
         //d. Inform the StudentWorld object that Penelope is to receive one dose of vaccine.
-        //============================== CODE HERE =========================
+        getWorld()->incrementVaccine(1);
     }
     
 }
 VaccineGoodies:: ~VaccineGoodies()
 {}
- void VaccineGoodies:: flameDamagable()
+ void VaccineGoodies:: flameDamagable(double point_x, double point_y)
 {
-    this->setAlive(false);
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2))
+        this->setAlive(false);
 }
 //=============================================== end of VaccineGoodies methods ==================================
 
 //================================================ GasCanGoodies ======================================
 
-GasCanGoodies:: GasCanGoodies(int startX, int startY, StudentWorld* sWorld)
+GasCanGoodies:: GasCanGoodies(double startX, double startY, StudentWorld* sWorld)
 :Actors(IID_GAS_CAN_GOODIE, startX , startY, right,1,sWorld)
 {
     this->setAlive(true);
@@ -1247,26 +1273,31 @@ void GasCanGoodies:: doSomething()
     if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
     {
         //a. Inform the StudentWorld object that the user is to receive 50 points.
-        //================= CODE HERE
+        getWorld()->changeScore(50);
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
         this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
         getWorld()->playSound(SOUND_GOT_GOODIE);
         //d. Inform the StudentWorld object that Penelope is to receive 5 charges for her flamethrower.
-        // ================== CODE HERE ===================
+        getWorld()->incrementFlamethrowerCharges(5);
     }
 }
 GasCanGoodies:: ~GasCanGoodies()
 {}
-void GasCanGoodies:: flameDamagable()
+void GasCanGoodies:: flameDamagable(double point_x, double point_y)
 {
-   this-> setAlive(false);
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2))
+        this-> setAlive(false);
 }
 //=============================================== end of GasCanGoodies methods ==================================
 
 //================================================ LandminesGoodies ======================================
 
-LandminesGoodies::LandminesGoodies(int startX, int startY, StudentWorld* sWorld)
+LandminesGoodies::LandminesGoodies(double startX, double startY, StudentWorld* sWorld)
 :Actors( IID_LANDMINE_GOODIE, startX , startY, right,1,sWorld  )
 {
     this->setAlive(true);
@@ -1281,42 +1312,53 @@ void LandminesGoodies:: doSomething()
     if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
     {
         //a. Inform the StudentWorld object that the user is to receive 50 points.
-        //=================  CODE HERE  ==============
+        getWorld()->changeScore(50);
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
         this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
         getWorld()->playSound(SOUND_GOT_GOODIE);
        // d. Inform Inform the StudentWorld object that Penelope is to receive 2 landmines.
-        //================= CODE HERE =============
+        getWorld()->incrementLandmines(2);
     }
     
 }
 LandminesGoodies:: ~LandminesGoodies()
 {}
-void LandminesGoodies:: flameDamagable()
+void LandminesGoodies:: flameDamagable(double point_x, double point_y)
 {
-    this->setAlive(false);
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2))
+        this->setAlive(false);
 }
 //=============================================== end of LandminesGoodies methods ==================================
 
 //================================================ Citizen ======================================
-Citizen:: Citizen(int startX, int startY, StudentWorld* sWorld)
-:Actors(IID_CITIZEN, startX , startY, right,0,sWorld ), m_infectionCount(0), m_paralyzedCounter(0)
+Citizen:: Citizen(double startX, double startY, StudentWorld* sWorld)
+:Actors(IID_CITIZEN, startX , startY, right,0,sWorld ), m_infectionCount(0), m_paralyzedCounter(true)
 {
     //when construct a citzen, he is not infected
-    setInfection(false);
+    this->setInfection(false);
     //citizen starts alive
-    setAlive(true);
+    this->setAlive(true);
 }
-void Citizen:: flameDamagable()
+void Citizen:: flameDamagable( double point_x, double point_y)
 {
-   //Set its own state to dead
-    this->setAlive(false);
-    //o Play a sound effect to indicate that the citizen died: SOUND_CITIZEN_DIE.
-    getWorld()->playSound(SOUND_CITIZEN_DIE);
-    //o Decrease the player’s score by 1000 points.
-    
-    //================= CODE HERE ===========================
+    // then use the Udulican formula, instead the distance between the centers should be less than 16
+    double deltaX= pow((point_x - this->getX()),2);
+    double deltaY= pow((point_y - this->getY()),2);
+    //if that's cse then wall blocks the passed object
+    if(deltaX + deltaY <= pow(10,2))
+    {
+       //Set its own state to dead
+        this->setAlive(false);
+        //o Play a sound effect to indicate that the citizen died: SOUND_CITIZEN_DIE.
+        getWorld()->playSound(SOUND_CITIZEN_DIE);
+        //Decrease the player’s score by 1000 points.
+        getWorld()->changeScore(-1000);
+    }
 }
 void Citizen:: doSomething()
 {
@@ -1324,8 +1366,6 @@ void Citizen:: doSomething()
 //    The citizen must check to see if it is currently alive. If not, then its doSomething()
 //        method must return immediately – none of the following steps should be
 //        performed.
-    //increase paralyzed counter each time doSomething()
-    m_paralyzedCounter++;
     if(!isAlive())
         return;
     if(isInfected())
@@ -1339,8 +1379,7 @@ void Citizen:: doSomething()
             getWorld()->playSound(SOUND_ZOMBIE_BORN);
             //Decrease the player’s score by 1000 for failing to save this citizen (the player’s score could go negative!)
             
-              /// ================== CODE HERE ==========
-            
+            getWorld()->changeScore(-1000);
             //Introduce a new zombie object into the same (x,y) coordinate as the former citizen by adding it to the StudentWorld object:
             getWorld()->addNewZombie(this->getX(), this->getY());
             //Immediately return (since the citizen is now dead!)
@@ -1351,14 +1390,15 @@ void Citizen:: doSomething()
     //            what to do. The 2nd, 4th, 6th, etc., calls to doSomething() for a citizen are the
     //                “paralysis” ticks for which doSomething() must return immediately – none of the
     //                    following steps should be performed.
-    if(m_paralyzedCounter%2==0)
+    m_paralyzedCounter=!m_paralyzedCounter;
+    if(m_paralyzedCounter)
         return;
 
     //The citizen must determine its distance to Penelope: dist_p
-    int dist_p= getWorld()->distanceToPenelope(this->getX(), this->getY());
+    double dist_p= getWorld()->distanceToPenelope(this->getX(), this->getY());
     //The citizen must determine its distance to the nearest zombie: dist_z
-    int dist_z= getWorld()->distanceToNearestZombie(this->getX(), this->getY());
-    int dest_x,dest_y;
+    double dist_z= getWorld()->distanceToNearestZombie(this->getX(), this->getY());
+    double dest_x,dest_y;
 //    If dist_p < dist_z or no zombies exist in the level (so dist_z is irrelevant), and the
 //    citizen's Euclidean distance from Penelope is less than or equal to 80 pixels (so
 //    the citizen wants to follow Penelope):
@@ -1631,7 +1671,7 @@ bool Citizen:: isCitizen()
 {
     return true;
 }
-bool Citizen::blockActors(int point_x, int point_y)
+bool Citizen::blockActors(double point_x, double point_y)
 {
     //calculate the center of the current wall and the point passed in
     int pointX_center= point_x + SPRITE_WIDTH/2;
@@ -1648,9 +1688,14 @@ bool Citizen::blockActors(int point_x, int point_y)
     //otherwise it does not
     return false;
 }
-void Citizen:: vomitInfectable()
+void Citizen:: vomitInfectable(double x, double y)
 {
-    this->setAlive(false);
+    double deltaX= x - this->getX();
+    double deltaY= y - this->getY();
+    double result = pow(deltaX, 2) + pow(deltaY, 2);
+    if(result<= pow(10, 2))
+        this->setAlive(false);
+
 }
 bool Citizen:: isPerson()
 {
