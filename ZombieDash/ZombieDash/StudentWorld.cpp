@@ -46,7 +46,6 @@ StudentWorld::StudentWorld(string assetPath)
     m_flamethrower_charges=0;
     m_vaccines=0;
     m_infectionCount=0;
-    m_score=0;
 }
 //init() method that would be called by the framework to initialize all the objects load the level(s)
 int StudentWorld::init()
@@ -55,7 +54,7 @@ int StudentWorld::init()
     Level lev(assetPath());
     //get the level based what level penelope is on
     //GWSTATUS_PLAYER_WON
-    string levelFile = "level0"+ to_string(getLevel())+".txt";
+    string levelFile = "level0"+ to_string(getLevel())+ ".txt";
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
         return GWSTATUS_PLAYER_WON;
@@ -121,8 +120,6 @@ int StudentWorld::init()
 int StudentWorld::move()
 {
 //    The status line must be formatted like this (the spec and sample executables are inconsistent):
-//Score: 004500  Level: 27  Lives: 3  Vaccines: 2  Flames: 16  Mines: 1  Infected: 0
-    
     //iterate through all objects
     for (vector<Actors*>::iterator it = m_level.begin(); it != m_level.end(); it++)
     {
@@ -139,7 +136,7 @@ int StudentWorld::move()
 //        if(citizne alive && citizen overlap exit)
 //            if((*it)->doesOverlap(penelopePtr))
 //                return GWSTATUS_FINISHED_LEVEL;
-        if((*it)->doesOverlap(penelopePtr))
+        if((*it)->doesOverlap(penelopePtr) && noCitizenOnLevel())
         {
             playSound(SOUND_LEVEL_FINISHED);
             return GWSTATUS_FINISHED_LEVEL;
@@ -177,7 +174,8 @@ void StudentWorld::cleanUp()
     m_flamethrower_charges=0;
     m_vaccines=0;
     m_infectionCount=0;
-    m_score=0;
+   // m_score=0;
+    
 }
 //Destructor
 StudentWorld:: ~StudentWorld()
@@ -241,19 +239,14 @@ bool StudentWorld:: isBlocked(  double dest_x, double dest_y, Actors *actorPtr)
 void StudentWorld:: addNewZombie(double startX, double startY)
 {
     int zombiePercentage= randInt(0, 100);
-    for(vector<Actors*>::iterator iter = m_level.begin() ; iter !=m_level.end() ; iter++)
-    {
-        //if the actor is a citizen
-        if((*iter)->isCitizen())
-        {
-            //There’s a 70% chance a dumb zombie object will be introduced.
-            if(zombiePercentage<=70)
-                m_level.push_back(new DumbZombies(startX,startY,this));
-            else
-               //here’s a 30% chance a smart zombie object will be introduced
-                m_level.push_back(new SmartZombies(startX,startY,this));
-        }
-    }
+    //There’s a 70% chance a dumb zombie object will be introduced.
+    if(zombiePercentage<=70)
+        m_level.push_back(new DumbZombies(startX,startY,this));
+    else
+        //here’s a 30% chance a smart zombie object will be introduced
+        m_level.push_back(new SmartZombies(startX,startY,this));
+    
+
 }
 //return the distance between the citizen and peneople
 double StudentWorld:: distanceToPenelope(double citizenX, double citizenY)
@@ -423,7 +416,11 @@ bool StudentWorld:: doesExitOverlapWithCitizen(double exit_x, double exit_y)
             double deltaY= exit_y - (*iter)->getY();
             double result = pow(deltaX, 2) + pow(deltaY, 2);
             if(result<= pow(10, 2))
+            {
+                (*iter)->setAlive(false);
                 return true;
+            }
+            
         }
     }
     return false;
@@ -611,7 +608,7 @@ void StudentWorld:: vomitOverlapsWithcitizenPenelopeToInfect(Actors *actor)
         //if the current actor is penelope or citizen
         if((*iter)->isCitizen() || (*iter)==penelopePtr)
         {
-                (*iter)->vomitInfectable(actor->getX(), actor->getY());
+            (*iter)->vomitInfectable(actor->getX(), actor->getY());
         }
     }
     return;
@@ -638,7 +635,7 @@ string StudentWorld:: stingStreamTextDisplay()
     ostringstream oss;
     oss<< "Score: ";
     oss.fill('0');
-    oss << setw(6)<< left<< score();
+    oss << setw(6)<< getScore();
     oss<<"  Level: ";
     oss.fill(' ');
     oss << setw(4)<<left << getLevel();
@@ -650,17 +647,6 @@ string StudentWorld:: stingStreamTextDisplay()
     return oss.str();
 }
 
-double StudentWorld:: score()
-{
-    return m_score;
-}
-void StudentWorld:: changeScore(double amt)
-{
-    if(amt>=0)
-        m_score+=amt;
-    else
-        m_score-=amt;
-}
 bool StudentWorld:: isBlockedFromFlame( double here_x, double here_y, Actors *actorPtr )
 {
     //iterate through all the objects
@@ -701,3 +687,4 @@ bool StudentWorld:: noCitizenOnLevel()
     //otherwise return true
     return true;
 }
+

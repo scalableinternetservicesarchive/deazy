@@ -26,11 +26,6 @@
 
 
 
-
-
-//When a dumb zombie drops a vaccine goodie, it does not simply drop it at its own (x,y) coordinates, but tries to fling it away instead: It chooses a random direction, computes the coordinates SPRITE_WIDTH units away if the direction is left or right or SPRITE_HEIGHT units away if it is up or down, and if no other object in the game would overlap with an object created at those coordinates, introduces a new vaccine goodie at those coordinates; otherwise, it does not introduce a vaccine object.
-//When a level is finished, SOUND_LEVEL_FINISHED should be played; the sample executables incorrectly play SOUND_CITIZEN_SAVED.
-//You must play a SOUND_CITIZEN_INFECTED sound any time a citizen is successfully infected by zombie vomit. Note that this sound is played only when the citizen is first covered in vomit, NOT upon subsequent hit by vomit and NOT when they become a zombie; the sample executables currently don't play this sound. Note also that in general a new sound cuts off an old sound, so you might not hear SOUND_CITIZEN_INFECTED being played if its start is quickly followed by a zombie vomiting.
 //Vomit is not blocked by an exit.
 
 
@@ -171,11 +166,6 @@ Penelope::Penelope(double startX, double startY, StudentWorld * sWorld)
     this->setAlive(true);
     //set Penelope infection in the beginning false, as not infected
     setInfection(false);
-    getWorld()->incrementFlamethrowerCharges(0);
-    getWorld()->incrementLandmines(0);
-    getWorld()->incrementVaccine(0);
-    getWorld()->intitailStatusInfection(0);
-
 }
 Penelope::~Penelope()
 {}
@@ -187,7 +177,13 @@ void Penelope:: flameDamagable(double point_x, double point_y)
     double deltaY= pow((point_y - this->getY()),2);
     
     //if that's cse then wall blocks the passed object
-    if(deltaX + deltaY <= pow(10,2)) this->setAlive(false);
+    if(deltaX + deltaY <= pow(10,2))
+    {
+        //She must immediately set her status to dead
+        this->setAlive(false);
+        //The game must play a SOUND_PLAYER_DIE sound effect
+        getWorld()->playSound(SOUND_PLAYER_DIE);
+    }
     //otherwise it does not
    
 }
@@ -402,12 +398,6 @@ void Penelope:: doSomething()
                 break;
             }
         }
-//    =========================   What Penelope Must Do In Other Circumstances
-    
-
-    
-
-
 }
 //    • Penelope blocks other objects from moving nearby/onto her. Penelope’s bounding
 //    box must never intersect with that of any citizen, zombie, or wall.
@@ -505,19 +495,19 @@ void Exit::doSomething()
     if(getWorld()->doesExitOverlapWithCitizen(this->getX(), this->getY()))
     {
         //a. Inform the StudentWorld object that the user is to receive 500 points.
-        getWorld()->changeScore(500);
+        getWorld()->increaseScore(500);
         // b. Set the citizen object’s state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick) – note, this must not kill the citizen in a way that deducts points from the player as if the citizen died due to a zombie infection, a flame, or a pit.
-        // =============================    CODE HERE ===========================
+        
         //  c. Play a sound effect to indicate that the citizen was saved by using the exit: SOUND_CITIZEN_SAVED.
         getWorld()->playSound(SOUND_CITIZEN_SAVED);
     }
-    //2. The exit must determine if it overlaps7 with Penelope. If so and all citizens have either exited the level or died, then:
-    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()) && getWorld()->noCitizenOnLevel())
-    {
-       // a. Inform the StudentWorld object that Penelope has finished the current level
-        // ============== CODE HERE ==================
-    }
-    return;
+    //2. The exit must determine if it overlaps with Penelope. If so and all citizens have either exited the level or died, then:
+//    if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()) && getWorld()->noCitizenOnLevel())
+//    {
+//       // a. Inform the StudentWorld object that Penelope has finished the current level
+//        
+//    }
+  
 }
 Exit::~Exit()
 {}
@@ -531,7 +521,7 @@ bool Exit::doesOverlap(Actors * otherObject)
     int deltaX= pow((exitX - otherObjectX),2);
     int deltaY= pow((exitY - otherObjectY),2);
     
-    if(deltaY + deltaX <= 100)
+    if( deltaY + deltaX <= 100)
         return true;
     return false;
 }
@@ -574,12 +564,35 @@ void DumbZombies:: flameDamagable(double point_x, double point_y)
         //o Play a sound effect to indicate that the dumb zombie died: SOUND_ZOMBIE_DIE.
         getWorld()->playSound(SOUND_ZOMBIE_DIE);
         //Increase the player’s score by 1000 points.
-        getWorld()->changeScore(1000);
+        getWorld()->increaseScore(1000);
         
         //1 in 10 dumb zombies are mindlessly carrying a vaccine goodie that they'll drop when they die. If this dumb zombie has a vaccine goodie, it will
         // introduce a new vaccine goodie at its (x,y) coordinate by adding it to the StudentWorld object.
         if(1==randInt(1, 10))
-            getWorld()->addVaccineGoodieHere(this->getX(), this->getY());
+        {
+            //When a dumb zombie drops a vaccine goodie, it does not simply drop it at its own (x,y) coordinates, but tries to fling it away instead: It chooses a random direction, computes the coordinates SPRITE_WIDTH units away if the direction is left or right or SPRITE_HEIGHT units away if it is up or down, and if no other object in the game would overlap with an object created at those coordinates, introduces a new vaccine goodie at those coordinates; otherwise, it does not introduce a vaccine object.
+            switch (randomDir())
+            {
+                case up:
+                    if(getWorld()->isBlocked(this->getX(), this->getY()+SPRITE_HEIGHT, this))
+                        getWorld()->addVaccineGoodieHere(this->getX(), this->getY()+SPRITE_HEIGHT);
+                    break;
+                case down:
+                    if(getWorld()->isBlocked(this->getX(), this->getY()-SPRITE_HEIGHT, this))
+                        getWorld()->addVaccineGoodieHere(this->getX(), this->getY()-SPRITE_HEIGHT);
+                    break;
+                case left:
+                    if(getWorld()->isBlocked(this->getX() - SPRITE_WIDTH, this->getY(), this))
+                        getWorld()->addVaccineGoodieHere(this->getX()- SPRITE_WIDTH, this->getY());
+                    break;
+                case right:
+                    if(getWorld()->isBlocked(this->getX()+ SPRITE_WIDTH, this->getY(), this))
+                        getWorld()->addVaccineGoodieHere(this->getX()+ SPRITE_WIDTH, this->getY());
+                    break;
+            }
+            
+        }
+        
     }
    
 }
@@ -788,7 +801,7 @@ void SmartZombies:: flameDamagable(double point_x, double point_y)
         //o Play a sound effect to indicate that the smart zombie died: SOUND_ZOMBIE_DIE.
         getWorld()->playSound(SOUND_ZOMBIE_DIE);
         //Increase the player’s score by 2000 points.
-        getWorld()->changeScore(2000);
+        getWorld()->increaseScore(2000);
     }
 }
 void SmartZombies:: doSomething()
@@ -1057,16 +1070,19 @@ void Landmines:: doSomething()
     //If the landmine is not yet active then
     if(m_activeState==false)
     {
+        
         //a. It must decrement the number of safety ticks left.
         m_safteyTick--;
         //. If the number of safety ticks is zero, the landmine becomes active.
         if(m_safteyTick==0)
-            m_activeState=true;
-        //c. The doSomething() method must return immediately, doing nothing more during this tick.
-        return;
+        {
+             m_activeState=true;
+             //c. The doSomething() method must return immediately, doing nothing more during this tick.
+            return;
+        }
     }
     //The landmine must determine if it overlaps with a citizen or Penelope. If so, then the landmine must:
-    if(getWorld()-> doesOverlapsWithcitizenPenelope(this))
+    else if(getWorld()-> doesOverlapsWithcitizenPenelope(this))
     {
         //Set its state to dead
         this->setAlive(false);
@@ -1234,7 +1250,7 @@ void VaccineGoodies:: doSomething()
     if(getWorld()->doesOverlapWithPenelope( this-> getX() , this->getY()))
     {
        // a. Inform the StudentWorld object that the user is to receive 50 points.
-        getWorld()->changeScore(50);
+        getWorld()->increaseScore(50);
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
         this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
@@ -1273,7 +1289,7 @@ void GasCanGoodies:: doSomething()
     if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
     {
         //a. Inform the StudentWorld object that the user is to receive 50 points.
-        getWorld()->changeScore(50);
+        getWorld()->increaseScore(50);
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
         this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
@@ -1312,7 +1328,7 @@ void LandminesGoodies:: doSomething()
     if(getWorld()->doesOverlapWithPenelope(this->getX(), this->getY()))
     {
         //a. Inform the StudentWorld object that the user is to receive 50 points.
-        getWorld()->changeScore(50);
+        getWorld()->increaseScore(50);
         //b. Set its state to dead (so that it will be removed from the game by the StudentWorld object at the end of the current tick).
         this->setAlive(false);
         //c. Play a sound effect to indicate that Penelope picked up the goodie: SOUND_GOT_GOODIE.
@@ -1357,7 +1373,7 @@ void Citizen:: flameDamagable( double point_x, double point_y)
         //o Play a sound effect to indicate that the citizen died: SOUND_CITIZEN_DIE.
         getWorld()->playSound(SOUND_CITIZEN_DIE);
         //Decrease the player’s score by 1000 points.
-        getWorld()->changeScore(-1000);
+        getWorld()->increaseScore(-1000);
     }
 }
 void Citizen:: doSomething()
@@ -1379,7 +1395,7 @@ void Citizen:: doSomething()
             getWorld()->playSound(SOUND_ZOMBIE_BORN);
             //Decrease the player’s score by 1000 for failing to save this citizen (the player’s score could go negative!)
             
-            getWorld()->changeScore(-1000);
+            getWorld()->increaseScore(-1000);
             //Introduce a new zombie object into the same (x,y) coordinate as the former citizen by adding it to the StudentWorld object:
             getWorld()->addNewZombie(this->getX(), this->getY());
             //Immediately return (since the citizen is now dead!)
@@ -1694,7 +1710,12 @@ void Citizen:: vomitInfectable(double x, double y)
     double deltaY= y - this->getY();
     double result = pow(deltaX, 2) + pow(deltaY, 2);
     if(result<= pow(10, 2))
-        this->setAlive(false);
+    {
+        //You must play a SOUND_CITIZEN_INFECTED sound any time a citizen is successfully infected by zombie vomit. Note that this sound is played only when the citizen is first covered in vomit, NOT upon subsequent hit by vomit and NOT when they become a zombie; the sample executables currently don't play this sound. Note also that in general a new sound cuts off an old sound, so you might not hear SOUND_CITIZEN_INFECTED being played if its start is quickly followed by a zombie vomiting.
+        getWorld()->playSound(SOUND_CITIZEN_INFECTED);
+        this->setInfection(true);
+    }
+    
 
 }
 bool Citizen:: isPerson()

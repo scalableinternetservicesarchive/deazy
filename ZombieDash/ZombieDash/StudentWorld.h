@@ -61,8 +61,6 @@ public:
     void incrementVaccine(int);
     void decrementVaccine();
     string stingStreamTextDisplay();
-    double score();
-    void changeScore(double);
     bool isBlockedFromFlame( double, double, Actors * );
     int infectionCounter();
     void incrementInfection();
@@ -76,7 +74,6 @@ private:
     int  m_landmines,
          m_flamethrower_charges,
          m_vaccines,
-         m_score,
          m_infectionCount;
 };
 
