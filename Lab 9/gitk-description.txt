@@ -1,0 +1,17 @@
+The upper leftmost window shows a history of commits in a hierarchical tree
+structure showing the different branches, their relationships, the HEAD pointer,
+and commit messages next to each commit.
+
+The upper middle window show the author of each commit and their email address.
+
+The upper rightmost window show the date of the commit in the format 'YYYY-MM-DD'
+and the time in the military time format 'HH:MM'.
+
+The section between the upper half and the lower half has the SHA1 ID, the row
+that we are on, and a search box with various options.
+
+The lower left window shows more information about the selected commit, such as
+the author, committer, parent, child, branches, commit message, the changes in
+diff format, etc.
+
+The lower right window shows the files impacted by the selected commit.

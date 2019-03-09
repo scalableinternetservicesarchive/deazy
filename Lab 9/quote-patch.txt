@@ -1,0 +1,365 @@
+
+You need a passphrase to unlock the secret key for
+user: "Ali Mirabzadeh (Key Pair for 35L) <ali.mz758@gmail.com>"
+2048-bit RSA key, ID E6511DAC, created 2019-03-06
+
+[mirabzad@lnxsrv09 ~/lab8]$ ls
+eeprom  eeprom.sig  hw-pubkey.asc
+[mirabzad@lnxsrv09 ~/lab8]$ emacs eeprom.s
+[mirabzad@lnxsrv09 ~/lab8]$ emacs eeprom.sig 
+[mirabzad@lnxsrv09 ~/lab8]$ pwd
+/u/cs/ugrad/mirabzad/lab8
+[mirabzad@lnxsrv09 ~/lab8]$ scp /u/cs/ugrad/mirabzad/lab8/eeprom.sig alimirabzadeh:/Users/alimirabzadeh/desktop
+ssh: Could not resolve hostname alimirabzadeh: Name or service not known
+lost connection
+[mirabzad@lnxsrv09 ~/lab8]$ scp /u/cs/ugrad/mirabzad/lab8/eeprom.sig alimirabzadeh:/Users/alimirabzadeh/dpacket_write_wait: Connection to 164.67.100.209 port 22: Broken pipe
+s-169-232-126-132:~ alimirabzadeh$ ssh mirabzad@lnxsrv09.seas.ucla.edu
+mirabzad@lnxsrv09.seas.ucla.edu's password: 
+Last login: Wed Mar  6 15:14:21 2019 from vpn-128-97-245-75.host.ucla.edu
+*****************************************************************************
+                        lnxsrv09.seas.ucla.edu RHEL 7
+*****************************************************************************
+
+        RedHat 7 -- may not behave the same as other lnxsrv
+        Will be used by CS 35L, CS 33, CS 111, and CS 131
+
+*****************************************************************************
+*****************************************************************************
+*                                                                           *
+* SEASnet Computing Access                                                  *
+*                                                                           *
+* Priority is given both on the servers and in the student labs to those    *
+* students doing coursework. Computing support for research is provided by  *
+* each department.                                                          *
+*****************************************************************************
+* For assistance please contact help@seas.ucla.edu or call 206-6864.        *
+*****************************************************************************
+[mirabzad@lnxsrv09 ~]$ cd lab8
+[mirabzad@lnxsrv09 ~/lab8]$ ls
+eeprom  eeprom.sig  hw-pubkey.asc
+[mirabzad@lnxsrv09 ~/lab8]$ pwd
+/u/cs/ugrad/mirabzad/lab8
+[mirabzad@lnxsrv09 ~/lab8]$ scp /u/cs/ugrad/mirabzad/lab8/eeprom.sig 169-232-126-132:/Users/alimirabzadeh/desktop
+ssh: Could not resolve hostname 169-232-126-132: Name or service not known
+lost connection
+[mirabzad@lnxsrv09 ~/lab8]$ scp mirabzad@lnxsrv09.seas.ucla.edu:/u/cs/ugrad/mirabzad/lab8/eeprom.sig /Users/alimirabzadeh/desktop
+mirabzad@lnxsrv09.seas.ucla.edu's password: 
+/Users/alimirabzadeh/desktop: No such file or directory
+[mirabzad@lnxsrv09 ~/lab8]$ scp mirabzad@lnxsrv09.seas.ucla.edu:/u/cs/ugrad/mirabzad/lab8/eeprom.sig /Users/alimirabzadeh/Desktop
+mirabzad@lnxsrv09.seas.ucla.edu's password: 
+/Users/alimirabzadeh/Desktop: No such file or directory
+[mirabzad@lnxsrv09 ~/lab8]$ scp mirabzad@lnxsrv09.seas.ucla.edu:/u/cs/ugrad/mirabzad/lab8/eeprom.sig /Users/alimirabzadeh/
+mirabzad@lnxsrv09.seas.ucla.edu's password: 
+/Users/alimirabzadeh/: No such file or directory
+[mirabzad@lnxsrv09 ~/lab8]$ scp mirabzad@lnxsrv09.seas.ucla.edu:/u/cs/ugrad/mirabzad/lab8/eeprom.sig 169-232-126-132:/Users/alimirabzadeh/Desktop
+mirabzad@lnxsrv09.seas.ucla.edu's password: 
+ssh: Could not resolve hostname 169-232-126-132: Name or service not known
+lost connection
+Connection to lnxsrv09.seas.ucla.edu closed.
+[mirabzad@lnxsrv09 ~/lab8]$ scp mirabzad@lnxsrv09.seas.ucla.edu:/u/cs/ugrad/mirabzad/lab8/eeprom.sig 169-232-126-132:/Users/alimirabzadeh/Desktop/
+mirabzad@lnxsrv09.seas.ucla.edu's password: 
+ssh: Could not resolve hostname 169-232-126-132: Name or service not known
+lost connection
+Connection to lnxsrv09.seas.ucla.edu closed.
+[mirabzad@lnxsrv09 ~/lab8]$ emacs eeprom.sig 
+[mirabzad@lnxsrv09 ~/lab8]$ cd ..
+[mirabzad@lnxsrv09 ~]$ mkdir lab9
+[mirabzad@lnxsrv09 ~]$ clear
+
+[mirabzad@lnxsrv09 ~]$ git clone https://git.savannah.gnu.org/git/diffutils.git
+Cloning into 'diffutils'...
+remote: Counting objects: 5216, done.
+remote: Compressing objects: 100% (1400/1400), done.
+remote: Total 5216 (delta 3753), reused 5216 (delta 3753)
+Receiving objects: 100% (5216/5216), 1.52 MiB | 123.00 KiB/s, done.
+Resolving deltas: 100% (3753/3753), done.
+Checking out files: 100% (89/89), done.
+[mirabzad@lnxsrv09 ~]$ git log
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~]$ git log > git-log.txt
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~]$ cd lab9
+[mirabzad@lnxsrv09 ~/lab9]$ git clone https://git.savannah.gnu.org/git/diffutils.git
+Cloning into 'diffutils'...
+remote: Counting objects: 5216, done.
+remote: Compressing objects: 100% (1400/1400), done.
+remote: Total 5216 (delta 3753), reused 5216 (delta 3753)
+Receiving objects: 100% (5216/5216), 1.52 MiB | 92.00 KiB/s, done.
+Resolving deltas: 100% (3753/3753), done.
+Checking out files: 100% (89/89), done.
+[mirabzad@lnxsrv09 ~/lab9]$ git log > git-log.txt
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils  git-log.txt
+[mirabzad@lnxsrv09 ~/lab9]$ cd diffutils/
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ ls
+AUTHORS         ChangeLog-2008  doc        gnulib-tests  Makefile.am  README          tests
+bootstrap       configure.ac    exgettext  HACKING       man          README-hacking  THANKS
+bootstrap.conf  COPYING         gl         init.cfg      NEWS         scripts         TODO
+cfg.mk          dist-check.mk   gnulib     lib           po           src
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ cd ..
+[mirabzad@lnxsrv09 ~/lab9]$ git log > git-log.txt
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ git log
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ git log
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils  git-log.txt
+[mirabzad@lnxsrv09 ~/lab9]$ git log diffutils/
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ git clone eggert/src/gnu/diffutils
+fatal: repository 'eggert/src/gnu/diffutils' does not exist
+[mirabzad@lnxsrv09 ~/lab9]$ git log > git-log.txt
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ cd /w/home.06
+[mirabzad@lnxsrv09 /w/home.06]$ ls
+be  ce  ch  class  cs  ee  eng  ma  ms  ol
+[mirabzad@lnxsrv09 /w/home.06]$ cd ~
+[mirabzad@lnxsrv09 ~]$ cd lab9
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils  git-log.txt
+[mirabzad@lnxsrv09 ~/lab9]$ emacs git-log.txt 
+[mirabzad@lnxsrv09 ~/lab9]$ cd ..
+[mirabzad@lnxsrv09 ~]$ git clone https://git.savannah.gnu.org/git/diffutils.git
+fatal: destination path 'diffutils' already exists and is not an empty directory.
+[mirabzad@lnxsrv09 ~]$ cd lab9
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils  git-log.txt
+[mirabzad@lnxsrv09 ~/lab9]$ git log
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ git init
+Initialized empty Git repository in /w/home.06/cs/ugrad/mirabzad/lab9/.git/
+[mirabzad@lnxsrv09 ~/lab9]$ git clone https://git.savannah.gnu.org/git/diffutils.git
+fatal: destination path 'diffutils' already exists and is not an empty directory.
+[mirabzad@lnxsrv09 ~/lab9]$ git log
+fatal: bad default revision 'HEAD'
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils  git-log.txt
+[mirabzad@lnxsrv09 ~/lab9]$ git log > git-log.txt
+fatal: bad default revision 'HEAD'
+[mirabzad@lnxsrv09 ~/lab9]$ cd ..
+[mirabzad@lnxsrv09 ~]$ rmf lab9
+-bash: rmf: command not found
+[mirabzad@lnxsrv09 ~]$ rm -r lab9
+rm: remove write-protected regular file ‘lab9/diffutils/.git/objects/pack/pack-1f67e1b49883387fc307186991391b30c0f3758d.pack’? 
+rm: remove write-protected regular file ‘lab9/diffutils/.git/objects/pack/pack-1f67e1b49883387fc307186991391b30c0f3758d.idx’? yes
+rm: cannot remove ‘lab9/diffutils/.git/objects/pack’: Directory not empty
+[mirabzad@lnxsrv09 ~]$ cd lab9
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils
+[mirabzad@lnxsrv09 ~/lab9]$ rm diffutils/
+rm: cannot remove ‘diffutils/’: Is a directory
+[mirabzad@lnxsrv09 ~/lab9]$ rm -r diffutils/
+rm: remove write-protected regular file ‘diffutils/.git/objects/pack/pack-1f67e1b49883387fc307186991391b30c0f3758d.pack’? yes
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+[mirabzad@lnxsrv09 ~/lab9]$ git clone  ~eggert/src/gnu/diffutils 
+Cloning into 'diffutils'...
+done.
+Checking out files: 100% (83/83), done.
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils
+[mirabzad@lnxsrv09 ~/lab9]$ git log > git-log.txt
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ git log
+fatal: Not a git repository (or any parent up to mount point /w/home.06)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils  git-log.txt
+[mirabzad@lnxsrv09 ~/lab9]$ rm git-log.txt 
+[mirabzad@lnxsrv09 ~/lab9]$ rm -r diffutils/
+[mirabzad@lnxsrv09 ~/lab9]$ git init
+Initialized empty Git repository in /w/home.06/cs/ugrad/mirabzad/lab9/.git/
+[mirabzad@lnxsrv09 ~/lab9]$ git clone fatal: Not a git repository (or any parent up to mount point /w/home.06)
+-bash: syntax error near unexpected token `('
+[mirabzad@lnxsrv09 ~/lab9]$ git clone  ~eggert/src/gnu/diffutils 
+Cloning into 'diffutils'...
+done.
+Checking out files: 100% (83/83), done.
+[mirabzad@lnxsrv09 ~/lab9]$ git log
+fatal: bad default revision 'HEAD'
+[mirabzad@lnxsrv09 ~/lab9]$ ls
+diffutils
+[mirabzad@lnxsrv09 ~/lab9]$ cd diffutils/
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ git log
+commit 487e009ed7294021dcc0b66c2b5a5046aea51ab4
+Author: Jim Meyering <meyering@fb.com>
+Date:   Sun May 21 15:27:10 2017 -0700
+
+    maint: make the announcement template Cc the devel- list
+    
+    * cfg.mk (announcement_Cc_): Define.
+
+commit 592e503b48e42981b0a7fa308a6c3b06f08d582b
+Author: Jim Meyering <meyering@fb.com>
+Date:   Sun May 21 13:27:36 2017 -0700
+
+    maint: post-release administrivia
+    
+    * NEWS: Add header line for next release.
+    * .prev-version: Record previous version.
+    * cfg.mk (old_NEWS_hash): Auto-update.
+
+commit e73a3d5e44c2e46e2ae947eb99b3834874a601a8
+Author: Jim Meyering <meyering@fb.com>
+Date:   Sun May 21 13:25:42 2017 -0700
+
+    version 3.6
+    
+    * NEWS: Record release date.
+
+commit 7c2a2d63f42135f676aec054583242734ef348c2
+Author: Jim Meyering <meyering@fb.com>
+Date:   Fri May 19 17:14:09 2017 -0700
+
+    gnulib: update to latest
+
+commit d3b51e7f02994c76b88b83857e253b4116706f91
+Author: Jim Meyering <meyering@fb.com>
+Date:   Wed May 17 22:51:31 2017 -0700
+
+    maint: update to work with GCC7's -Werror=implicit-fallthrough=
+    
+    * src/system.h (FALLTHROUGH): Define.
+    Use new FALLTHROUGH macro in place of comments
+    * src/cmp.c: FIXME
+    * src/diff3.c: FIXME
+    * src/ifdef.c: FIXME
+    * src/sdiff.c: FIXME
+    * src/side.c: FIXME
+    * src/util.c: FIXME
+
+commit 646268f5c6472d248ae0e98960f7983656a9d0e3
+Author: Jim Meyering <meyering@fb.com>
+Date:   Thu May 18 09:23:06 2017 -0700
+
+    gnulib: update to latest
+
+commit 20b31314c3d72af7159cc6ba3cdb9b1288263858
+Author: Jim Meyering <meyering@fb.com>
+Date:   Tue May 9 11:55:46 2017 -0700
+
+    tests: new-file: closed-stdin: also ensure stdout was empty
+    
+    * tests/new-file: Also require that "out" be empty.
+
+commit c881afb9b82a4943b47880d2e607825ceff286be
+Author: Jim Meyering <meyering@fb.com>
+Date:   Sat May 6 12:09:43 2017 -0700
+
+    maint: stop using @acronym{...} in texinfo sources
+    
+    * doc/diffutils.texi: Remove all uses of @acronym{...},
+    per recommendation by Karl Berry.
+    * cfg.mk (local-checks-to-skip): Remove exemption, enabling
+    the @acronym{-prohibiting syntax-check rule.
+
+commit ac05c6d549bb0731386ca2251c92b91be2e95228
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Thu May 4 17:17:23 2017 -0700
+
+    cmp: improve EOF diagnostic
+    
+    This improves on yesterday's change, following up on a
+    remark by Jim Meyering (Bug#22816#21).
+    * doc/diffutils.texi (Invoking cmp, cmp Options): Follow POSIX more
+    closely in the documentation of the information appended to the EOF
+    diagnostic.
+    * src/cmp.c (cmp): Be more specific about the shorter file's length
+    and fix some off-by-1 issues in reporting line counts.
+    * tests/cmp: Adjust to match new behavior.
+    Don't assume internal details about stdio buffering.
+
+commit 98b6fc2f320cfb6a1b55dc032b7de26188c04479
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ git log > git-log.txt
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ emacs git-log.txt 
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ git tag > git-tags.txt
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ emacs git-tags.txt 
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ emacs git-log.txt 
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ git show  62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f > quote-patch.txt
+[mirabzad@lnxsrv09 ~/lab9/diffutils]$ emacs quote-patch.txt 
+
+File Edit Options Buffers Tools Help                                                                             
+commit 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Wed Jan 25 23:46:16 2012 -0800
+
+    maint: quote 'like this' or "like this", not `like this'
+
+    This is in response to a recent change in the GNU coding standards,
+    which now suggest quoting 'like this' or "like this", instead of
+    `like this' or ``like this''.
+    * HACKING, NEWS, README, README-hacking, TODO, doc/diagmeet.note:
+    * doc/diffutils.texi, ms/config.bat, ms/config.site:
+    * src/analyze.c, src/cmp.c, src/context.c, src/diff.c:
+    * src/diff.h, src/diff3.c, src/dir.c, src/ifdef.c, src/io.c:
+    * src/sdiff.c, src/side.c, src/system.h, src/util.c:
+    * tests/help-version:
+    Quote 'like this' or "like this" in commentary.
+    * cfg.mk (old_NEWS_hash): Adjust to reflect new NEWS quoting.
+    * man/help2man: Update to 1.40.4 version, with quoting fixed as above.
+    * po/en.po: Remove translation involving `, as it's no longer needed.
+    * src/cmp.c (try_help, specify_ignore_initial, usage, main):
+    * src/diff.c (main, try_help, option_help_msgid, specify_value)
+    (compare_files):
+    * src/diff3.c (main, try_help, option_help_msgid, usage)
+    (read_diff):
+    * src/dir.c (compare_names):
+    * src/sdiff.c (try_help, usage, check_child_status, main):
+    * src/util.c (finish_output):
+    * tests/help-version:
+    Quote 'like this' in output.
+
+diff --git a/HACKING b/HACKING
+index 3a99833..522e0b5 100644
+--- a/HACKING
++++ b/HACKING
+@@ -587,5 +587,5 @@ Permission is granted to copy, distribute and/or modify this document
+ under the terms of the GNU Free Documentation License, Version 1.3 or
+ any later version published by the Free Software Foundation; with no
+ Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+-Texts.  A copy of the license is included in the ``GNU Free
+-Documentation License'' file as part of this distribution.
++Texts.  A copy of the license is included in the "GNU Free
++Documentation License" file as part of this distribution.
+diff --git a/NEWS b/NEWS
+index 8105f1d..808c603 100644
+--- a/NEWS
++++ b/NEWS
+@@ -58,7 +58,7 @@ GNU diffutils NEWS                                    -*- outline -*-
+
+   New diff option --suppress-blank-empty.
+
+-  Bring back support for `diff -NUM', where NUM is a number,
++  Bring back support for 'diff -NUM', where NUM is a number,
+   even when conforming to POSIX 1003.1-2001.  This change reverts to
+   the behavior of GNU diff 2.7 and earlier.  This is a change only
+   when conforming to POSIX 1003.1-2001; there is no effect when
+@@ -94,7 +94,7 @@ User-visible changes in version 2.8.6:
+   that 'patch' creates to indicate nonexistent backups) are now
+   treated as nonexistent when they are in the 'backup' file position.
+
+-* If multiple SKIP values are given to cmp, e.g., `cmp -i 10 -i 20',
++* If multiple SKIP values are given to cmp, e.g., 'cmp -i 10 -i 20',
+   cmp now uses the maximal value instead of the last one.
+
+ * diff now omits the ".000000000" on hosts that do not support
+@@ -134,7 +134,7 @@ User-visible changes in version 2.8:
+ * cmp and diff now conform to POSIX 1003.1-2001 (IEEE Std 1003.1-2001)
+   if the underlying system conforms to POSIX and if the _POSIX2_VERSION
+   environment variable is set to 200112.  Conformance removes support
+-  for `diff -NUM', where NUM is a number.  Use -C NUM or -U NUM instead.
++  for 'diff -NUM', where NUM is a number.  Use -C NUM or -U NUM instead.
+ * cmp now supports trailing operands SKIP1 and SKIP2, like BSD cmp.
+-UU-:----F1  quote-patch.txt   Top L1     (Text) ----------------------------------------------------------------
+Beginning of buffer
