@@ -13,11 +13,12 @@ public:
     GenomeImpl(const string& nm, const string& sequence);
     static bool load(istream& genomeSource, vector<Genome>& genomes);
     int length() const;
+    ~GenomeImpl();
     string name() const;
     bool extract(int position, int length, string& fragment) const;
 private:
-    string m_name;
-    string m_sequence;
+    string m_name,
+           m_sequence;
 //    void loadFunction()
 //    {
 //        // Specify the full path and name of the gene data file on your hard drive.
@@ -41,7 +42,6 @@ private:
 //        else
 //            cerr << "Error loading genome data" << endl;
 //    } // destructor for ifstream closes the file
-
 };
 
 GenomeImpl::GenomeImpl(const string& nm, const string& sequence)
@@ -52,16 +52,19 @@ GenomeImpl::GenomeImpl(const string& nm, const string& sequence)
      character, and all characters in the sequence are upper case A, C, T, G, or N (we'll explain
      N later). It should run in O(S) time, where S is the length of the longer string.
      */
+    //===============TO DO ================
     for (int i=0; i< nm.length(); i++)
     {
         m_name[i]=nm[i];
     }
-  
     for (int i=0; i< sequence.length(); i++)
     {
         m_sequence[i]=sequence[i];
     }
-    
+}
+GenomeImpl:: ~GenomeImpl()
+{
+    //===================TO-DO=====================
 }
 
 bool GenomeImpl::load(istream& genomeSource, vector<Genome>& genomes) 
@@ -126,7 +129,7 @@ bool GenomeImpl::load(istream& genomeSource, vector<Genome>& genomes)
         }
     }
 //    3. Create a Genome object with the extracted name and DNA sequence, and add it to the vector of Genomes that is the second parameter. if file is properly formatted
-    genomes.push_back(new Genome(name , seq));
+    genomes.push_back(new Genome(name,seq));
     return true;
 }
 
