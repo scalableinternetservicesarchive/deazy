@@ -17,5 +17,5 @@
 * Ali Mirabzadeh - alimz758
 <img src="https://github.com/scalableinternetservices/deazy/blob/master/8EE93990-816F-4E45-9788-D5FDD24ABB07.jpeg">
 
-* Ashkan Faghihi- ashkan117
-<img src="drive.google.com/uc?export=view&id=13OMmTWIyPHAFzWB6TG2Jeprfll-o-hdR">
+* Ashkan Faghihi - ashkan117
+<img src="https://drive.google.com/uc?export=view&id=13OMmTWIyPHAFzWB6TG2Jeprfll-o-hdR">
