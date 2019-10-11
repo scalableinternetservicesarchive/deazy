@@ -1,5 +1,5 @@
 # DEazy
-      Dating Made It Easy
+  Dating Made It Easy
 ## Background
   DEazy is here to ease the struggle of finding dating spot(s). With our platform, the users can see different dating
   
