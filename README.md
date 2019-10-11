@@ -4,9 +4,9 @@
   
   spot(s): restaurants, bars, shows, etc, and pick their favorite ones. They can write reviews and give rating to the spots 
   
-  they have been to. We use Yelp API and implement some of our own APIs to provide a great experience for our users to find
+  they have been to. We use Yelp API and implement some of our own APIs to provide a great experience for our users 
   
-  a perfect dating spot. 
+  to find a perfect dating spot. 
   
   DEazy - Dating Made it Easy
 
