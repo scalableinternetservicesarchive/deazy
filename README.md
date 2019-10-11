@@ -1,5 +1,4 @@
 # DEazy
-  Dating Made It Easy
 ## Background
   DEazy is here to ease the struggle of finding dating spot(s). With our platform, the users can see different dating
   
@@ -11,15 +10,12 @@
   
   DEazy - Dating Made it Easy
 
-  
-
 ## Team Members
 * Jack Van Boening - jackvanb
 <img src="https://drive.google.com/uc?export=view&id=1KfdY_o1BwmIzrpM52zrnNHt_0BZ1VRjY">
 
 * Ali Mirabzadeh - alimz758
-<img src="https://drive.google.com/uc?export=view&id=1SF1wOiypfbrr1XiU9BOJ_-cgmUp0ERsj">
+<img src="https://github.com/scalableinternetservices/deazy/blob/master/8EE93990-816F-4E45-9788-D5FDD24ABB07.jpeg">
 
-
-
- 2PM Section
+* Ashkan Faghihi- ashkan117
+<img src="drive.google.com/uc?export=view&id=13OMmTWIyPHAFzWB6TG2Jeprfll-o-hdR">
