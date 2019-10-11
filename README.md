@@ -1,4 +1,5 @@
 # DEazy
+Dating Made It Easy
 ## Background
   DEazy is here to ease the struggle of finding dating spot(s). With our platform, the users can see different dating
   
@@ -19,3 +20,7 @@
 
 * Ashkan Faghihi - ashkan117
 <img src="https://drive.google.com/uc?export=view&id=13OMmTWIyPHAFzWB6TG2Jeprfll-o-hdR">
+
+
+## Section
+  2pm
