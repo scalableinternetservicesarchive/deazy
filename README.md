@@ -11,6 +11,8 @@
   
   DEazy - Dating Made it Easy
 
+  
+
 ## Team Members
 * Jack Van Boening - jackvanb
 <img src="https://drive.google.com/uc?export=view&id=1KfdY_o1BwmIzrpM52zrnNHt_0BZ1VRjY">
@@ -18,3 +20,6 @@
 * Ali Mirabzadeh - alimz758
 <img src="https://drive.google.com/uc?export=view&id=1SF1wOiypfbrr1XiU9BOJ_-cgmUp0ERsj">
 
+
+
+ 2PM Section
