@@ -21,6 +21,8 @@ Dating Made It Easy
 * Ashkan Faghihi - ashkan117
 <img src="https://drive.google.com/uc?export=view&id=13OMmTWIyPHAFzWB6TG2Jeprfll-o-hdR">
 
+* Jiayu Zhao - SophieJY
+<img src="https://drive.google.com/uc?export=view&id=1Lc0Y4aQXxEHZD76wJ-iel8si6Ilt4Nai">
 
 ## Section
   2pm
