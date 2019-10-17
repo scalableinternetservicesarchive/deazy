@@ -1,0 +1,13 @@
+<h1>DEasy</h1>
+<h4>Dating made easy.</h4>
+<%= form_tag("/home_page/search", method: "get") do %>
+  <div class="form-group">
+    <%= label_tag(:q, "Where do you want to go on a date?") %>
+  </div>
+  <div class="form-group">
+    <%= select_tag("places_option", options_for_select([ "Resturant", "Bar", "Sporting Event", "Concert" ], "Resturant")) %>
+  </div>
+  <div class="form-group">
+    <%= submit_tag("Search") %>
+  </div>
+<% end %>
