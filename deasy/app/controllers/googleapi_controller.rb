@@ -1,7 +1,7 @@
 class GoogleapiController < ApplicationController
   def index
     if params[:search]
-        @client = GooglePlaces::Client.new(AIzaSyDheNaQURdWzU1BSC7nVnKnKr9VO2AH5T0)
+        @client = GooglePlaces::Client.new(my_api_key)
         @places = @client.spots_by_query(params[:search])
     end
   end
