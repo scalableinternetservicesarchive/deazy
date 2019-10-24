@@ -2,6 +2,7 @@ class HomePageController < ApplicationController
   def home
   end
   def search
-    @event = params[:places_option]
+    @client = GooglePlaces::Client.new()
+    @places = @client.spots_by_query(params[:places_option])
   end
 end
