@@ -1,2 +1,9 @@
-<p>Add Yelp API stuff here</p>
-<%= @event %>
+<% @places.each do |place| %>
+  <div class="card">
+    <img src="" alt="Image" style="width:100%">
+    <div class="container">
+      <h4><b><%= place.name %></b></h4>
+      <p><%= place.formatted_address %></p>
+    </div>
+  </div>
+<%end%>
