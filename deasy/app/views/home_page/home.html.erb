@@ -1,5 +1,6 @@
 <h1>DEasy</h1>
 <h4>Dating made easy.</h4>
+<% if user_signed_in? %>
 <%= form_tag("/home_page/search", method: "get") do %>
   <div class="form-group">
     <%= label_tag(:q, "Where do you want to go on a date?") %>
@@ -11,3 +12,8 @@
     <%= submit_tag("Search") %>
   </div>
 <% end %>
+<% else %>
+<p>If you don't have an acoout please sign up, other wise sign in</p>
+
+<% end %>
+
