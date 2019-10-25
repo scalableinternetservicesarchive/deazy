@@ -1,0 +1,10 @@
+<% @places.each do |place| %>
+  <div class="card">
+    <img src=<%= place.photos[0].fetch_url(800) %> alt="Image" style="width:100%">
+    <div class="container">
+      <h4><b><%= place.name %></b></h4>
+      <p><%= place.formatted_address %></p>
+      <p>Rating: <%= place.rating %></p>
+    </div>
+  </div>
+<%end%>
