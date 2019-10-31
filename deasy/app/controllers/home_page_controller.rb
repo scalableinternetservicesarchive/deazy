@@ -2,7 +2,7 @@ class HomePageController < ApplicationController
   def home
   end
   def search
-    @client = GooglePlaces::Client.new("AIzaSyAJmcj9PCv7-_OtLh269hCBg32-H7xqxoA")
+    @client = GooglePlaces::Client.new()
     @places = @client.spots_by_query(params[:places_option])
   end
   def save
