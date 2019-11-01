@@ -1,5 +1,6 @@
+<div class="demo">
 <h1>DEasy</h1>
-<h4>Dating made easy.</h4>
+<h4>Dating Made Easy.</h4>
 <% if user_signed_in? %>
 <%= form_tag("/home_page/search", method: "get") do %>
   <div class="form-group">
@@ -16,4 +17,5 @@
 <p>If you don't have an acoout please sign up, other wise sign in</p>
 
 <% end %>
+</div>
 

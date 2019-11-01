@@ -17,6 +17,10 @@
 .form-group {
   padding-bottom: 10px;
 }
+body{
+
+  background:repeating-linear-gradient(to left, #8A1252 ,#A57990)
+}
 .card {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -35,4 +39,12 @@
 /* Add some padding inside the card container */
 .container {
   padding: 2px 16px;
+}
+
+.demo {
+    margin-top:300px;
+    margin: 0 auto;
+    padding-top: 64px;
+    max-width: 640px;
+    width: 94%;
 }
