@@ -1,0 +1,18 @@
+<h1>SavedPlaces</h1>
+<p>Find me in app/views/saved_places/home.html.erb</p>
+<% @places.each do |place| %>
+  <div class="card">
+    <%
+=begin%>
+ <img src=<%= place.photos[0].fetch_url(800) %> alt="Image" style="width:100%">
+    <div class="container">
+      <h4><b><%= place.name %></b></h4>
+      <p><%= place.formatted_address %></p>
+      <p>Rating: <%= place.rating %></p>
+      <%= button_to 'Save Place', home_page_save_path, method: :post,  params: { place_id: place.id} %>
+    </div> 
+<%
+=end%>
+    <p><%= place %></p>
+  </div>
+<%end%>

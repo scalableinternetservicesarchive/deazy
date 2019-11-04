@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'saved_places/home'
   devise_for :users
   root 'home_page#home'
   get 'home_page/home'
