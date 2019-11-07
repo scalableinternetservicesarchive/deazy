@@ -1,0 +1,29 @@
+<% provide :head_tags do %>
+    <meta name='turbolinks-visit-control' content='reload'>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        initMap(<%=@place[:place_lat]%>, <%=@place[:place_lng]%>)
+      });
+
+    function initMap(lat, lng) {
+        var myCoords = new google.maps.LatLng(lat, lng);
+        var mapOptions = {
+          center: myCoords,
+          zoom: 15
+        };
+
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+        var marker = new google.maps.Marker({
+         position: myCoords,
+         map: map
+        });
+    }
+    </script>
+  <% end %>
+<h1>Details</h1>
+<div class="content">
+    <p>
+        <div id="map"></div>
+    </p>
+</div>
