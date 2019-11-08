@@ -19,4 +19,7 @@ class HomePageController < ApplicationController
     current_user.saved_places = @saved_places.to_yaml
     current_user.save
   end
+  def details
+    @place = params
+  end
 end
