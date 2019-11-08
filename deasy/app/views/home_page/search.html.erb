@@ -3,7 +3,9 @@ new_review_path %>
 
 <% @places.each do |place| %>
   <div class="card">
-    <img src=<%= place.photos[0].fetch_url(800) %> alt="Image" style="width:100%">
+    <%= link_to home_page_details_path(params: {place_lat: place.lat, place_lng: place.lng}) do %>
+      <%= image_tag(place.photos[0].fetch_url(800), alt:"Image", style: "width:100%") %>
+    <% end %>
     <div class="container">
       <h4><b><%= place.name %></b></h4>
       <p><%= place.formatted_address %></p>
@@ -11,6 +13,7 @@ new_review_path %>
       <div>
         <%= link_to "Add Review",new_review_path(place_id: place.id) %>
       </div>
+      <%= button_to 'Save Place', home_page_save_path, method: :post,  params: { place_id: place.place_id} %>
 
     </div>
   </div>
