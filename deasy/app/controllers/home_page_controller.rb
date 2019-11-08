@@ -2,9 +2,10 @@ class HomePageController < ApplicationController
   def home
   end
   def search
-    @client = GooglePlaces::Client.new(ENV["PLACES_API_KEY"])
-    if params[:search]
-      @places = @client.spots_by_query(params[:search])
+    @client = GooglePlaces::Client.new("AIzaSyBVRnJTDFMf-3q3qrjjIP5NVnriZa9uDYQ")
+    if params[:search] 
+      rad= params[:miles].to_i*1609
+      @places = @client.spots_by_query( params[:search] +" near "+ params[:city], :radius=>rad)
     end
   end
   def save

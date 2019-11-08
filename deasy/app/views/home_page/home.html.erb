@@ -10,6 +10,18 @@
     <%= select_tag(:search, options_for_select([ "Resturant", "Bar", "Sporting Event", "Concert" ], "Resturant")) %>
   </div>
   <div class="form-group">
+    <%= label_tag(:city, "What City?") %>
+  </div>
+  <div>
+  <%= text_field_tag(:city) %>
+  </div>
+    <div class="form-group">
+    <%= label_tag(:miles, "How far do you want(Miles)?") %>
+  </div>
+  <div class="form-group">
+    <%= select_tag(:miles, options_for_select([ "5", "15", "25" ], "5")) %>
+  </div>
+  <div class="form-group">
     <%= submit_tag("Search") %>
   </div>
 <% end %>
