@@ -1,3 +1,6 @@
+<%# review_new_path
+new_review_path %>
+
 <% @places.each do |place| %>
   <div class="card">
     <%= link_to home_page_details_path(params: {place_lat: place.lat, place_lng: place.lng}) do %>
@@ -7,7 +10,11 @@
       <h4><b><%= place.name %></b></h4>
       <p><%= place.formatted_address %></p>
       <p>Rating: <%= place.rating %></p>
+      <div>
+        <%= link_to "Add Review",new_review_path(place_id: place.id) %>
+      </div>
       <%= button_to 'Save Place', home_page_save_path, method: :post,  params: { place_id: place.place_id} %>
+
     </div>
   </div>
 <%end%>
