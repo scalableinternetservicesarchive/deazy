@@ -1,3 +1,4 @@
+
 <% Review.where(place_id: @review.place_id).each do |review| %>
   <%= review.rating%>
   <%= review.comment%>

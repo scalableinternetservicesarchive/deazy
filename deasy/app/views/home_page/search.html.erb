@@ -12,8 +12,12 @@ new_review_path %>
       <p>Rating: <%= place.rating %></p>
       <div>
         <%= link_to "Add Review",new_review_path(place_id: place.id) %>
+        
       </div>
+      <div>
       <%= button_to 'Save Place', home_page_save_path, method: :post,  params: { place_id: place.place_id} %>
+      </div>
+      
 
     </div>
   </div>

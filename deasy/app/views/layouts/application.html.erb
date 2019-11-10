@@ -7,13 +7,15 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'https://maps.googleapis.com/maps/api/js?key='+ENV["PLACES_API_KEY"] %>
+    <%= javascript_include_tag 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBVRnJTDFMf-3q3qrjjIP5NVnriZa9uDYQ' %>
     <%= yield(:head_tags) %>
   </head>
 
   <body>
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <ul class="navbar-nav ml-auto">
+      
+      
         <% if user_signed_in? %>
           <li class="nav-item">
             <%= link_to "Saved", saved_places_home_path, method: :get, :class => 'navbar-link'  %>
