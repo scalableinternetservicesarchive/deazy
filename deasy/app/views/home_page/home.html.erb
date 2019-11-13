@@ -1,13 +1,12 @@
 <div class="demo">
 
 <div class="">
-  <h1 style="text-align:center;">DEasy</h1>
+  <h4 style="text-align:center;">Find Your Favorite Dating Spot</h4>
   <div style="margin-bottom:10px; margin-top:10px;">
-    <%=image_tag 'dating.jpg'%>
+    <%=image_tag 'heart-logo-transparent.png', :class => "logo_image" %>
   </div>
 
   <% if user_signed_in? %>
-  <h4 style="text-align:center;">Find Your Favorite Dating Spot</h4>
     <%= form_tag("/home_page/search", method: "get") do %>
       <div >
         <h5> Where do you want to go on a date?</h5>

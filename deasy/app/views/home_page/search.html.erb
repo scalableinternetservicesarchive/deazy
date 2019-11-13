@@ -5,8 +5,11 @@ new_review_path %>
 <h2 >
   <%= params[:search] %>s in <%= params[:city] %>
 </h2>
+</div>
+
+<div class="row">
 <% @places.each do |place| %>
- 
+  <div class="col-md-6 card-col">
   <div class="card">
     <%= link_to home_page_details_path(params: {place_lat: place.lat, place_lng: place.lng}) do %>
       <%= image_tag(place.photos[0].fetch_url(800), alt:"Image", style: "width:100%") %>
@@ -22,8 +25,8 @@ new_review_path %>
       <div>
       <%= button_to 'Save Place', home_page_save_path, method: :post,  params: { place_id: place.place_id} %>
       </div>
-      
-
     </div>
   </div>
+  </div>
 <%end%>
+</div>

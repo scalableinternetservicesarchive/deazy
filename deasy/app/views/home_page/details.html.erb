@@ -2,7 +2,7 @@
     <meta name='turbolinks-visit-control' content='reload'>
     <script>
       document.addEventListener("DOMContentLoaded", function(){
-        initMap(<%=@place[:place_lat]%>, <%=@place[:place_lng]%>)
+        initMap(<%=@place[:place_lat]%>, <%=@place[:place_lng]%>);
       });
 
     function initMap(lat, lng) {
