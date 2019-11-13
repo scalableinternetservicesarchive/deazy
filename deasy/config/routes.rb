@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   root 'home_page#home'
   get 'home_page/home'
   get 'home_page/search', to: "home_page#search"
+  post 'home_page/sort'
+  get 'home_page/sort'
   resources :reviews
   post 'home_page/save'
   get 'home_page/details'

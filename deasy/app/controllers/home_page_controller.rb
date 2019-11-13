@@ -4,7 +4,9 @@ class HomePageController < ApplicationController
   def search
     @client = GooglePlaces::Client.new("KEY")
     if params[:search] 
-      @places = @client.spots_by_query( params[:search] +" near "+ params[:city])
+      if params[:sortCat] == "Rating"
+      @places = @client.spots_by_query( params[:search] +" near "+ params[:city]).sort_by {|m| -m.rating}
+      end
     end
   end
   def save

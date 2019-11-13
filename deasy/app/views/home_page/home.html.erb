@@ -21,7 +21,13 @@
       <div>
       <%= text_field_tag :city, nil,  :required => true%>
       </div>
-
+      <div style="margin-top:10px;">
+      <h5> Sorted by</h5>
+      </div>
+        <div >
+        <%= select_tag(:sortCat ,options_for_select([ "Rating" ], "Rating")) %>
+        </div>
+   
       <div  style="margin-top:15px;">
         <%= submit_tag("Search") %>
       </div>
