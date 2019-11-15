@@ -33,7 +33,7 @@
     </option>
   </options>
 
-<!--Scenario: Log in ->  choose a Res, sort_by: rate, city: Los Angeles -> signout-->
+<!--Scenario: Log in ->  search for Bar, sort_by: Rating, city: Los Angeles -> signout -->
 
   <sessions>
     <session name="http-example" probability="100" type="ts_http">
@@ -45,7 +45,7 @@
           <request>
             <http url="/" method="POST" version="1.1" contents="search=Bar&amp;city=Los Angeles&amp;sortCat=Rating&amp;car[color]=Red&amp;car[license_plate]=1234567&amp;car[all_tags]=trendy&amp;commit=Search"/>
           </request>
-
+            <!-- Can add save places and writing reviews here -->
           <request>
             <http url="/signout" method="DELETE" version="1.1" />
           </request>
