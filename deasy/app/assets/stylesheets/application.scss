@@ -13,84 +13,96 @@
  *= require_tree .
  *= require_self
  */
-@import "bootstrap";
+@import 'bootstrap';
 .form-group {
-  padding-bottom: 10px;
+    padding-bottom: 10px;
 }
 body {
-  background: repeating-linear-gradient(to left, #e0eafc, #cfdef3);
+    background: repeating-linear-gradient(to left, #e0eafc, #cfdef3);
 }
 .card {
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  padding-bottom: 20px;
-  width: 80%;
-  margin: 0 auto;
-  float: none;
-  margin-bottom: 10px;
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    padding-bottom: 20px;
+    width: 80%;
+    margin: 0 auto;
+    float: none;
+    margin-bottom: 10px;
 }
 
 .card-col {
-  padding-top: 20px;
+    padding-top: 20px;
 }
 
 /* On mouse-over, add a deeper shadow */
 .card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* Add some padding inside the card container */
 .container {
-  padding: 2px 16px;
+    padding: 2px 16px;
 }
 
 .navbar-text {
-  display: inline-block;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 600px;
+    display: inline-block;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 600px;
 }
 .header {
-  text-align: center;
-  margin-top: 50px;
+    text-align: center;
+    margin-top: 50px;
 }
 
 .demo {
-  margin: 0 auto;
-  padding-top: 20px;
-  max-width: 640px;
-  width: 94%;
+    margin: 0 auto;
+    padding-top: 20px;
+    max-width: 640px;
+    width: 94%;
 }
 
 .nav-item {
-  margin-left: 20px;
+    margin-left: 20px;
 }
 
 .navbar-link {
-  color: white;
-  margin-top: 300px;
-  margin: 0 auto;
-  padding-top: 64px;
-  max-width: 640px;
-  width: 94%;
+    color: white;
+    margin-top: 300px;
+    margin: 0 auto;
+    padding-top: 64px;
+    max-width: 640px;
+    width: 94%;
 }
 
 #map {
-  width: 600px;
-  height: 400px;
+    width: 600px;
+    height: 400px;
 }
 
 .content {
-  padding-left: 30px;
+    padding-left: 30px;
 }
 
 .logo_image {
-  display: block;
-  margin: auto;
+    display: block;
+    margin: auto;
 }
 
 .map_icon {
-  float: right;
-  margin-right: 10px;
+    float: right;
+    margin-right: 10px;
+}
+
+.features {
+    padding-left: 640px;
+}
+
+.keyword {
+    display: inline-block;
+    border: 3px;
+    border-style: solid;
+    border-color: #9999ff;
+    padding: 1em;
 }
