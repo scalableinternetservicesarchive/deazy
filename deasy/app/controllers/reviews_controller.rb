@@ -11,6 +11,7 @@ class ReviewsController < ApplicationController
         puts "Inside new reviews controller"
         puts "Params are #{params}"
         puts "Params[:place_id] #{params[:place_id]}"
+        puts "Params[:user_id] #{current_user.id}"
         @review = Review.new
         @review.place_id = params[:place_id]
         #place id is 9c5196802e47e15dba578913d834e212d2af0269
@@ -27,6 +28,7 @@ class ReviewsController < ApplicationController
     def create
         puts "I'm in reviews create"
         @review = Review.new(review_params)
+        @review.user_id = current_user.id
         puts "#{review_params}"
         ############################33
         #WHY DID THIS MESS THINGS UP?
@@ -53,11 +55,21 @@ class ReviewsController < ApplicationController
         puts "Params are #{params}"
     end
 
+    def update
+        puts "id is #{@review.user_id}"
+        puts "current user id is #{current_user.id}"
+        if @review.user_id == current_user.id
+            puts "same user trying to edit"
+            @review.update(review_params)
+            redirect_to new_review_path(place_id: @review.place_id)
+        end
+    end
+
 
 
     private
         def review_params
-            params.require(:review).permit(:rating,:comment,:place_id)
+            params.require(:review).permit(:rating,:comment,:place_id, :user_id,:id)
         end
 
         def find_place
