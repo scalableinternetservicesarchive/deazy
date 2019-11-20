@@ -15,7 +15,10 @@ new_review_path %>
       <%= image_tag(place.photos[0].fetch_url(800), alt:"Image", style: "width:100%; height:400px") %>
     <% end %>  
     <div class="container">
-      <%= link_to home_page_details_path(params: {place_lat: place.lat, place_lng: place.lng}) do %>
+      <%= link_to home_page_details_path(params: {place_name: place.name, 
+      place_icon: place.icon, place_types: place.types, place_address: place.formatted_address, 
+      place_lat: place.lat, place_lng: place.lng, place_rating: place.rating, 
+      place_opennow: place.opening_hours, place_pricelevel: place.price_level}) do %>
           <%=image_tag 'baseline_directions_black_18dp.png', :class => "map_icon" %>
       <%end%>
       <h4><b><%= place.name %></b></h4>

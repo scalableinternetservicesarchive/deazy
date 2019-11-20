@@ -21,9 +21,31 @@
     }
     </script>
   <% end %>
-<h1>Details</h1>
 <div class="content">
-    <p>
-        <div id="map"></div>
-    </p>
+<h1>Details</h1>
+<div style="float: left;">
+  <% if @place[:place_icon] %>
+    <%= image_tag @place[:place_icon], size: "30"%>
+  <% end %>
+</div>
+<h4><b><%= @place[:place_name] %></b></h4>
+<div id="map" style="float: left;" ></div>
+<div class="features">
+  <h5><b> Address </b></h5>
+  <p><%= @place[:place_address] %></p>
+  <h5><b> Open Now? </b></h5>
+  <% if @place[:place_opennow]["open_now"] == "true" %>
+    <p>Yes, we are open!</p>
+  <% else %>
+    <p>Sorry, we are closed.</p>
+  <% end %>
+  <h5><b> Category </b></h5>
+  <% @place[:place_types].each do |feature| %>
+    <p class = "keyword"><%= feature %></p>
+  <%end%>
+  <h5><b> Rating </b></h5>
+  <p><%= @place[:place_rating] %></p>
+  <h5><b> Price Level </b></h5>
+  <p><%= @place[:place_pricelevel] %></p>
+</div>
 </div>
