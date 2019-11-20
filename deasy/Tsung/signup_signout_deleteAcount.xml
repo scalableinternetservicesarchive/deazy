@@ -9,7 +9,8 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="http://ec2-44-227-243-49.us-west-2.compute.amazonaws.com/" port="80" type="tcp"></server>
+  <!-- When you copy paste the domain, do it without the protocol-->
+    <server host="ec2-44-227-243-49.us-west-2.compute.amazonaws.com" port="80" type="tcp"></server>
   </servers>
 
  <!-- 2users  arrive-->
