@@ -1,7 +1,12 @@
 
 <%= simple_form_for @review do |f| %>
-    <%= f.input :rating %>
-    <%= f.input :comment %>
-    <%= f.button  :submit%>
-    <%= f.hidden_field :place_id, :value => "#{@review.place_id}"%>
+    <div class="form-group">
+        <%= f.input :rating%>
+        <%= f.input :comment%>
+        <%= f.button  :submit, "Submit Review", class: "submit-button"  %>
+        <%= f.hidden_field :place_id, :value => "#{@review.place_id}"%>
+    </div>
 <% end %>
+
+
+<%# , wrapper_html: {class: 'form-group'} %>
