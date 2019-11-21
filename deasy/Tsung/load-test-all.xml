@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/local/share/tsung/tsung-1.0.dtd" [] >
+<tsung loglevel="notice">
+
+  <!-- Client side setup -->
+  <clients>
+    <client host="localhost" use_controller_vm="true" maxusers='2000'/>
+  </clients>
+
+  <!-- Server side setup -->
+  <servers>
+    <server host="ec2-100-21-223-102.us-west-2.compute.amazonaws.com" port="80" type="tcp"></server>
+  </servers>
+
+
+  <load>
+    <arrivalphase phase="1" duration="20" unit="second">
+      <users arrivalrate="1" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="2" duration="20" unit="second">
+      <users arrivalrate="2" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="3" duration="20" unit="second">
+      <users arrivalrate="4" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="4" duration="20" unit="second">
+      <users arrivalrate="8" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="5" duration="20" unit="second">
+      <users arrivalrate="16" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="6" duration="20" unit="second">
+      <users arrivalrate="32" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="7" duration="20" unit="second">
+      <users arrivalrate="64" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="8" duration="20" unit="second">
+      <users arrivalrate="128" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="9" duration="20" unit="second">
+      <users arrivalrate="256" unit="second"></users>
+    </arrivalphase>
+  </load>
+
+  <options>
+    <!-- Set connection timeout to 2 seconds -->
+    <option name="global_ack_timeout" value="2000"></option>
+
+    <option type="ts_http" name="user_agent">
+      <user_agent probability="100">Mozilla/5.0 (Windows; U; Windows NT 5.2; fr-FR; rv:1.7.8) Gecko/20050511 Firefox/1.0.4</user_agent>
+    </option>
+  </options>
+
+  <sessions>
+  <!-- Frist session to log in , search for places with different params, save a few spots, and write/read comments, then log out-->
+    <session name="http-example" probability="50" type="ts_http">
+     <setdynvars sourcetype="random_number" start="1" end="1000">
+        <var name="id" />
+      </setdynvars> 
+
+      <request>
+        <http url='/' version='1.1' method='GET'></http>
+      </request>
+      <request>
+        <http url='/users/sign_in' version='1.1' method='GET'></http>
+      </request>
+       <thinktime value="2" random="true"/>
+      
+      <!-- Sign in-->
+       <request subst="true">
+        <http url='/users/sign_in' version='1.1' method='POST'
+          content_type='application/x-www-form-urlencoded'
+          contents='user%5Bemail%5D=email%%_id%%@deazy.com&amp;user%5Bpassword%5D=seedaccount'
+          ></http>
+      </request>
+        <thinktime value="2" random="true"></thinktime> 
+       <!-- Get user profile-->
+       <request>
+        <http url='users/edit' version='1.1' method='GET'></http>
+      </request>
+      <thinktime value="2" random="true"></thinktime> 
+        <!--Search: Bar, Los Angeles, Rating-->
+       <request>
+            <http url="/" method="POST" version="1.1" contents="search=Bar&amp;city=Los Angeles&amp;sortCat=Rating&amp;commit=Search"/>
+          </request>
+         <!-- Wait for 4 seconds then do the next search-->
+        <thinktime value="4" random="true"></thinktime> 
+        <!--Search: Resturant, Las Vegas, Name-->
+       <request>
+            <http url="/" method="POST" version="1.1" contents="search=Resturant&amp;city=Las Vegas&amp;sortCat=Name&amp;commit=Search"/>
+          </request>
+           <!-- Working until here - YAY!-->
+           <!-- Wait for 4 seconds then do the next search-->
+        
+        <thinktime value="4" random="true"></thinktime> 
+        <!--Search: Concert, Sunnyvale, Distance-->
+       <request>
+            <http url="/" method="POST" version="1.1" contents="search=Concert&amp;city=Sunnyvale&amp;sortCat=Distance&amp;commit=Search"/>
+          </request>
+          <!-- Wait for 3 seconds then do write reviews-->
+        <thinktime value="3" random="true"></thinktime> 
+        <!-- Write comments-->
+          <for from="1" to="5" incr="1" var="counter">
+        <thinktime value="1" random="true"/>
+        <setdynvars sourcetype="random_number" start="1" end="5000">
+          <var name="place_id" />
+        </setdynvars>
+         <setdynvars sourcetype="random_number" start="1" end="5">
+          <var name="random_rating" />
+        </setdynvars>
+        <!--Get the review page with a random ID -->
+        <request subst="true">
+          <http url='/reviews/new?place_id=%%_place_id%%'
+            version='1.1'
+            method='GET'
+            ></http>
+        </request>
+        <!--post a review with a random ID, random rating(1-5), and comment :"This place is awesome!" -->
+        <request subst="true">
+          <http url='/reviews/new?place_id=%%_place_id%%'
+            version='1.1'
+            method='POST'
+            content_type='application/x-www-form-urlencoded'
+            contents='review%5Brating%5D=%%_random_rating%%&amp;review%5Bcomment%5D=This place is awesome!&amp;commit=Create Review'
+            ></http>
+        </request>
+      </for>
+      <!-- SAVING A FEW PLACES - 4 -->
+       <!-- Wait for 2 seconds to save a place-->
+        <thinktime value="3" random="true"></thinktime> 
+        <!-- Wait save a place-->
+        <request>
+            <http url="/home_page/save" method="POST" version="1.1" contents="place_id=%%_id%%commit=Save Place"/>
+          </request>
+
+        <!-- Wait for 2 seconds to save a place-->
+        <thinktime value="3" random="true"></thinktime> 
+        <!-- Wait save a place-->
+        <request>
+            <http url="/home_page/save" method="POST" version="1.1" contents="place_id=%%_id%%commit=Save Place"/>
+          </request>
+
+        <!-- Wait for 2 seconds to save a place-->
+        <thinktime value="3" random="true"></thinktime> 
+        <!-- Wait save a place-->
+        <request>
+            <http url="/home_page/save" method="POST" version="1.1" contents="place_id=%%_id%%commit=Save Place"/>
+          </request>
+
+          <!-- Wait for 2 seconds to save a place-->
+        <thinktime value="3" random="true"></thinktime> 
+        <!-- Wait save a place-->
+        <request>
+            <http url="/home_page/save" method="POST" version="1.1" contents="place_id=%%_id%%commit=Save Place"/>
+          </request>
+
+         <!-- Wait for 2 seconds to save a place-->
+        <thinktime value="3" random="true"></thinktime> 
+        <!-- Place details- a few differnt ones-->
+        <request>
+            <http url="/home_page/details?place_address=%%_place_address%%" method="GET" version="1.1" contents="%%_place_address%%=8941 Elk Grove Blvd, Elk Grove, CA 95624, United States"/>
+          </request>
+          <thinktime value="2" random="true"></thinktime> 
+          <!-- Place details-->
+        <request>
+            <http url="/home_page/details?place_address=%%_place_address%%" method="GET" version="1.1" contents="%%_place_address%%=1135 N Alameda St, Los Angeles, CA 90012, United States"/>
+          </request>
+          <thinktime value="2" random="true"></thinktime> 
+          <!-- Place details-->
+        <request>
+            <http url="/home_page/details?place_address=%%_place_address%%" method="GET" version="1.1" contents="%%_place_address%%=8500 Mateo St, Los Angeles, CA 90013, United States"/>
+          </request>
+          <thinktime value="2" random="true"></thinktime> 
+        <!-- Sign out-->
+          <request>
+        <http url='/users/sign_out' version='1.1' method='DELETE'></http>
+      </request>
+    </session>
+
+    <!-- New Session for all sign-up/ log-in -->
+    <session name="sign_up_log_in" probability="50" type="ts_http">
+
+      <for from="1" to="10" incr="1" var="counter">
+
+        <!-- Sign up -->
+        <!-- The main page-->
+        <request subst="true">
+          <http url="/" method="GET" version="1.1" />
+        </request>
+        <!-- Get the sign  up  page-->
+        <request subst="true">
+          <http url="/users/sign_up" method="GET" version="1.1" />
+        </request>
+        <!--sign up-->
+        <request subst="true">
+          <http url="/users/sign_up" method="POST" version="1.1" contents="user[email]=j%%_counter%%@deazy.com&amp;user[password]=foobar1&amp;user[password_confirmation]=foobar1&amp;commit=Sign up" content_type="application/x-www-form-urlencoded" />
+        </request>
+
+        <!-- Edit account -->
+
+        <request subst="true">
+          <http url="/users/edit" method="GET" version="1.1" />
+        </request>
+
+        <request subst="true">
+          <http url="/users/edit" method="POST" version="1.1" contents="user[email]=j%%_counter%%@deazy.com&amp;user[password]=foobar2&amp;user[password_confirmation]=foobar2&amp;user[current_password]=foobar1&amp;commit=Update" content_type="application/x-www-form-urlencoded" />
+        </request>
+        <!-- Log out -->
+         <request>
+        <http url='/users/sign_out' version='1.1' method='DELETE'></http>
+      </request>
+        <!-- Log in with new email -->
+        <request subst="true">
+          <http url="/users/signin" method="POST" version="1.1" contents="session[email]=j%%_counter%%@deasy.com&amp;session[password]=foobar1&amp;commit=Login" content_type="application/x-www-form-urlencoded" />
+        </request>
+          <request>
+        <http url='/users/sign_out' version='1.1' method='DELETE'></http>
+      </request>
+
+      </for>
+
+    </session>
+  </sessions>
+</tsung>
