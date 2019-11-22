@@ -13,22 +13,20 @@
 }
 
 .form-group {
-    padding-bottom: 5px;
     width: 100%;
-    background-color: aqua;
+    //background-color: aqua;
 
 
   input, textarea{  
-    margin: 5px 5px 0px 5px;
+    // margin: 5px 5px 0px 5px;
     width: 80%;
     // background-color: black;
     //placeholder:"First name";
   }
 
   label {
-    margin-right: 20px;
     padding-top: 10px;
-    padding-bottom: 10px;
+    // padding-bottom: 10px;
     width: 80%;
     background-color: red($color: #000000);
   }
