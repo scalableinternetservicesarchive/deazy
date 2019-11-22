@@ -4,12 +4,12 @@
 
   <!-- Client side setup -->
   <clients>
-    <client host="localhost" use_controller_vm="true" maxusers='2000'/>
+    <client host="localhost" use_controller_vm="true" maxusers='15000'/>
   </clients>
 
   <!-- Server side setup -->
   <servers>
-    <server host="ec2-100-21-223-102.us-west-2.compute.amazonaws.com" port="80" type="tcp"></server>
+    <server host="ec2-54-191-84-200.us-west-2.compute.amazonaws.com" port="80" type="tcp"></server>
   </servers>
 
 
@@ -217,9 +217,7 @@
           <request>
         <http url='/users/sign_out' version='1.1' method='DELETE'></http>
       </request>
-
       </for>
-
     </session>
   </sessions>
 </tsung>
