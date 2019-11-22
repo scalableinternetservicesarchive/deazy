@@ -1,8 +1,9 @@
 
 <% Review.where(place_id: @review.place_id).each do |review| %>
-  <%= review.rating%>
-  <%= review.comment%>
-  <%= review.place_id%>
-  <%= link_to 'Edit', edit_review_path(review) %>
-  <br><br/>
+  <div class="form-item">
+    <%= review.rating%>
+    <%= review.comment%>
+    <%= link_to 'Edit', edit_review_path(review) %>
+    <br><br/>
+  </div>
 <% end %>
