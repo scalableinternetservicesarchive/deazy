@@ -7,5 +7,6 @@
 
 <%= render "reviews/form" %>
 
-<%= render "review" %>
+
+<%= render partial: 'reviews/review', collection: @cached_reviews, cached: true %>
 </div>

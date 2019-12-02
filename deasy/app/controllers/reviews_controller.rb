@@ -14,6 +14,10 @@ class ReviewsController < ApplicationController
         puts "Params[:user_id] #{current_user.id}"
         @review = Review.new
         @review.place_id = params[:place_id]
+        @cached_reviews = Review.cached_by_place_id(params,params[:place_id])
+        puts "start"
+        puts @cached_reviews
+        puts "end"
         #place id is 9c5196802e47e15dba578913d834e212d2af0269
         #Says place id is 9
         puts "Place id is #{@review.place_id}"
