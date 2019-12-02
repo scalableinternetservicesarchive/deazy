@@ -1,10 +1,12 @@
 <div class="demo">
 
 <div class="">
+<% cache do %>
   <h4 style="text-align:center;">Find Your Favorite Dating Spot</h4>
   <div style="margin-bottom:10px; margin-top:10px;">
     <%=image_tag 'heart-logo-transparent.png', :class => "logo_image" %>
   </div>
+<% end %>
 
   <% if user_signed_in? %>
     <%= form_tag("/home_page/search", method: "get") do %>
