@@ -3,24 +3,5 @@
 </div>
 
 <div class="row">
-<% @places.each do |place| %>
-  <div class="col-md-6 card-col">
-  <div class="card ">
-    <% if place.photos.present? %>
-      <%= image_tag(place.photos[0].fetch_url(800), alt:"Image", style: "width:100%; height:400px") %>
-    <% end %>  
-    <div class="container">
-      <%= link_to home_page_details_path(params: {place_lat: place.lat, place_lng: place.lng}) do %>
-          <%=image_tag 'baseline_directions_black_18dp.png', :class => "map_icon" %>
-      <%end%>
-      <h4><b><%= place.name %></b></h4>
-      <p><%= place.formatted_address %></p>
-      <p>Rating: <%= place.rating %></p>
-      <div>
-        <%= button_to 'Remove Place', saved_places_remove_path, method: :post,  params: { place_id: place.place_id} %>
-      </div>
-    </div>
-  </div>
-  </div>
-<%end%>
+  <%= render partial: 'saved_places/home', collection: @places, as: :place, cached: true %>
 </div>
