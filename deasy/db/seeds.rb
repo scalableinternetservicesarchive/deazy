@@ -5,3 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+2000.times do
+  Review.create(rating: 5, comment: "wow", place_id: "21617bb2f9914c04e45b3efccf9b179875a89f8b")
+end
+
