@@ -13,4 +13,13 @@ class SavedPlacesController < ApplicationController
     }
 
   end
+  def remove
+    @place = params[:place_id]
+    if !current_user.saved_places.empty?
+      @saved_places = YAML.load(current_user.saved_places)
+      @saved_places.delete(@place)
+    end
+    current_user.saved_places = @saved_places.to_yaml
+    current_user.save
+  end
 end
