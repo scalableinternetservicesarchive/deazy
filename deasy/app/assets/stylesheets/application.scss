@@ -30,7 +30,11 @@ body {
     float: none;
     margin-bottom: 10px;
 }
-
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+   }
 .card-col {
     padding-top: 20px;
 }
