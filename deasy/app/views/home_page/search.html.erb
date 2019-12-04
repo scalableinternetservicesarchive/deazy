@@ -8,8 +8,8 @@ new_review_path %>
 </div>
 
 <div class="row">
-<% cache do %>
 <% @places.each do |place| %>
+  <% cache place.name do %>
     <div class="col-md-6 card-col">
     <div class="card ">
       <% if place.photos.present? %>
@@ -35,6 +35,6 @@ new_review_path %>
       </div>
     </div>
     </div>
+  <%end%>
 <%end%>
-<% end %>
 </div>
