@@ -9,7 +9,7 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="deazy-120219-1.q5kjsmqct4.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="deazy-120319-1.q5kjsmqct4.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
 
@@ -81,31 +81,23 @@
       </request>
       <thinktime value="2" random="true"></thinktime> 
         <!--Search: Bar, Los Angeles, Rating-->
-        <!-- do three times for fragment caching -->
        <request>
             <http url="/" method="POST" version="1.1" contents="search=Bar&amp;city=Los Angeles&amp;sortCat=Rating&amp;commit=Search"/>
           </request>
-
          <!-- Wait for 4 seconds then do the next search-->
         <thinktime value="4" random="true"></thinktime> 
-         <request>
-            <http url="/" method="POST" version="1.1" contents="search=Bar&amp;city=Los Angeles&amp;sortCat=Rating&amp;commit=Search"/>
-          </request>
         <!--Search: Resturant, Las Vegas, Name-->
-       <!-- <request>
+       <request>
             <http url="/" method="POST" version="1.1" contents="search=Resturant&amp;city=Las Vegas&amp;sortCat=Name&amp;commit=Search"/>
-          </request> -->
+          </request>
            <!-- Working until here - YAY!-->
            <!-- Wait for 4 seconds then do the next search-->
         
-        <thinktime value="4" random="true"></thinktime>
-         <request>
-            <http url="/" method="POST" version="1.1" contents="search=Bar&amp;city=Los Angeles&amp;sortCat=Rating&amp;commit=Search"/>
-          </request> 
+        <thinktime value="4" random="true"></thinktime> 
         <!--Search: Concert, Sunnyvale, Distance-->
-       <!-- <request>
+       <request>
             <http url="/" method="POST" version="1.1" contents="search=Concert&amp;city=Sunnyvale&amp;sortCat=Distance&amp;commit=Search"/>
-          </request> -->
+          </request>
           <!-- Wait for 3 seconds then do write reviews-->
         <thinktime value="3" random="true"></thinktime> 
         <!-- Write comments-->
