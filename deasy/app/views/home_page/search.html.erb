@@ -26,8 +26,7 @@ new_review_path %>
         <p><%= place.formatted_address %></p>
         <p>Rating: <%= place.rating %></p>
         <div>
-          <%= link_to "Add Review",new_review_path(place_id: place.id) %>
-          
+          <%= link_to "Add Review",new_review_path(place_id: place.id) %> 
         </div>
         <div>
         <%= button_to 'Save Place', home_page_save_path, method: :post,  params: { place_id: place.place_id} %>
@@ -37,4 +36,5 @@ new_review_path %>
     </div>
   <%end%>
 <%end%>
+<%= paginate @places %>
 </div>

@@ -5,7 +5,7 @@ class HomePageController < ApplicationController
     @client = GooglePlaces::Client.new(ENV["PLACES_API_KEY"])
     if params[:search] 
       if params[:sortCat] == "Rating"
-      @places = Place.searchByRating(@client,params)
+      @places = Place.searchByRating(@client,params).page params[:page]
       end
       if params[:sortCat] == "Name"
         @places = Place.searchByName(@client,params)
