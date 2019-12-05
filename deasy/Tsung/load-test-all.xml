@@ -9,7 +9,7 @@
 
   <!-- Server side setup -->
   <servers>
-    <server host="deazy-120419-2.q5kjsmqct4.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
+    <server host="deazy-120419-3.q5kjsmqct4.us-west-2.elasticbeanstalk.com" port="80" type="tcp"></server>
   </servers>
 
 
