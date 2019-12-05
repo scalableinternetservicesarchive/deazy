@@ -10,8 +10,8 @@ class ReviewsController < ApplicationController
     def new 
         puts "Inside new reviews controller"
         puts "Params are #{params}"
-        puts "Params[:place_id] #{params[:place_id]}"
-        puts "Params[:user_id] #{current_user.id}"
+        # puts "Params[:place_id] #{params[:place_id]}"
+        # puts "Params[:user_id] #{current_user.id}"
         @review = Review.new
         @review.place_id = params[:place_id]
         @cached_reviews = Review.cached_by_place_id(params,params[:place_id])
@@ -34,7 +34,7 @@ class ReviewsController < ApplicationController
         @review = Review.new(review_params)
         @review.user_id = current_user.id
         puts "#{review_params}"
-        ############################33
+        ############################
         #WHY DID THIS MESS THINGS UP?
         #@review.place_id = params[:place_id]        
         puts "Params are #{params}"
