@@ -5,16 +5,14 @@ class HomePageController < ApplicationController
     @client = GooglePlaces::Client.new(ENV["PLACES_API_KEY"])
     if params[:search] 
       if params[:sortCat] == "Rating"
-      @places = @client.spots_by_query( params[:search] +" near "+ params[:city]).sort_by {|m| -m.rating}
+      @places = Place.searchByRating(@client,params)
       end
       if params[:sortCat] == "Name"
-        @places = @client.spots_by_query( params[:search] +" near "+ params[:city]).sort_by {|m| -m.name}
+        @places = Place.searchByName(@client,params)
       end
       if params[:sortCat] == "Distance"
         cityCoordinates = Geocoder.search("172.56.21.89")
-        @places = @client.spots_by_query( params[:search] +" near "+ params[:city]).sort_by {|m| 
-        -Geocoder::Calculations.distance_between(cityCoordinates.first.coordinates, [m.lng,m.lat])
-      }
+        @places = Place.searchByDistance(@client,params,cityCoordinates)
       end
     end
   end
