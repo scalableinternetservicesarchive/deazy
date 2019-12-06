@@ -14,6 +14,9 @@
       <h4><b><%= place.name %></b></h4>
       <p><%= place.formatted_address %></p>
       <p>Rating: <%= place.rating %></p>
+      <div>
+        <%= button_to 'Remove Place', saved_places_remove_path, method: :post,  params: { place_id: place.place_id} %>
+      </div>
     </div>
   </div>
   <% end %>
