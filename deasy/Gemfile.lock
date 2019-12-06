@@ -147,7 +147,7 @@ GEM
     pg (1.1.4)
     popper_js (1.14.5)
     public_suffix (4.0.1)
-    puma (3.12.1)
+    puma (3.12.2)
     rack (2.0.7)
     rack-proxy (0.6.5)
       rack
@@ -273,7 +273,7 @@ DEPENDENCIES
   kaminari
   listen (>= 3.0.5, < 3.2)
   pg
-  puma (~> 3.11)
+  puma (~> 3.12)
   rails (~> 6.0.0)
   sass-rails (~> 5)
   selenium-webdriver
